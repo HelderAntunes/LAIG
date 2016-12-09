@@ -34,6 +34,7 @@ XMLscene.prototype.init = function (application) {
     this.game = new GameState(this);
     //pedro
     this.leg = new Leg(this,null,null,0.1,0.5);
+    this.claw = new Claw(this,null,null,0.1,0.5);
     this.setPickEnabled(true);
 
     this.hotspots = [];
@@ -255,7 +256,7 @@ XMLscene.prototype.display = function () {
         else {
             //pedro
             //this.game.display();
-            this.leg.display();
+            this.claw.display();
         }
 
     };
