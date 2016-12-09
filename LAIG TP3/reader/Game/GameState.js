@@ -5,8 +5,7 @@
 * @param {String} texture represents the path of image of texture
 */
 function GameState(scene) {
-    CGFobject.call(this, scene);
-
+    this.scene = scene;
     this.materialTile;
     this.materialWhite;
     this.materialBlack;
@@ -16,10 +15,9 @@ function GameState(scene) {
     this.auxBoardBlack = new AuxiliaryBoard(scene, this, 0.25, 0.125);
     this.auxBoardWhite = new AuxiliaryBoard(scene, this, 0.25, 0.125);
 
-
+    this.hotspots = this.getHotspots();
 };
 
-GameState.prototype = Object.create(CGFobject.prototype);
 GameState.prototype.constructor = GameState;
 
 GameState.prototype.display = function() {
@@ -57,4 +55,11 @@ GameState.prototype.setMaterials = function() {
     this.materialBlack.setDiffuse( 0, 0, 0, 1);
     this.materialBlack.setSpecular( 0.5, 0.5, 0.5, 1);
     this.materialBlack.setShininess(50);
+};
+
+GameState.prototype.getHotspots = function() {
+    var hotspots = this.mainBoard.getHotspots();
+    hotspots = hotspots.concat(this.auxBoardBlack.getHotspots(), 
+                                this.auxBoardWhite.getHotspots());
+    return hotspots;
 };

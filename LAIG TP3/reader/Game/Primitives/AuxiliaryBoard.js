@@ -5,8 +5,7 @@
 * @param {String} texture represents the path of image of texture
 */
 function AuxiliaryBoard(scene, game, radiusOfTile, heightOfTile) {
-    CGFobject.call(this, scene);
-
+    this.scene = scene;
     this.game = game;
 
     this.radiusOfTile = radiusOfTile;
@@ -21,7 +20,6 @@ function AuxiliaryBoard(scene, game, radiusOfTile, heightOfTile) {
 
 };
 
-AuxiliaryBoard.prototype = Object.create(CGFobject.prototype);
 AuxiliaryBoard.prototype.constructor = AuxiliaryBoard;
 
 AuxiliaryBoard.prototype.initTiles = function() {
@@ -34,16 +32,29 @@ AuxiliaryBoard.prototype.initTiles = function() {
 
         for (var c = 1; c <=  this.getNumColumnsInRow(r); c++) {
             this.bodysTiles[r][c] = new Tile(this.scene, this, r, c, 
-                                            this.radiusOfTile, this.heightOfTile);
+                                            this.radiusOfTile, this.heightOfTile, [], [], []);
             this.pincersTiles[r][c] = new Tile(this.scene, this, r, c, 
-                                            this.radiusOfTile, this.heightOfTile);
+                                            this.radiusOfTile, this.heightOfTile, [], [], []);
             this.legsTiles[r][c] = new Tile(this.scene, this, r, c, 
-                                            this.radiusOfTile, this.heightOfTile);
+                                            this.radiusOfTile, this.heightOfTile, [], [], []);
         }
 
     }
 
 };
+
+AuxiliaryBoard.prototype.getHotspots = function() {
+    var hotspots = [];
+    for (var r = 1; r <= 5; r++) {
+        for (var c = 1; c <= this.getNumColumnsInRow(r); c++) {
+            hotspots.push(this.bodysTiles[r][c].hotspot);
+            hotspots.push(this.pincersTiles[r][c].hotspot);
+            hotspots.push(this.legsTiles[r][c].hotspot);
+        }
+    }
+    return hotspots;
+};
+
 
 AuxiliaryBoard.prototype.display = function() {
          
@@ -74,7 +85,7 @@ AuxiliaryBoard.prototype.displayTile = function(tile, typeTile, r, c) {
 
     this.scene.translate(-this.widthEachBoard_x/2, 0, -this.widthEachBoard_z/2);
     this.scene.translate(this.getLeftSpaceOfRow(r) + (c-1) * 2 * this.radiusOfTile,
-                        this.heightOfTile / 2,
+                        0,
                         this.radiusOfTile + (r - 1)*this.radiusOfTile*2);
     tile.display();
 

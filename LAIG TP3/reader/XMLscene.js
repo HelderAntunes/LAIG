@@ -32,19 +32,10 @@ XMLscene.prototype.init = function (application) {
     this.setUpdatePeriod(20);
     this.vehicle = new Vehicle(this, 'airplane');
     this.game = new GameState(this);
-    //pedro
-    this.leg = new Leg(this,null,null,0.1,0.5);
-    this.claw = new Claw(this,null,null,0.1,0.5);
-    this.setPickEnabled(true);
-
-    this.hotspots = [];
-
-};
-
-XMLscene.prototype.createHotspots = function () {
     
-}
-
+    this.setPickEnabled(true);
+    this.indexRegPick = 1;
+};
 
 XMLscene.prototype.logPicking = function ()
 {
@@ -56,7 +47,8 @@ XMLscene.prototype.logPicking = function ()
 				{
 					var customId = this.pickResults[i][1];
 					console.log("Picked object: " + obj + ", with pick id " + customId);
-				}
+				    console.log(obj.tile.row + " " + obj.tile.collumn);
+                }
 			}
 			this.pickResults.splice(0,this.pickResults.length);
 		}
@@ -248,15 +240,12 @@ XMLscene.prototype.display = function () {
             this.lights[i].update();
         }
 
-        this.registerForPick(1, this.game);
         if (this.pickMode) {
-            // display hotspots
-            //this.game.display();
+            this.indexRegPick = 1;
+            this.game.display();
         }
         else {
-            //pedro
-            //this.game.display();
-            this.claw.display();
+            this.game.display();
         }
 
     };
