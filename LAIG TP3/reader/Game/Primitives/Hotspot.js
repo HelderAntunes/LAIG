@@ -27,4 +27,8 @@ Hotspot.prototype.display = function() {
     this.scene.popMatrix();
 };
 
+Hotspot.prototype.getTile = function() {
+    return this.tile;
+};
+
 

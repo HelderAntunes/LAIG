@@ -32,13 +32,6 @@ AdaptoidBoard.prototype.initTiles = function() {
 
     this.tiles[4][2].addBody(new Body(this.scene, this.tiles[4][2], "white", this.radiusOfTile/4, this.heightOfTile/4));
     this.tiles[4][6].addBody(new Body(this.scene, this.tiles[4][6], "black", this.radiusOfTile/4, this.heightOfTile/4));
-    this.tiles[4][2].addLeg(new Leg(this.scene, this.tiles[4][2], "white", this.radiusOfTile/20, this.radiusOfTile/3));
-    this.tiles[4][2].addPincer(new Pincer(this.scene, this.tiles[4][2], "white", this.radiusOfTile/20, this.radiusOfTile/4));
-    this.tiles[4][2].addPincer(new Pincer(this.scene, this.tiles[4][2], "white", this.radiusOfTile/20, this.radiusOfTile/4));
-    this.tiles[4][2].addPincer(new Pincer(this.scene, this.tiles[4][2], "white", this.radiusOfTile/20, this.radiusOfTile/4));
-    this.tiles[4][2].addPincer(new Pincer(this.scene, this.tiles[4][2], "white", this.radiusOfTile/20, this.radiusOfTile/4));
-    this.tiles[4][2].addPincer(new Pincer(this.scene, this.tiles[4][2], "white", this.radiusOfTile/20, this.radiusOfTile/4));
-
 };
 
 AdaptoidBoard.prototype.getHotspots = function() {

@@ -4,7 +4,7 @@
 * @param scene
 * @param {String} texture represents the path of image of texture
 */
-function Tile(scene, gameBoard, row, collumn, radius, height, adapdoidBody, adaptoidLegs, adaptoidPincers) {
+function Tile(scene, gameBoard, row, collumn, radius, height, adaptoidBody, adaptoidLegs, adaptoidPincers) {
     this.scene = scene;
 
     this.gameBoard = gameBoard;
@@ -16,9 +16,9 @@ function Tile(scene, gameBoard, row, collumn, radius, height, adapdoidBody, adap
     this.cilinder = new MyCilinder(scene, "cilinder", this.radiusCilinder, 
                             this.radiusCilinder, this.heightCilinder, 6, 3);
 
-    this.adapdoidBody = adapdoidBody;
-    this.adaptoidLegs = adaptoidLegs;
-    this.adaptoidPincers = adaptoidPincers;
+    this.adaptoidBody = [];
+    this.adaptoidLegs = [];
+    this.adaptoidPincers = [];
 
     this.hotspot = new Hotspot(scene, this, 0.9 * this.radiusCilinder);
 
@@ -40,8 +40,8 @@ Tile.prototype.display = function() {
         this.cilinder.display();
         this.scene.popMatrix();
 
-        if (this.adapdoidBody.length > 0) {
-            this.adapdoidBody[0].display();
+        if (this.adaptoidBody.length > 0) {
+            this.adaptoidBody[0].display();
         }
         
         var indexRot = 0;
@@ -51,7 +51,8 @@ Tile.prototype.display = function() {
         for (i = 0; i < this.adaptoidLegs.length; i++) {
             this.scene.pushMatrix();
                 this.scene.rotate(rotateAng*indexRot, 0, 1, 0);
-                this.scene.translate(0,0,-this.adapdoidBody[0].radiusCilinder);    
+                if (this.adaptoidBody.length >= 1)
+                    this.scene.translate(0,0,-this.adaptoidBody[0].radiusCilinder);    
                 this.adaptoidLegs[i].display();
             this.scene.popMatrix();
             indexRot++;
@@ -59,7 +60,8 @@ Tile.prototype.display = function() {
         for (i = 0; i < this.adaptoidPincers.length; i++) {
             this.scene.pushMatrix();
                 this.scene.rotate(rotateAng*indexRot, 0, 1, 0);
-                this.scene.translate(0,0,-this.adapdoidBody[0].radiusCilinder);
+                if (this.adaptoidBody.length >= 1)
+                    this.scene.translate(0,0,-this.adaptoidBody[0].radiusCilinder)
             this.adaptoidPincers[i].display();
             this.scene.popMatrix();
             indexRot++;
@@ -68,11 +70,11 @@ Tile.prototype.display = function() {
 };
 
 Tile.prototype.addBody = function(body) {
-    if (this.adapdoidBody == null) {
+    if (this.adaptoidBody == null) {
         console.error("adaptoidBody is null!!!");
     }
-    else if (this.adapdoidBody.length === 0) {
-        this.adapdoidBody.push(body);
+    else if (this.adaptoidBody.length === 0) {
+        this.adaptoidBody.push(body);
     }
     else {
         console.error("The tile is already occupied with body.");
@@ -102,6 +104,35 @@ Tile.prototype.addPincer = function(pincer) {
         console.error("The tile is already totally occupied.");
     }
 };
+
+Tile.prototype.setBody = function(adaptoidBody) {
+    this.adaptoidBody = adaptoidBody;
+};
+
+Tile.prototype.setLegs = function(adaptoidLegs) {
+    this.adaptoidLegs = adaptoidLegs;
+};
+
+Tile.prototype.setPincers = function(adaptoidPincers) {
+    this.adaptoidPincers = adaptoidPincers;
+};
+
+Tile.prototype.getBody = function() {
+    return this.adaptoidBody;
+};
+
+Tile.prototype.getLegs = function() {
+    return this.adaptoidLegs;
+};
+
+Tile.prototype.getPincers = function() {
+    return this.adaptoidPincers;
+};
+
+
+
+
+
 
 
 

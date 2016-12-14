@@ -4,7 +4,7 @@
 * @param scene
 * @param {String} texture represents the path of image of texture
 */
-function AuxiliaryBoard(scene, game, radiusOfTile, heightOfTile) {
+function AuxiliaryBoard(scene, game, radiusOfTile, heightOfTile, color) {
     this.scene = scene;
     this.game = game;
 
@@ -16,6 +16,7 @@ function AuxiliaryBoard(scene, game, radiusOfTile, heightOfTile) {
     this.bodysTiles = [];
     this.pincersTiles = [];
     this.legsTiles = [];
+    this.color = color;
     this.initTiles();
 
 };
@@ -38,7 +39,25 @@ AuxiliaryBoard.prototype.initTiles = function() {
             this.legsTiles[r][c] = new Tile(this.scene, this, r, c, 
                                             this.radiusOfTile, this.heightOfTile, [], [], []);
         }
+    }
 
+    for (var r = 1; r <= 3; r++) {
+        for (var c = 1; c <=  this.getNumColumnsInRow(r); c++) {
+            if (r == 3 && c == 3) {
+                break;
+            }
+            this.bodysTiles[r][c].addBody(new Body(this.scene, this.bodysTiles[r][c], this.color, this.radiusOfTile/4, this.heightOfTile/4));
+        }
+    }
+
+    for (var r = 1; r <= 3; r++) {
+        for (var c = 1; c <=  this.getNumColumnsInRow(r); c++) {
+            if (r == 3 && c == 4) {
+                break;
+            }
+            this.legsTiles[r][c].addLeg(new Leg(this.scene, this.legsTiles[r][c], this.color, this.radiusOfTile/15, this.radiusOfTile/2));
+            this.pincersTiles[r][c].addPincer(new Pincer(this.scene, this.pincersTiles[r][c], this.color, this.radiusOfTile/15, this.radiusOfTile/2));
+        }
     }
 
 };
@@ -66,7 +85,7 @@ AuxiliaryBoard.prototype.display = function() {
             this.displayTile(this.legsTiles[r][c], "legTile", r, c);
 
         }
-    }
+    }   
 
 };
 

@@ -35,6 +35,7 @@ XMLscene.prototype.init = function (application) {
     
     this.setPickEnabled(true);
     this.indexRegPick = 1;
+    this.hotspotSelected = null;
 };
 
 XMLscene.prototype.logPicking = function ()
@@ -42,12 +43,13 @@ XMLscene.prototype.logPicking = function ()
 	if (this.pickMode == false) {
 		if (this.pickResults != null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
-				var obj = this.pickResults[i][0];
-				if (obj)
+				var hotspot = this.pickResults[i][0];
+				if (hotspot)
 				{
 					var customId = this.pickResults[i][1];
-					console.log("Picked object: " + obj + ", with pick id " + customId);
-				    console.log(obj.tile.row + " " + obj.tile.collumn);
+                    this.game.updatePieceSelected(hotspot);
+					console.log("Picked object: " + hotspot + ", with pick id " + customId);
+				    console.log(hotspot.tile.row + " " + hotspot.tile.collumn);
                 }
 			}
 			this.pickResults.splice(0,this.pickResults.length);
