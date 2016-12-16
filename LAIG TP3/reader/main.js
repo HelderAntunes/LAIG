@@ -19,6 +19,7 @@ serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MyTransformat
                 'Game/Primitives/AdaptoidBoard.js', 'Game/Primitives/AuxiliaryBoard.js', 'Game/Primitives/Tile.js', 
                 'Game/GameState.js', 'Game/Primitives/Adaptoid/Body.js', 'Game/Primitives/Hotspot.js',
                 'Game/Primitives/Adaptoid/Leg.js', 'Game/Primitives/Adaptoid/Pincer.js', 'Game/Client.js',
+                'Game/Player.js', 
 
 main=function()
 {

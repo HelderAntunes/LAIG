@@ -1,27 +1,59 @@
 /**
 * GameState
 * @constructor
-* @param scene
-* @param {String} texture represents the path of image of texture
 */
 function GameState(scene) {
+    
     this.scene = scene;
+   
     this.materialTile;
     this.materialWhite;
     this.materialBlack;
     this.setMaterials();
 
-    this.mainBoard = new AdaptoidBoard(scene, this, 0.5, 0.25);
-    this.auxBoardBlack = new AuxiliaryBoard(scene, this, 0.5, 0.25, "black");
-    this.auxBoardWhite = new AuxiliaryBoard(scene, this, 0.5, 0.25, "white");
+    this.radiusOfTile = 0.5;
+    this.heightOfTile = 0.25;
+
+    this.bodies = [];
+    this.legs = [];
+    this.pincers = [];
+    this.createPieces();
+
+    this.mainBoard = new AdaptoidBoard(scene, this, this.radiusOfTile, this.heightOfTile);
+    this.auxBoardBlack = new AuxiliaryBoard(scene, this, this.radiusOfTile, this.heightOfTile);
+    this.auxBoardWhite = new AuxiliaryBoard(scene, this, this.radiusOfTile, this.heightOfTile);
+    this.initBoards();
 
     this.hotspots = this.getHotspots();
     this.hotspotSelected = null;
 
     this.client = new Client();
+
+    this.whitePlayer = new Player("white");
+    this.blackPlayer = new Player("black");
+
 };
 
 GameState.prototype.constructor = GameState;
+
+GameState.prototype.createPieces = function() {
+    for (var i = 0; i < 24; i++) {
+        this.bodies.push(new Body(this.scene, null, null, this.radiusOfTile/4, this.heightOfTile/4));
+        this.legs.push(new Leg(this.scene, null, null, this.radiusOfTile/15, this.radiusOfTile/2))
+        this.pincers.push(new Pincer(this.scene, null, null, this.radiusOfTile/15, this.radiusOfTile/2));
+    }
+};
+
+GameState.prototype.initBoards = function() {
+    this.mainBoard.addBodyToTile(this.bodies[0], 4, 2, "white");
+    this.mainBoard.addBodyToTile(this.bodies[1], 4, 6, "black");
+    this.auxBoardWhite.addBodyToTile(this.bodies[2], "white");
+    this.auxBoardWhite.addLegToTile(this.legs[0], "white");
+    this.auxBoardWhite.addPincerToTile(this.pincers[0], "white");
+    this.auxBoardBlack.addBodyToTile(this.bodies[3], "black");
+    this.auxBoardBlack.addLegToTile(this.legs[1], "black");
+    this.auxBoardBlack.addPincerToTile(this.pincers[1], "black");
+};
 
 GameState.prototype.display = function() {
     this.scene.pushMatrix();
@@ -56,7 +88,7 @@ GameState.prototype.setMaterials = function() {
     this.materialWhite.setShininess(50);
 
     this.materialBlack = new CGFappearance(this.scene);
-    this.materialBlack.setDiffuse( 0, 0, 0, 1);
+    this.materialBlack.setDiffuse( 0.25, 0.5, 0.25, 1);
     this.materialBlack.setSpecular( 0.5, 0.5, 0.5, 1);
     this.materialBlack.setShininess(50);
 };
@@ -77,7 +109,7 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
         this.hotspotSelected = null;
     }
     else { // move a piece
-        var tileFrom = this.hotspotSelected.tile;
+        /*var tileFrom = this.hotspotSelected.tile;
         var tileTo = hotspot.tile;
         tileTo.setBody(tileFrom.getBody());
         tileTo.setLegs(tileFrom.getLegs());
@@ -87,7 +119,7 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
         tileFrom.setPincers([]);
         if (tileFrom.gameBoard.constructor.name == "AuxiliaryBoard") {
             tileFrom.gameBoard.updatePieces();
-        }
+        }*/
         this.hotspotSelected = null;
     }
 };

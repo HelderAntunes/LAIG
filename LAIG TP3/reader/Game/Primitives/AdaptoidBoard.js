@@ -30,8 +30,31 @@ AdaptoidBoard.prototype.initTiles = function() {
         }
     }
 
-    this.tiles[4][2].addBody(new Body(this.scene, this.tiles[4][2], "white", this.radiusOfTile/4, this.heightOfTile/4));
-    this.tiles[4][6].addBody(new Body(this.scene, this.tiles[4][6], "black", this.radiusOfTile/4, this.heightOfTile/4));
+};
+
+AdaptoidBoard.prototype.addBodyToTile = function(body, row, collumn, color) {
+    var tile = this.tiles[row][collumn];
+    tile.setBody([body]);
+    body.tile = tile;
+    body.color = color;
+};
+
+AdaptoidBoard.prototype.addLegsToTile = function(legs, row, collumn, color) {
+    var tile = this.tiles[row][collumn];
+    tile.setLegs(legs);
+    for (var i = 0; i < legs.length; i++) {
+        legs[i].tile = tile;
+        legs[i].color = color;
+    }
+};
+
+AdaptoidBoard.prototype.addPincersToTile = function(pincers, row, collumn, color) {
+    var tile = this.tiles[row][collumn];
+    tile.setPincers(pincers);
+    for (var i = 0; i < pincers.length; i++) {
+        pincers[i].tile = tile;
+        pincers[i].color = color;
+    }
 };
 
 AdaptoidBoard.prototype.getHotspots = function() {

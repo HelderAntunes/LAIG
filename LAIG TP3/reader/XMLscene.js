@@ -53,7 +53,6 @@ XMLscene.prototype.logPicking = function ()
                 }
 			}
 			this.pickResults.splice(0,this.pickResults.length);
-            console.log(this.game.mainBoard.getBoardInStringFormat());
 		}
 	}
 }

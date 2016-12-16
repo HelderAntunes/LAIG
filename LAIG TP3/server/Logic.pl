@@ -48,13 +48,11 @@ moveAndCapture(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, BoardOut, PlayerF
 	
 setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardOut, PlayerFromIn, PlayerFromIn, PlayerToIn, PlayerToIn) :-
 	PieceTo = empty,
-	setPiece(RowTo, ColTo, PieceFrom, BoardIn, BoardOut),
-	getColorOfPiece(PieceFrom, ColorFrom), getColorOfEnemy(ColorFrom, ColorTo).
+	setPiece(RowTo, ColTo, PieceFrom, BoardIn, BoardOut).
 	
 setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardOut, PlayerFromIn, PlayerFromOut, PlayerToIn, PlayerToOut) :-
 	PieceTo \= empty,
 	getPincersOfPiece(PieceFrom, PincersFrom), getPincersOfPiece(PieceTo, PincersTo),
-	getColorOfPiece(PieceFrom, ColorFrom), getColorOfPiece(PieceTo, ColorTo),
 
 	(PincersFrom > PincersTo, setPiece(RowTo, ColTo, PieceFrom, BoardIn, BoardOut),
 	updateScoreOfPlayer(1, PlayerFromIn, PlayerFromInAux), updatePiecesOfPlayer(PieceTo, PlayerFromInAux, PlayerFromOut);
