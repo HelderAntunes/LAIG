@@ -48,11 +48,12 @@ XMLscene.prototype.logPicking = function ()
 				{
 					var customId = this.pickResults[i][1];
                     this.game.updatePieceSelected(hotspot);
-					console.log("Picked object: " + hotspot + ", with pick id " + customId);
-				    console.log(hotspot.tile.row + " " + hotspot.tile.collumn);
+					//console.log("Picked object: " + hotspot + ", with pick id " + customId);
+				    //console.log(hotspot.tile.row + " " + hotspot.tile.collumn);
                 }
 			}
 			this.pickResults.splice(0,this.pickResults.length);
+            console.log(this.game.mainBoard.getBoardInStringFormat());
 		}
 	}
 }

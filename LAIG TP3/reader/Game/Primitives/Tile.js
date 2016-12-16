@@ -39,7 +39,7 @@ Tile.prototype.display = function() {
         this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.cilinder.display();
         this.scene.popMatrix();
-
+        
         if (this.adaptoidBody.length > 0) {
             this.adaptoidBody[0].display();
         }
@@ -48,7 +48,7 @@ Tile.prototype.display = function() {
         var rotateAng = Math.PI * 2 / 
                         (this.adaptoidLegs.length + this.adaptoidPincers.length);
         
-        for (i = 0; i < this.adaptoidLegs.length; i++) {
+        for (var i = 0; i < this.adaptoidLegs.length; i++) {
             this.scene.pushMatrix();
                 this.scene.rotate(rotateAng*indexRot, 0, 1, 0);
                 if (this.adaptoidBody.length >= 1)
@@ -57,11 +57,11 @@ Tile.prototype.display = function() {
             this.scene.popMatrix();
             indexRot++;
         }
-        for (i = 0; i < this.adaptoidPincers.length; i++) {
+        for (var i = 0; i < this.adaptoidPincers.length; i++) {
             this.scene.pushMatrix();
                 this.scene.rotate(rotateAng*indexRot, 0, 1, 0);
                 if (this.adaptoidBody.length >= 1)
-                    this.scene.translate(0,0,-this.adaptoidBody[0].radiusCilinder)
+                    this.scene.translate(0,0,-this.adaptoidBody[0].radiusCilinder);
             this.adaptoidPincers[i].display();
             this.scene.popMatrix();
             indexRot++;
@@ -127,6 +127,45 @@ Tile.prototype.getLegs = function() {
 
 Tile.prototype.getPincers = function() {
     return this.adaptoidPincers;
+};
+
+Tile.prototype.isEmpty = function() {
+    if (this.adaptoidBody.length === 0 &&
+        this.adaptoidPincers.length === 0 &&
+        this.adaptoidLegs.length === 0) {
+        return true;
+    }
+    else {
+        return false;
+    }
+};
+
+Tile.prototype.getColorOfHisPiece = function() {
+    if (this.isEmpty()) {
+        constructor.error("The tile is empty!");
+        return;
+    }
+
+    for (var i = 0; i < this.adaptoidBody.length; i++) {
+        return this.adaptoidBody[i].color;
+    }
+
+    for (var i = 0; i < this.adaptoidPincers.length; i++) {
+        return this.adaptoidPincers[i].color;
+    }
+
+    for (var i = 0; i < this.adaptoidLegs.length; i++) {
+        return this.adaptoidLegs[i].color;
+    }
+
+};
+
+Tile.prototype.getNumLegs = function() {
+    return this.adaptoidLegs.length;
+};
+
+Tile.prototype.getNumPincers = function() {
+    return this.adaptoidPincers.length;
 };
 
 

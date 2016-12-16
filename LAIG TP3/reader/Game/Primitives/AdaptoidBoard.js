@@ -118,3 +118,60 @@ AdaptoidBoard.prototype.getLeftSpaceOfRow = function(row) {
  
     return leftSpace;
 };
+
+AdaptoidBoard.prototype.getBoardInStringFormat = function() {
+    var boardString = "[";
+    for (var r = 1; r <= 7; r++) {
+        var rowString = "[";
+        for (var c = 1; c <= this.getNumColumnsInRow(r); c++) {
+            var pieceString;
+            if (this.tiles[r][c].isEmpty()) {
+                pieceString = "empty";
+            }
+            else {
+                pieceString = "[";
+                var color = this.tiles[r][c].getColorOfHisPiece();
+                if (color == "white") {
+                    pieceString = pieceString.concat("w");
+                }
+                else if (color == "black") {
+                    pieceString = pieceString.concat("b");
+                }
+                else {
+                    console.error("Invalid color -> " + color);
+                }
+
+                pieceString = pieceString.concat(", ");
+                pieceString = pieceString.concat(this.tiles[r][c].getNumLegs().toString());
+                pieceString = pieceString.concat(", ");
+                pieceString = pieceString.concat(this.tiles[r][c].getNumPincers().toString());
+                pieceString = pieceString.concat("]");
+            }
+            
+            if (c < this.getNumColumnsInRow(r)) {
+                pieceString = pieceString.concat(", ");
+            }
+
+            rowString = rowString.concat(pieceString);
+        }
+        rowString = rowString.concat("]");
+        if (r < 7) {
+            rowString = rowString.concat(", ");
+        }
+        boardString = boardString.concat(rowString);
+    }
+    boardString = boardString.concat(']');
+    return boardString;
+};
+/*
+boardToTestEndGame(
+        [
+        [empty, empty, empty, empty], 
+        [empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty, empty, empty],
+        [empty, [w, 3, 3], empty, empty, [b, 0, 0], empty, empty],
+        [empty, empty, empty, [w, 3, 0], empty, empty],
+        [empty, empty, empty, empty, empty],
+        [empty, empty, empty, empty] 
+        ]). 
+*/

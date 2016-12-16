@@ -16,8 +16,9 @@ function GameState(scene) {
     this.auxBoardWhite = new AuxiliaryBoard(scene, this, 0.5, 0.25, "white");
 
     this.hotspots = this.getHotspots();
-
     this.hotspotSelected = null;
+
+    this.client = new Client();
 };
 
 GameState.prototype.constructor = GameState;
@@ -68,7 +69,7 @@ GameState.prototype.getHotspots = function() {
 };
 
 GameState.prototype.updatePieceSelected = function(hotspot) {
-   
+    //this.client.getPrologRequest("handshake");
     if (this.hotspotSelected === null) { // first select
         this.hotspotSelected = hotspot;
     }
