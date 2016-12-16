@@ -22,49 +22,49 @@ setPieceInRow(Col, Piece, [R|RowIn], [R|RowOut]):-
 	C1 is Col -1,
 	setPieceInRow(C1, Piece, RowIn, RowOut).
 
-% Move a piece in board and capture, if possible, enemies
-% moveAndCapture( + Color, + RowFrom, + ColFrom, + RowTo, + ColTo, + BoardIn, + BoardOut)
-moveAndCapture(Color,RowFrom,ColFrom,RowTo,ColTo,BoardIn,BoardOut, PlayerFrom, PlayerTo):-
-    getPiece(RowFrom, ColFrom, BoardIn, PieceFrom),
-    PieceFrom = [Color, Legs, _], !,
+/******************************
+** Verifies if move is valid.**
+******************************/
+moveValid(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, 'yes') :-
+	moveValidAux(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn), !.
+moveValid(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, 'no') :-
+	\+ moveValidAux(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn), !.
+	
+moveValidAux(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn) :-
+	getPiece(RowFrom, ColFrom, BoardIn, PieceFrom),
+	PieceFrom = [Color, Legs, _], !,
+	thereIsPath([RowFrom,ColFrom], [RowTo,ColTo], Legs, BoardIn).
+
+/************************************************************************************
+** Move a piece in board and capture, if possible, enemies. Update the players too.**
+************************************************************************************/
+moveAndCapture(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, BoardOut, PlayerFromIn, PlayerFromOut, PlayerToIn, PlayerToOut) :-
+	getPiece(RowFrom, ColFrom, BoardIn, PieceFrom),
+	PieceFrom = [Color, Legs, _], !,
 	thereIsPath([RowFrom,ColFrom], [RowTo,ColTo], Legs, BoardIn),
 	getPiece(RowTo, ColTo, BoardIn, PieceTo),
-	setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardAux, PlayerFrom, PlayerTo),
+	setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardAux, PlayerFromIn, PlayerFromOut, PlayerToIn, PlayerToOut),
 	setPiece(RowFrom, ColFrom, empty, BoardAux, BoardOut).
-
-setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardOut, PlayerFrom, PlayerTo) :-
+	
+setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardOut, PlayerFromIn, PlayerFromIn, PlayerToIn, PlayerToIn) :-
 	PieceTo = empty,
 	setPiece(RowTo, ColTo, PieceFrom, BoardIn, BoardOut),
-    getColorOfPiece(PieceFrom, ColorFrom), getColorOfEnemy(ColorFrom, ColorTo),
-    player(ColorFrom, AFrom, LFrom, PFrom, SFrom),
-    PlayerFrom = [ColorFrom, AFrom, LFrom, PFrom, SFrom],
-    player(ColorTo, ATo, LTo, PTo, STo),
-    PlayerTo = [ColorTo, ATo, LTo, PTo, STo].
-setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardOut, PlayerOutFrom, PlayerOutTo) :-
+	getColorOfPiece(PieceFrom, ColorFrom), getColorOfEnemy(ColorFrom, ColorTo).
+	
+setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardOut, PlayerFromIn, PlayerFromOut, PlayerToIn, PlayerToOut) :-
 	PieceTo \= empty,
 	getPincersOfPiece(PieceFrom, PincersFrom), getPincersOfPiece(PieceTo, PincersTo),
 	getColorOfPiece(PieceFrom, ColorFrom), getColorOfPiece(PieceTo, ColorTo),
+
 	(PincersFrom > PincersTo, setPiece(RowTo, ColTo, PieceFrom, BoardIn, BoardOut),
-    player(ColorFrom, AFrom, LFrom, PFrom, SFrom),
-    PlayerIn = [ColorFrom, AFrom, LFrom, PFrom, SFrom],
-    player(ColorTo, ATo, LTo, PTo, STo),
-    PlayerOutTo = [ColorTo, ATo, LTo, PTo, STo],
-	updateScoreOfPlayer(1, PlayerIn, P1), updatePiecesOfPlayer(PieceTo, P1, PlayerOutFrom);
-    
+	updateScoreOfPlayer(1, PlayerFromIn, PlayerFromInAux), updatePiecesOfPlayer(PieceTo, PlayerFromInAux, PlayerFromOut);
+	
 	PincersTo > PincersFrom, setPiece(RowTo, ColTo, PieceTo, BoardIn, BoardOut),
-    player(ColorFrom, AFrom, LFrom, PFrom, SFrom),
-    PlayerOutFrom = [ColorFrom, AFrom, LFrom, PFrom, SFrom],
-    player(ColorTo, ATo, LTo, PTo, STo),
-    PlayerIn = [ColorTo, ATo, LTo, PTo, STo],
-	updateScoreOfPlayer(1,PlayerIn,P1), updatePiecesOfPlayer(PieceFrom, P1, PlayerOutTo);
-    
+	updateScoreOfPlayer(1, PlayerToIn, PlayerToInAux), updatePiecesOfPlayer(PieceFrom, PlayerToInAux, PlayerToOut);
+	
 	PincersTo =:= PincersFrom, setPiece(RowTo, ColTo, empty, BoardIn, BoardOut),
-    player(ColorFrom, AFrom, LFrom, PFrom, SFrom),
-    PlayerInFrom = [ColorFrom, AFrom, LFrom, PFrom, SFrom],
-    player(ColorTo, ATo, LTo, PTo, STo),
-    PlayerInTo = [ColorTo, ATo, LTo, PTo, STo],
-	updateScoreOfPlayer(1, PlayerInFrom, P1), updateScoreOfPlayer(1, PlayerInTo, P2), 
-	updatePiecesOfPlayer(PieceTo, P1, PlayerOutFrom), updatePiecesOfPlayer(PieceFrom, P2, PlayerOutTo)).
+	updateScoreOfPlayer(1, PlayerFromIn, PlayerFromInAux), updateScoreOfPlayer(1, PlayerToIn, PlayerToInAux), 
+	updatePiecesOfPlayer(PieceTo, PlayerFromInAux, PlayerFromOut), updatePiecesOfPlayer(PieceFrom, PlayerToInAux, PlayerToOut)).
 	
 getPincersOfPiece([_, _, Pincers], Pincers).
 
@@ -77,6 +77,9 @@ updatePiecesOfPlayer([_, LegsToAdd, PincersToAdd], [Color, Adaptoids, Legs, Pinc
 	NewAdaptoids is Adaptoids + 1,
 	NewLegs is Legs + LegsToAdd, 
 	NewPincers is Pincers + PincersToAdd.
+
+
+
 
 takePiecesFromPlayer([NAdaptoids, NLegs, NPincers], [Color, Adaptoids, Legs, Pincers, Score], [Color, NewAdaptoids, NewLegs, NewPincers, Score]) :-
 	NewAdaptoids is Adaptoids - NAdaptoids,
