@@ -85,6 +85,9 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
         tileFrom.setBody([]);
         tileFrom.setLegs([]);
         tileFrom.setPincers([]);
+        if (tileFrom.gameBoard.constructor.name == "AuxiliaryBoard") {
+            tileFrom.gameBoard.updatePieces();
+        }
         this.hotspotSelected = null;
     }
 };
