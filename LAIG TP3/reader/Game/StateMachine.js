@@ -10,17 +10,23 @@ var states = {
     END_GAME: 8
 };
 
+var turn = {
+	WHITE: 0,
+	BLACK: 1
+}
+
 /**
 * StateMachine
 * @constructor
 */
-function StateMachine(initialState) {
+function StateMachine(initialState, initialTurn) {
     this.currState = initialState;
+    this.turn = initialTurn;
 };
 
 StateMachine.prototype.constructor = StateMachine;
 
-StateMachine.prototype.changeState = function() {
+StateMachine.prototype.changeToNextState = function() {
     switch(this.currState) {
 	    case states.MENU:
 	        this.currState = states.INIT_GAME;
@@ -53,4 +59,10 @@ StateMachine.prototype.changeState = function() {
 	        console.error("Invalid current state!");
 	        break;
 	}
+};
+
+StateMachine.prototype.changeToPreviousState = function() {
+    if (this.currState == states.PIECE_SELECTION_TO) {
+    	this.currState = states.PIECE_SELECTION_FROM;
+    }
 };

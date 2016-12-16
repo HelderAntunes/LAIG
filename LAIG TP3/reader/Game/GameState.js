@@ -32,6 +32,8 @@ function GameState(scene) {
     this.whitePlayer = new Player("white");
     this.blackPlayer = new Player("black");
 
+    this.stateMachine = new StateMachine(states.PIECE_SELECTION_FROM, turn.WHITE);
+
 };
 
 GameState.prototype.constructor = GameState;
@@ -74,7 +76,6 @@ GameState.prototype.display = function() {
     this.scene.popMatrix();
 };
 
-
 GameState.prototype.setMaterials = function() {
     this.materialTile = new CGFappearance(this.scene);
     this.materialTile.setDiffuse( 1.0, 1.0, 1.0, 1);
@@ -104,9 +105,11 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
     //this.client.getPrologRequest("handshake");
     if (this.hotspotSelected === null) { // first select
         this.hotspotSelected = hotspot;
+        this.stateMachine.changeToNextState();
     }
     else if (this.hotspotSelected === hotspot) { // unselect
         this.hotspotSelected = null;
+        this.stateMachine.changeToPreviousState();
     }
     else { // move a piece
         /*var tileFrom = this.hotspotSelected.tile;
@@ -120,6 +123,35 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
         if (tileFrom.gameBoard.constructor.name == "AuxiliaryBoard") {
             tileFrom.gameBoard.updatePieces();
         }*/
+       
+
+        var tileFrom = this.hotspotSelected.tile;
+        var tileTo = hotspot.tile;
+       
+        var request = "moveValid(";
+        if (this.stateMachine.turn == turn.WHITE) {
+            request = request.concat("w,");
+        }
+        else {
+            request = request.concat("b,");          
+        }
+        request = request.concat(tileFrom.row.toString());
+        request = request.concat(",");
+        request = request.concat(tileFrom.collumn.toString());
+        request = request.concat(",");
+        request = request.concat(tileTo.row.toString());
+        request = request.concat(",");
+        request = request.concat(tileTo.collumn.toString());
+        request = request.concat(",");
+        request = request.concat(this.mainBoard.getBoardInStringFormat());
+        request = request.concat(")");
+        console.log(request);
+
+        this.client.getPrologRequest(request);
+        //this.client.getPrologRequest("handshake");
+
         this.hotspotSelected = null;
+
+        this.stateMachine.changeToPreviousState();
     }
 };

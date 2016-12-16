@@ -164,22 +164,22 @@ AdaptoidBoard.prototype.getBoardInStringFormat = function() {
                     console.error("Invalid color -> " + color);
                 }
 
-                pieceString = pieceString.concat(", ");
+                pieceString = pieceString.concat(",");
                 pieceString = pieceString.concat(this.tiles[r][c].getNumLegs().toString());
-                pieceString = pieceString.concat(", ");
+                pieceString = pieceString.concat(",");
                 pieceString = pieceString.concat(this.tiles[r][c].getNumPincers().toString());
                 pieceString = pieceString.concat("]");
             }
             
             if (c < this.getNumColumnsInRow(r)) {
-                pieceString = pieceString.concat(", ");
+                pieceString = pieceString.concat(",");
             }
 
             rowString = rowString.concat(pieceString);
         }
         rowString = rowString.concat("]");
         if (r < 7) {
-            rowString = rowString.concat(", ");
+            rowString = rowString.concat(",");
         }
         boardString = boardString.concat(rowString);
     }
