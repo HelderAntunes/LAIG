@@ -3,9 +3,9 @@
 * @constructor
 */
 function GameState(scene) {
-    
+
     this.scene = scene;
-   
+
     this.materialTile;
     this.materialWhite;
     this.materialBlack;
@@ -72,7 +72,7 @@ GameState.prototype.display = function() {
     this.scene.rotate(Math.PI, 0, 1, 0);
     this.auxBoardBlack.display();
     this.scene.popMatrix();
-    
+
     this.scene.popMatrix();
 };
 
@@ -96,7 +96,7 @@ GameState.prototype.setMaterials = function() {
 
 GameState.prototype.getHotspots = function() {
     var hotspots = this.mainBoard.getHotspots();
-    hotspots = hotspots.concat(this.auxBoardBlack.getHotspots(), 
+    hotspots = hotspots.concat(this.auxBoardBlack.getHotspots(),
                                 this.auxBoardWhite.getHotspots());
     return hotspots;
 };
@@ -123,17 +123,17 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
         if (tileFrom.gameBoard.constructor.name == "AuxiliaryBoard") {
             tileFrom.gameBoard.updatePieces();
         }*/
-       
+
 
         var tileFrom = this.hotspotSelected.tile;
         var tileTo = hotspot.tile;
-       
+
         var request = "moveValid(";
         if (this.stateMachine.turn == turn.WHITE) {
             request = request.concat("w,");
         }
         else {
-            request = request.concat("b,");          
+            request = request.concat("b,");
         }
         request = request.concat(tileFrom.row.toString());
         request = request.concat(",");
@@ -147,7 +147,12 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
         request = request.concat(")");
         console.log(request);
 
-        this.client.getPrologRequest(request);
+        if (this.client.moveIsValid(request)) {
+
+        }
+        else {
+            console.log(666);
+        }
         //this.client.getPrologRequest("handshake");
 
         this.hotspotSelected = null;
