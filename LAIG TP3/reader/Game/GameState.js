@@ -1,3 +1,4 @@
+var game;
 /**
 * GameState
 * @constructor
@@ -25,7 +26,8 @@ function GameState(scene) {
     this.initBoards();
 
     this.hotspots = this.getHotspots();
-    this.hotspotSelected = null;
+    this.hotspotFrom = null;
+    this.hotspotTo = null;
 
     this.client = new Client();
 
@@ -34,6 +36,7 @@ function GameState(scene) {
 
     this.stateMachine = new StateMachine(states.PIECE_SELECTION_FROM, turn.WHITE);
 
+    game = this;
 };
 
 GameState.prototype.constructor = GameState;
@@ -103,30 +106,28 @@ GameState.prototype.getHotspots = function() {
 };
 
 GameState.prototype.updatePieceSelected = function(hotspot) {
-    //this.client.getPrologRequest("handshake");
-    if (this.hotspotSelected === null) { // first select
-        this.hotspotSelected = hotspot;
+
+    if (this.hotspotFrom === null) { // first select
+        this.hotspotFrom = hotspot;
         this.stateMachine.changeToNextState();
     }
-    else if (this.hotspotSelected === hotspot) { // unselect
-        this.hotspotSelected = null;
+    else if (this.hotspotFrom === hotspot) { // unselect
+        this.hotspotFrom = null;
         this.stateMachine.changeToPreviousState();
     }
     else { // move a piece
-
-        request = this.makeRequestString(hotspot);
+        this.hotspotTo = hotspot;
+        request = this.makeRequestString();
 
         this.client.getPrologRequest(request, this.processMove);
-
-        this.hotspotSelected = null;
 
         this.stateMachine.changeToPreviousState();
     }
 };
 
-GameState.prototype.makeRequestString = function(hotspot) {
-    var tileFrom = this.hotspotSelected.tile;
-    var tileTo = hotspot.tile;
+GameState.prototype.makeRequestString = function() {
+    var tileFrom = this.hotspotFrom.tile;
+    var tileTo = this.hotspotTo.tile;
 
     var request = "moveValid(";
     if (this.stateMachine.turn == turn.WHITE) {
@@ -139,16 +140,31 @@ GameState.prototype.makeRequestString = function(hotspot) {
             + tileTo.row + "," + tileTo.collumn + ","
             + this.mainBoard.getBoardInStringFormat()
             + ")";
-    console.log(request);
+
     return request;
 };
 
 GameState.prototype.processMove = function(data) {
     console.log(data.target.response);
     if (data.target.response === "yes") {
-
+        var tileFrom = game.hotspotFrom.tile;
+        var tileTo = game.hotspotTo.tile;
+        if (tileTo.isEmpty()) {
+            tileTo.setBody(tileFrom.getBody());
+            tileTo.setLegs(tileFrom.getLegs());
+            tileTo.setPincers(tileFrom.getPincers());
+            tileFrom.setBody([]);
+            tileFrom.setLegs([]);
+            tileFrom.setPincers([]);
+        }
+        else {
+            // who wins?
+        }
     }
     else {
 
     }
+
+    game.hotspotFrom = null;
+    game.hotspotTo = null;
 };

@@ -13,7 +13,7 @@ function Tile(scene, gameBoard, row, collumn, radius, height, adaptoidBody, adap
 
     this.radiusCilinder = radius;
     this.heightCilinder = height;
-    this.cilinder = new MyCilinder(scene, "cilinder", this.radiusCilinder, 
+    this.cilinder = new MyCilinder(scene, "cilinder", this.radiusCilinder,
                             this.radiusCilinder, this.heightCilinder, 6, 3);
 
     this.adaptoidBody = [];
@@ -39,20 +39,20 @@ Tile.prototype.display = function() {
         this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.cilinder.display();
         this.scene.popMatrix();
-        
+
         if (this.adaptoidBody.length > 0) {
             this.adaptoidBody[0].display();
         }
-        
+
         var indexRot = 0;
-        var rotateAng = Math.PI * 2 / 
+        var rotateAng = Math.PI * 2 /
                         (this.adaptoidLegs.length + this.adaptoidPincers.length);
-        
+
         for (var i = 0; i < this.adaptoidLegs.length; i++) {
             this.scene.pushMatrix();
                 this.scene.rotate(rotateAng*indexRot, 0, 1, 0);
                 if (this.adaptoidBody.length >= 1)
-                    this.scene.translate(0,0,-this.adaptoidBody[0].radiusCilinder);    
+                    this.scene.translate(0,0,-this.adaptoidBody[0].radiusCilinder);
                 this.adaptoidLegs[i].display();
             this.scene.popMatrix();
             indexRot++;
@@ -167,12 +167,3 @@ Tile.prototype.getNumLegs = function() {
 Tile.prototype.getNumPincers = function() {
     return this.adaptoidPincers.length;
 };
-
-
-
-
-
-
-
-
-
