@@ -12,3 +12,12 @@ function Player(color) {
 
 Player.prototype.constructor = Player;
 
+Player.prototype.increaseScore = function() {
+    this.score++;
+};
+
+Player.prototype.reducePieces = function(arrayBLP) {
+    this.numBodies -= arrayBLP[0];
+    this.numLegs -= arrayBLP[1];
+    this.numPincers -= arrayBLP[2];
+};

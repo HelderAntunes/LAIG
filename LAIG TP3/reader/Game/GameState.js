@@ -1,4 +1,3 @@
-var game;
 /**
 * GameState
 * @constructor
@@ -36,7 +35,7 @@ function GameState(scene) {
 
     this.stateMachine = new StateMachine(states.PIECE_SELECTION_FROM, turn.WHITE);
 
-    game = this;
+    this.moveToExecute = null;
 };
 
 GameState.prototype.constructor = GameState;
@@ -62,6 +61,13 @@ GameState.prototype.initBoards = function() {
 };
 
 GameState.prototype.display = function() {
+
+    if (this.moveToExecute !== null) {
+        console.log(this.moveToExecute);
+        this.moveToExecute = null;
+        this.executeMove();
+    }
+
     this.scene.pushMatrix();
 
     this.mainBoard.display();
@@ -117,15 +123,13 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
     }
     else { // move a piece
         this.hotspotTo = hotspot;
-        request = this.makeRequestString();
-
-        this.client.getPrologRequest(request, this.processMove);
-
+        request = this.makeRequestString_moveValid();
+        this.checkIfMoveIsValid(request);
         this.stateMachine.changeToPreviousState();
     }
 };
 
-GameState.prototype.makeRequestString = function() {
+GameState.prototype.makeRequestString_moveValid = function() {
     var tileFrom = this.hotspotFrom.tile;
     var tileTo = this.hotspotTo.tile;
 
@@ -144,27 +148,26 @@ GameState.prototype.makeRequestString = function() {
     return request;
 };
 
-GameState.prototype.processMove = function(data) {
-    console.log(data.target.response);
-    if (data.target.response === "yes") {
-        var tileFrom = game.hotspotFrom.tile;
-        var tileTo = game.hotspotTo.tile;
-        if (tileTo.isEmpty()) {
-            tileTo.setBody(tileFrom.getBody());
-            tileTo.setLegs(tileFrom.getLegs());
-            tileTo.setPincers(tileFrom.getPincers());
-            tileFrom.setBody([]);
-            tileFrom.setLegs([]);
-            tileFrom.setPincers([]);
-        }
-        else {
-            // who wins?
-        }
-    }
-    else {
+GameState.prototype.checkIfMoveIsValid = function(requestString) {
+    var game = this;
+    this.client.getPrologRequest(
+        request,
+        function(data) {
+            if (data.target.response === "yes") {
+                var tileFrom = game.hotspotFrom.tile;
+                var tileTo = game.hotspotTo.tile;
+                game.moveToExecute = new GameMove(tileFrom, tileTo);
+            }
+            else {
+                /// do it nothing for now...
+            }
 
-    }
+            game.hotspotFrom = null;
+            game.hotspotTo = null;
+        });
+};
 
-    game.hotspotFrom = null;
-    game.hotspotTo = null;
+
+GameState.prototype.executeMove = function() {
+
 };

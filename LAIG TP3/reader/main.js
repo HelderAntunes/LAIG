@@ -16,10 +16,10 @@ serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MyTransformat
                 'MyTexture.js', 'MyMaterial.js', 'MyCilinder.js', 'MySphere.js', 'MySceneNode.js', 'MyStack.js',
                 'MyInterface.js', 'MyTorus.js', 'Animations/Animation.js', 'Animations/LinearAnimation.js',
                 'Animations/CircularAnimation.js', 'Surfaces/Plane.js', 'Surfaces/Patch.js', 'Vehicle.js', 'ChessBoard.js',
-                'Game/Primitives/AdaptoidBoard.js', 'Game/Primitives/AuxiliaryBoard.js', 'Game/Primitives/Tile.js', 
+                'Game/Primitives/AdaptoidBoard.js', 'Game/Primitives/AuxiliaryBoard.js', 'Game/Primitives/Tile.js',
                 'Game/GameState.js', 'Game/Primitives/Adaptoid/Body.js', 'Game/Primitives/Hotspot.js',
                 'Game/Primitives/Adaptoid/Leg.js', 'Game/Primitives/Adaptoid/Pincer.js', 'Game/Client.js',
-                'Game/Player.js', 'Game/StateMachine.js', 
+                'Game/Player.js', 'Game/StateMachine.js', 'Game/GameMove.js', 
 
 main=function()
 {
