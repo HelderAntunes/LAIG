@@ -28,7 +28,7 @@ function GameState(scene) {
     this.hotspotFrom = null;
     this.hotspotTo = null;
 
-    this.client = new Client();
+    this.client = new Client(this);
 
     this.whitePlayer = new Player("w");
     this.blackPlayer = new Player("b");
@@ -65,7 +65,7 @@ GameState.prototype.initBoards = function() {
 GameState.prototype.display = function() {
 
     if (this.moveToExecute !== null)
-        this.executeMove();
+        this.client.executeMove();
 
     this.scene.pushMatrix();
 
@@ -122,91 +122,7 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
     }
     else { // move a piece
         this.hotspotTo = hotspot;
-        request = this.makeRequestString_moveValid();
-        this.checkIfMoveIsValid(request);
+        this.client.checkIfMoveIsValid();
         this.stateMachine.changeToPreviousState();
     }
-};
-
-// TODO: change this functions to Client modulo
-GameState.prototype.makeRequestString_moveValid = function() {
-    var tileFrom = this.hotspotFrom.tile;
-    var tileTo = this.hotspotTo.tile;
-
-    var request = "moveValid(";
-    if (this.stateMachine.turn == turn.WHITE) {
-        request += "w,";
-    }
-    else {
-        request += "b,";
-    }
-    request += tileFrom.row + "," + tileFrom.collumn + ","
-            + tileTo.row + "," + tileTo.collumn + ","
-            + this.mainBoard.getBoardInStringFormat()
-            + ")";
-
-    return request;
-};
-
-GameState.prototype.makeRequestString_moveAndCapture = function() {
-
-    var tileFrom = this.moveToExecute.tileFrom;
-    var tileTo = this.moveToExecute.tileTo;
-
-    var request = "moveAndCapture(";
-    var playerTo, playerFrom;
-    if (this.stateMachine.turn == turn.WHITE) {
-        request += "w,";
-        playerFrom = this.whitePlayer.getPlayerInStringFormat();
-        playerTo = this.blackPlayer.getPlayerInStringFormat();
-    }
-    else {
-        request += "b,";
-        playerFrom = this.blackPlayer.getPlayerInStringFormat();
-        playerTo = this.whitePlayer.getPlayerInStringFormat();
-    }
-    request += tileFrom.row + "," + tileFrom.collumn + ","
-            + tileTo.row + "," + tileTo.collumn + ","
-            + this.mainBoard.getBoardInStringFormat()
-            + ",";
-    request += playerFrom + "," + playerTo + ")";
-
-    return request;
-};
-
-GameState.prototype.checkIfMoveIsValid = function(requestString) {
-    var game = this;
-    this.client.getPrologRequest(
-        request,
-        function(data) {
-            if (data.target.response === "yes") {
-                var tileFrom = game.hotspotFrom.tile;
-                var tileTo = game.hotspotTo.tile;
-                game.moveToExecute = new GameMove(tileFrom, tileTo);
-            }
-            else {
-                /// do it nothing for now...
-            }
-
-            game.hotspotFrom = null;
-            game.hotspotTo = null;
-        });
-};
-
-
-GameState.prototype.executeMove = function() {
-
-    var request = this.makeRequestString_moveAndCapture();
-    console.log(request);
-    var game = this;
-    this.client.getPrologRequest(
-        request,
-        function(data) {
-            var responseInArray = JSON.parse(data.target.responseText);
-            console.log(responseInArray[0]);
-            console.log(responseInArray[1]);
-            console.log(responseInArray[2]);
-        });
-
-    this.moveToExecute = null;
 };
