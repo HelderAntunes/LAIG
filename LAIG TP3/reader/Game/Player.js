@@ -21,3 +21,8 @@ Player.prototype.reducePieces = function(arrayBLP) {
     this.numLegs -= arrayBLP[1];
     this.numPincers -= arrayBLP[2];
 };
+
+Player.prototype.getPlayerInStringFormat = function() {
+    return "[" + this.color + "," + this.numBodies + "," + this.numLegs +
+    "," + this.numPincers + "," + this.score + "]";
+};

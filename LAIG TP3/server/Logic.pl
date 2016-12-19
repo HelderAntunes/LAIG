@@ -43,8 +43,11 @@ moveAndCapture(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, BoardOut, PlayerF
 	PieceFrom = [Color, Legs, _], !,
 	thereIsPath([RowFrom,ColFrom], [RowTo,ColTo], Legs, BoardIn),
 	getPiece(RowTo, ColTo, BoardIn, PieceTo),
-	setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardAux, PlayerFromIn, PlayerFromOut, PlayerToIn, PlayerToOut),
-	setPiece(RowFrom, ColFrom, empty, BoardAux, BoardOut).
+	setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardAux, PlayerFromIn, PlayerFromOutAux, PlayerToIn, PlayerToOutAux),
+	setPiece(RowFrom, ColFrom, empty, BoardAux, BoardAux2),
+    transformBoard(BoardAux2, BoardOut),
+    transformPlayer(PlayerFromOutAux, PlayerFromOut),
+    transformPlayer(PlayerToOutAux, PlayerToOut).
 
 setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardOut, PlayerFromIn, PlayerFromIn, PlayerToIn, PlayerToIn) :-
 	PieceTo = empty,
@@ -64,6 +67,22 @@ setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardOut, Pla
 	updateScoreOfPlayer(1, PlayerFromIn, PlayerFromInAux), updateScoreOfPlayer(1, PlayerToIn, PlayerToInAux),
 	updatePiecesOfPlayer(PieceTo, PlayerFromInAux, PlayerFromOut), updatePiecesOfPlayer(PieceFrom, PlayerToInAux, PlayerToOut)).
 
+transformBoard([], []).
+transformBoard([Row|Rows], [RowOut|RowsOut]) :-
+    transformBoardAux(Row, RowOut),
+    transformBoard(Rows, RowsOut).
+
+transformBoardAux([], []).
+transformBoardAux([empty|T], [0|TOut]) :-
+    transformBoardAux(T, TOut).
+transformBoardAux([[w,L,P]|T], [[0,L,P]|TOut]) :-
+    transformBoardAux(T, TOut).
+transformBoardAux([[b,L,P]|T], [[1,L,P]|TOut]) :-
+    transformBoardAux(T, TOut).
+
+transformPlayer([w|T], [0|T]).
+transformPlayer([b|T], [1|T]).
+
 getPincersOfPiece([_, _, Pincers], Pincers).
 
 getColorOfPiece([Color|_], Color).
@@ -75,9 +94,6 @@ updatePiecesOfPlayer([_, LegsToAdd, PincersToAdd], [Color, Adaptoids, Legs, Pinc
 	NewAdaptoids is Adaptoids + 1,
 	NewLegs is Legs + LegsToAdd,
 	NewPincers is Pincers + PincersToAdd.
-
-
-
 
 takePiecesFromPlayer([NAdaptoids, NLegs, NPincers], [Color, Adaptoids, Legs, Pincers, Score], [Color, NewAdaptoids, NewLegs, NewPincers, Score]) :-
 	NewAdaptoids is Adaptoids - NAdaptoids,

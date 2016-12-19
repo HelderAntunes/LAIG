@@ -111,5 +111,9 @@ parse_input(quit, goodbye).
 parse_input(moveValid(Color,RowFrom,ColFrom,RowTo,ColTo,BoardIn), Res) :-
 	moveValid(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, Res).
 
+parse_input(moveAndCapture(Color,RowFrom,ColFrom,RowTo,ColTo,BoardIn,PlayerFromIn,PlayerToIn), Res) :-
+    moveAndCapture(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, BoardOut, PlayerFromIn, PlayerFromOut, PlayerToIn, PlayerToOut),
+    Res = [BoardOut,PlayerFromOut,PlayerToOut].
+
 test(_,[],N) :- N =< 0.
 test(A,[A|Bs],N) :- N1 is N-1, test(A,Bs,N1).

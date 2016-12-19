@@ -30,12 +30,14 @@ function GameState(scene) {
 
     this.client = new Client();
 
-    this.whitePlayer = new Player("white");
-    this.blackPlayer = new Player("black");
+    this.whitePlayer = new Player("w");
+    this.blackPlayer = new Player("b");
 
     this.stateMachine = new StateMachine(states.PIECE_SELECTION_FROM, turn.WHITE);
 
     this.moveToExecute = null;
+    this.boardFromServer = null;
+
 };
 
 GameState.prototype.constructor = GameState;
@@ -62,11 +64,8 @@ GameState.prototype.initBoards = function() {
 
 GameState.prototype.display = function() {
 
-    if (this.moveToExecute !== null) {
-        console.log(this.moveToExecute);
-        this.moveToExecute = null;
+    if (this.moveToExecute !== null)
         this.executeMove();
-    }
 
     this.scene.pushMatrix();
 
@@ -129,6 +128,7 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
     }
 };
 
+// TODO: change this functions to Client modulo
 GameState.prototype.makeRequestString_moveValid = function() {
     var tileFrom = this.hotspotFrom.tile;
     var tileTo = this.hotspotTo.tile;
@@ -144,6 +144,32 @@ GameState.prototype.makeRequestString_moveValid = function() {
             + tileTo.row + "," + tileTo.collumn + ","
             + this.mainBoard.getBoardInStringFormat()
             + ")";
+
+    return request;
+};
+
+GameState.prototype.makeRequestString_moveAndCapture = function() {
+
+    var tileFrom = this.moveToExecute.tileFrom;
+    var tileTo = this.moveToExecute.tileTo;
+
+    var request = "moveAndCapture(";
+    var playerTo, playerFrom;
+    if (this.stateMachine.turn == turn.WHITE) {
+        request += "w,";
+        playerFrom = this.whitePlayer.getPlayerInStringFormat();
+        playerTo = this.blackPlayer.getPlayerInStringFormat();
+    }
+    else {
+        request += "b,";
+        playerFrom = this.blackPlayer.getPlayerInStringFormat();
+        playerTo = this.whitePlayer.getPlayerInStringFormat();
+    }
+    request += tileFrom.row + "," + tileFrom.collumn + ","
+            + tileTo.row + "," + tileTo.collumn + ","
+            + this.mainBoard.getBoardInStringFormat()
+            + ",";
+    request += playerFrom + "," + playerTo + ")";
 
     return request;
 };
@@ -170,4 +196,17 @@ GameState.prototype.checkIfMoveIsValid = function(requestString) {
 
 GameState.prototype.executeMove = function() {
 
+    var request = this.makeRequestString_moveAndCapture();
+    console.log(request);
+    var game = this;
+    this.client.getPrologRequest(
+        request,
+        function(data) {
+            var responseInArray = JSON.parse(data.target.responseText);
+            console.log(responseInArray[0]);
+            console.log(responseInArray[1]);
+            console.log(responseInArray[2]);
+        });
+
+    this.moveToExecute = null;
 };
