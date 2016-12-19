@@ -47,14 +47,15 @@ GameState.prototype.createPieces = function() {
 };
 
 GameState.prototype.initBoards = function() {
-    this.mainBoard.addBodyToTile(this.bodies[0], 4, 2, "white");
-    this.mainBoard.addBodyToTile(this.bodies[1], 4, 6, "black");
-    this.auxBoardWhite.addBodyToTile(this.bodies[2], "white");
-    this.auxBoardWhite.addLegToTile(this.legs[0], "white");
-    this.auxBoardWhite.addPincerToTile(this.pincers[0], "white");
-    this.auxBoardBlack.addBodyToTile(this.bodies[3], "black");
-    this.auxBoardBlack.addLegToTile(this.legs[1], "black");
-    this.auxBoardBlack.addPincerToTile(this.pincers[1], "black");
+    this.mainBoard.setBodyInTile(this.bodies[0], 4, 2, "white");
+    this.mainBoard.setBodyInTile(this.bodies[1], 4, 6, "black");
+    this.mainBoard.setLegsInTile([this.legs[2]], 4, 2, "white");
+    this.auxBoardWhite.setBody(this.bodies[2], "white");
+    this.auxBoardWhite.setLeg(this.legs[0], "white");
+    this.auxBoardWhite.setPincer(this.pincers[0], "white");
+    this.auxBoardBlack.setBody(this.bodies[3], "black");
+    this.auxBoardBlack.setLeg(this.legs[1], "black");
+    this.auxBoardBlack.setPincer(this.pincers[1], "black");
 };
 
 GameState.prototype.display = function() {
@@ -112,51 +113,42 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
         this.stateMachine.changeToPreviousState();
     }
     else { // move a piece
-        /*var tileFrom = this.hotspotSelected.tile;
-        var tileTo = hotspot.tile;
-        tileTo.setBody(tileFrom.getBody());
-        tileTo.setLegs(tileFrom.getLegs());
-        tileTo.setPincers(tileFrom.getPincers());
-        tileFrom.setBody([]);
-        tileFrom.setLegs([]);
-        tileFrom.setPincers([]);
-        if (tileFrom.gameBoard.constructor.name == "AuxiliaryBoard") {
-            tileFrom.gameBoard.updatePieces();
-        }*/
 
+        request = this.makeRequestString(hotspot);
 
-        var tileFrom = this.hotspotSelected.tile;
-        var tileTo = hotspot.tile;
-
-        var request = "moveValid(";
-        if (this.stateMachine.turn == turn.WHITE) {
-            request = request.concat("w,");
-        }
-        else {
-            request = request.concat("b,");
-        }
-        request = request.concat(tileFrom.row.toString());
-        request = request.concat(",");
-        request = request.concat(tileFrom.collumn.toString());
-        request = request.concat(",");
-        request = request.concat(tileTo.row.toString());
-        request = request.concat(",");
-        request = request.concat(tileTo.collumn.toString());
-        request = request.concat(",");
-        request = request.concat(this.mainBoard.getBoardInStringFormat());
-        request = request.concat(")");
-        console.log(request);
-
-        if (this.client.moveIsValid(request)) {
-
-        }
-        else {
-            console.log(666);
-        }
-        //this.client.getPrologRequest("handshake");
+        this.client.getPrologRequest(request, this.processMove);
 
         this.hotspotSelected = null;
 
         this.stateMachine.changeToPreviousState();
+    }
+};
+
+GameState.prototype.makeRequestString = function(hotspot) {
+    var tileFrom = this.hotspotSelected.tile;
+    var tileTo = hotspot.tile;
+
+    var request = "moveValid(";
+    if (this.stateMachine.turn == turn.WHITE) {
+        request += "w,";
+    }
+    else {
+        request += "b,";
+    }
+    request += tileFrom.row + "," + tileFrom.collumn + ","
+            + tileTo.row + "," + tileTo.collumn + ","
+            + this.mainBoard.getBoardInStringFormat()
+            + ")";
+    console.log(request);
+    return request;
+};
+
+GameState.prototype.processMove = function(data) {
+    console.log(data.target.response);
+    if (data.target.response === "yes") {
+
+    }
+    else {
+
     }
 };

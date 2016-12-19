@@ -11,7 +11,7 @@ function AdaptoidBoard(scene, game, radiusOfTile, heightOfTile) {
 
     this.radiusOfTile = radiusOfTile;
     this.heightOfTile = heightOfTile;
-    this.widthBoard = 7 * this.radiusOfTile * 2; 
+    this.widthBoard = 7 * this.radiusOfTile * 2;
 
     this.tiles = [];
     this.initTiles();
@@ -25,21 +25,21 @@ AdaptoidBoard.prototype.initTiles = function() {
     for (var r = 1; r <= 7; r++) {
         this.tiles[r] = [];
         for (var c = 1; c <= this.getNumColumnsInRow(r); c++) {
-            this.tiles[r][c] = new Tile(this.scene, this, r, c, 
+            this.tiles[r][c] = new Tile(this.scene, this, r, c,
                                         this.radiusOfTile, this.heightOfTile, [], [], []);
         }
     }
 
 };
 
-AdaptoidBoard.prototype.addBodyToTile = function(body, row, collumn, color) {
+AdaptoidBoard.prototype.setBodyInTile = function(body, row, collumn, color) {
     var tile = this.tiles[row][collumn];
     tile.setBody([body]);
     body.tile = tile;
     body.color = color;
 };
 
-AdaptoidBoard.prototype.addLegsToTile = function(legs, row, collumn, color) {
+AdaptoidBoard.prototype.setLegsInTile = function(legs, row, collumn, color) {
     var tile = this.tiles[row][collumn];
     tile.setLegs(legs);
     for (var i = 0; i < legs.length; i++) {
@@ -48,7 +48,7 @@ AdaptoidBoard.prototype.addLegsToTile = function(legs, row, collumn, color) {
     }
 };
 
-AdaptoidBoard.prototype.addPincersToTile = function(pincers, row, collumn, color) {
+AdaptoidBoard.prototype.setPincersInTile = function(pincers, row, collumn, color) {
     var tile = this.tiles[row][collumn];
     tile.setPincers(pincers);
     for (var i = 0; i < pincers.length; i++) {
@@ -71,7 +71,7 @@ AdaptoidBoard.prototype.display = function() {
     this.scene.pushMatrix();
 
         this.scene.translate(-this.widthBoard/2, 0, -this.widthBoard/2);
-        
+
         for (var r = 1; r <= 7; r++) {
             for (var c = 1; c <= this.getNumColumnsInRow(r); c++) {
                 this.displayTile(this.tiles[r][c], r, c);
@@ -96,7 +96,7 @@ AdaptoidBoard.prototype.getNumColumnsInRow = function(row) {
     switch(row) {
         case 1:
         case 7:
-            numColumns = 4; 
+            numColumns = 4;
             break;
         case 2:
         case 6:
@@ -108,7 +108,7 @@ AdaptoidBoard.prototype.getNumColumnsInRow = function(row) {
             break;
         case 4:
             numColumns = 7;
-            break;  
+            break;
         default:
             console.error("invalid row!!!");
             break;
@@ -121,7 +121,7 @@ AdaptoidBoard.prototype.getLeftSpaceOfRow = function(row) {
     switch(row) {
         case 1:
         case 7:
-            leftSpace = 4 * this.radiusOfTile; 
+            leftSpace = 4 * this.radiusOfTile;
             break;
         case 2:
         case 6:
@@ -133,12 +133,12 @@ AdaptoidBoard.prototype.getLeftSpaceOfRow = function(row) {
             break;
         case 4:
             leftSpace = this.radiusOfTile;
-            break;  
+            break;
         default:
             console.error("invalid row!!!");
             break;
     }
- 
+
     return leftSpace;
 };
 
@@ -170,7 +170,7 @@ AdaptoidBoard.prototype.getBoardInStringFormat = function() {
                 pieceString = pieceString.concat(this.tiles[r][c].getNumPincers().toString());
                 pieceString = pieceString.concat("]");
             }
-            
+
             if (c < this.getNumColumnsInRow(r)) {
                 pieceString = pieceString.concat(",");
             }
@@ -186,15 +186,3 @@ AdaptoidBoard.prototype.getBoardInStringFormat = function() {
     boardString = boardString.concat(']');
     return boardString;
 };
-/*
-boardToTestEndGame(
-        [
-        [empty, empty, empty, empty], 
-        [empty, empty, empty, empty, empty],
-        [empty, empty, empty, empty, empty, empty],
-        [empty, [w, 3, 3], empty, empty, [b, 0, 0], empty, empty],
-        [empty, empty, empty, [w, 3, 0], empty, empty],
-        [empty, empty, empty, empty, empty],
-        [empty, empty, empty, empty] 
-        ]). 
-*/

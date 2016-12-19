@@ -6,14 +6,14 @@ function AuxiliaryBoard(scene, game, radiusOfTile, heightOfTile) {
     this.scene = scene;
     this.game = game;
 
-    this.widthEachBoard_x = 6 * radiusOfTile * 2; 
+    this.widthEachBoard_x = 6 * radiusOfTile * 2;
     this.widthEachBoard_z = 5 * radiusOfTile * 2;
 
-    this.bodyTile = new Tile(this.scene, this, null, null, 
+    this.bodyTile = new Tile(this.scene, this, null, null,
                                 radiusOfTile, heightOfTile, [], [], []);;
-    this.pincerTile = new Tile(this.scene, this, null, null, 
+    this.pincerTile = new Tile(this.scene, this, null, null,
                                 radiusOfTile, heightOfTile, [], [], []);;
-    this.legTile = new Tile(this.scene, this, null, null, 
+    this.legTile = new Tile(this.scene, this, null, null,
                                 radiusOfTile, heightOfTile, [], [], []);
 };
 
@@ -53,21 +53,21 @@ AuxiliaryBoard.prototype.displayTile = function(tile, typeTile) {
     this.scene.popMatrix();
 };
 
-AuxiliaryBoard.prototype.addBodyToTile = function(body, color) {
+AuxiliaryBoard.prototype.setBody = function(body, color) {
     var tile = this.bodyTile;
     tile.setBody([body]);
     body.tile = tile;
     body.color = color;
 };
 
-AuxiliaryBoard.prototype.addLegToTile = function(leg, color) {
+AuxiliaryBoard.prototype.setLeg = function(leg, color) {
     var tile = this.legTile;
     tile.setLegs([leg]);
     leg.tile = tile;
     leg.color = color;
 };
 
-AuxiliaryBoard.prototype.addPincerToTile = function(pincer, color) {
+AuxiliaryBoard.prototype.setPincer = function(pincer, color) {
     var tile = this.pincerTile;
     tile.setPincers([pincer]);
     pincer.tile = tile;
