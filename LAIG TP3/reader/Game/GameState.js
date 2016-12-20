@@ -69,22 +69,28 @@ GameState.prototype.display = function() {
     if (this.moveToExecute !== null)
         this.client.executeMove();
 
-    this.scene.pushMatrix();
+    if (this.stateMachine.currState == states.ANIMATION_MOVE) {
+        
+    }
+    else {
+        this.scene.pushMatrix();
 
-    this.mainBoard.display();
+        this.mainBoard.display();
 
-    this.scene.pushMatrix();
-    this.scene.translate(0, 0, this.mainBoard.widthBoard);
-    this.auxBoardWhite.display();
-    this.scene.popMatrix();
+        this.scene.pushMatrix();
+        this.scene.translate(0, 0, this.mainBoard.widthBoard);
+        this.auxBoardWhite.display();
+        this.scene.popMatrix();
 
-    this.scene.pushMatrix();
-    this.scene.translate(0, 0, -this.mainBoard.widthBoard);
-    this.scene.rotate(Math.PI, 0, 1, 0);
-    this.auxBoardBlack.display();
-    this.scene.popMatrix();
+        this.scene.pushMatrix();
+        this.scene.translate(0, 0, -this.mainBoard.widthBoard);
+        this.scene.rotate(Math.PI, 0, 1, 0);
+        this.auxBoardBlack.display();
+        this.scene.popMatrix();
 
-    this.scene.popMatrix();
+        this.scene.popMatrix();
+    }
+
 };
 
 GameState.prototype.setMaterials = function() {
@@ -116,15 +122,14 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
 
     if (this.hotspotFrom === null) { // first select
         this.hotspotFrom = hotspot;
-        this.stateMachine.changeToNextState();
+        this.stateMachine.setState(states.PIECE_SELECTION_TO);
     }
     else if (this.hotspotFrom === hotspot) { // unselect
         this.hotspotFrom = null;
-        this.stateMachine.changeToPreviousState();
+        this.stateMachine.setState(states.PIECE_SELECTION_FROM);
     }
     else { // move a piece
         this.hotspotTo = hotspot;
         this.client.checkIfMoveIsValid();
-        this.stateMachine.changeToPreviousState();
     }
 };
