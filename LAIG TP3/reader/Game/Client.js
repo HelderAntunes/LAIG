@@ -29,7 +29,8 @@ Client.prototype.checkIfMoveIsValid = function() {
             if (data.target.response === "yes") {
                 var tileFrom = game.hotspotFrom.tile;
                 var tileTo = game.hotspotTo.tile;
-                game.moveToExecute = new GameMove(tileFrom, tileTo);
+                game.moveAnimator.moveToExecute = new GameMove(tileFrom, tileTo);
+                game.moveAnimator.waitingForMoveReply = true;
             }
             else {
                 /// do it nothing for now...
@@ -62,6 +63,7 @@ Client.prototype.makeRequestString_moveValid = function() {
 Client.prototype.executeMove = function() {
     var request = this.makeRequestString_moveAndCapture();
     var game = this.game;
+    game.moveAnimator.waitingForMoveReply = false;
     this.getPrologRequest(
         request,
         function(data) {
@@ -71,14 +73,12 @@ Client.prototype.executeMove = function() {
                                     responseInArray[1],
                                     responseInArray[2]);
         });
-
-    game.moveToExecute = null;
 };
 
 Client.prototype.makeRequestString_moveAndCapture = function() {
 
-    var tileFrom = this.game.moveToExecute.tileFrom;
-    var tileTo = this.game.moveToExecute.tileTo;
+    var tileFrom = this.game.moveAnimator.moveToExecute.tileFrom;
+    var tileTo = this.game.moveAnimator.moveToExecute.tileTo;
 
     var request = "moveAndCapture(";
     var playerTo, playerFrom;

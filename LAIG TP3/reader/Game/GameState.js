@@ -35,9 +35,6 @@ function GameState(scene) {
 
     this.stateMachine = new StateMachine(states.PIECE_SELECTION_FROM, turn.WHITE);
 
-    this.moveToExecute = null;
-    this.boardFromServer = null;
-
     this.moveAnimator = new MoveAnimator(this);
 
 };
@@ -55,7 +52,10 @@ GameState.prototype.createPieces = function() {
 GameState.prototype.initBoards = function() {
     this.mainBoard.setBodyInTile(this.bodies[0], 4, 2, "white");
     this.mainBoard.setBodyInTile(this.bodies[1], 4, 6, "black");
+    this.mainBoard.setBodyInTile(this.bodies[2], 1, 2, "black");
+    this.mainBoard.setBodyInTile(this.bodies[3], 6, 3, "white");
     this.mainBoard.setLegsInTile([this.legs[2]], 4, 2, "white");
+    this.mainBoard.setPincersInTile([this.pincers[2]], 4, 2, "white");
     this.auxBoardWhite.setBody(this.bodies[2], "white");
     this.auxBoardWhite.setLeg(this.legs[0], "white");
     this.auxBoardWhite.setPincer(this.pincers[0], "white");
@@ -66,13 +66,13 @@ GameState.prototype.initBoards = function() {
 
 GameState.prototype.display = function() {
 
-    if (this.moveToExecute !== null)
+    if (this.moveAnimator.waitingForMoveReply)
         this.client.executeMove();
 
-    if (this.stateMachine.currState == states.ANIMATION_MOVE) {
-        
+    /*if (this.stateMachine.currState == states.ANIMATION_MOVE) {
+
     }
-    else {
+    else {*/
         this.scene.pushMatrix();
 
         this.mainBoard.display();
@@ -89,7 +89,7 @@ GameState.prototype.display = function() {
         this.scene.popMatrix();
 
         this.scene.popMatrix();
-    }
+    //}
 
 };
 
