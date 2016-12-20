@@ -73,3 +73,9 @@ AuxiliaryBoard.prototype.setPincer = function(pincer, color) {
     pincer.tile = tile;
     pincer.color = color;
 };
+
+AuxiliaryBoard.prototype.takeAllPieces = function() {
+    this.bodyTile.adaptoidBody = [];
+    this.legTile.adaptoidLegs = [];
+    this.pincerTile.adaptoidPincers = [];
+};

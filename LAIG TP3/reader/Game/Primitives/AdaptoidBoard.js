@@ -1,8 +1,6 @@
 /**
 * AdaptoidBoard
 * @constructor
-* @param scene
-* @param {String} texture represents the path of image of texture
 */
 function AdaptoidBoard(scene, game, radiusOfTile, heightOfTile) {
     this.scene = scene;
@@ -30,6 +28,16 @@ AdaptoidBoard.prototype.initTiles = function() {
         }
     }
 
+};
+
+AdaptoidBoard.prototype.takeAllPieces = function() {
+    for (var r = 1; r <= 7; r++) {
+        for (var c = 1; c <= this.getNumColumnsInRow(r); c++) {
+            this.tiles[r][c].adaptoidBody = [];
+            this.tiles[r][c].adaptoidLegs = [];
+            this.tiles[r][c].adaptoidPincers = [];
+        }
+    }
 };
 
 AdaptoidBoard.prototype.setBodyInTile = function(body, row, collumn, color) {

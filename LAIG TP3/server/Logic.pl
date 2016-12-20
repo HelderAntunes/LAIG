@@ -41,7 +41,7 @@ moveValidAux(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn) :-
 moveAndCapture(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, BoardOut, PlayerFromIn, PlayerFromOut, PlayerToIn, PlayerToOut) :-
 	getPiece(RowFrom, ColFrom, BoardIn, PieceFrom),
 	PieceFrom = [Color, Legs, _], !,
-	thereIsPath([RowFrom,ColFrom], [RowTo,ColTo], Legs, BoardIn),
+    thereIsPath([RowFrom,ColFrom], [RowTo,ColTo], Legs, BoardIn),
 	getPiece(RowTo, ColTo, BoardIn, PieceTo),
 	setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardAux, PlayerFromIn, PlayerFromOutAux, PlayerToIn, PlayerToOutAux),
 	setPiece(RowFrom, ColFrom, empty, BoardAux, BoardAux2),

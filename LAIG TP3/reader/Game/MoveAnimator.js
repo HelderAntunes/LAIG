@@ -22,6 +22,9 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
     this.enemyPlayer = enemyPlayer;
 
     this.getPiecesInMovimentAndTheStatics();
+    this.game.mainBoard.takeAllPieces();
+    this.game.auxBoardWhite.takeAllPieces();
+    this.game.auxBoardBlack.takeAllPieces();
     this.restartClock();
 
 };

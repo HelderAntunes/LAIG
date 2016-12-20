@@ -26,7 +26,7 @@ Client.prototype.checkIfMoveIsValid = function() {
     this.getPrologRequest(
         request,
         function(data) {
-            if (data.target.response === "yes") {
+            if (data.target.responseText === "yes") {
                 var tileFrom = game.hotspotFrom.tile;
                 var tileTo = game.hotspotTo.tile;
                 game.moveAnimator.moveToExecute = new GameMove(tileFrom, tileTo);
