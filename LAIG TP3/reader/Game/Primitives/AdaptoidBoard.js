@@ -162,35 +162,19 @@ AdaptoidBoard.prototype.getBoardInStringFormat = function() {
             else {
                 pieceString = "[";
                 var color = this.tiles[r][c].getColorOfHisPiece();
-                if (color == "white") {
-                    pieceString = pieceString.concat("w");
-                }
-                else if (color == "black") {
-                    pieceString = pieceString.concat("b");
-                }
-                else {
-                    console.error("Invalid color -> " + color);
-                }
-
-                pieceString = pieceString.concat(",");
-                pieceString = pieceString.concat(this.tiles[r][c].getNumLegs().toString());
-                pieceString = pieceString.concat(",");
-                pieceString = pieceString.concat(this.tiles[r][c].getNumPincers().toString());
-                pieceString = pieceString.concat("]");
+                color = (color === "white") ? "w" : "b";
+                pieceString += color + "," + this.tiles[r][c].getNumLegs().toString()
+                            + "," + this.tiles[r][c].getNumPincers().toString()
+                            + "]";
             }
 
-            if (c < this.getNumColumnsInRow(r)) {
-                pieceString = pieceString.concat(",");
-            }
-
-            rowString = rowString.concat(pieceString);
+            pieceString = (c < this.getNumColumnsInRow(r)) ? pieceString + "," : pieceString;
+            rowString += pieceString;
         }
-        rowString = rowString.concat("]");
-        if (r < 7) {
-            rowString = rowString.concat(",");
-        }
-        boardString = boardString.concat(rowString);
+        rowString += "]";
+        rowString = (r < 7) ? rowString + "," : rowString;
+        boardString += rowString;
     }
-    boardString = boardString.concat(']');
+    boardString += "]";
     return boardString;
 };

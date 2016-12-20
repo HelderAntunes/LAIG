@@ -12,6 +12,11 @@ function MoveAnimator(game) {
 
     this.untouchablesPieces = [];
     this.inMovementPieces = [];
+
+    // pieces used
+    this.indexBody = 0;
+    this.indexLeg = 0;
+    this.indexPincer = 0;
 };
 
 MoveAnimator.prototype.constructor = MoveAnimator;
@@ -25,8 +30,10 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
     this.game.mainBoard.takeAllPieces();
     this.game.auxBoardWhite.takeAllPieces();
     this.game.auxBoardBlack.takeAllPieces();
-    this.restartClock();
+    this.setPiecesUsedToZero();
+    this.setUntouchablesPiecesInMainBoard();
 
+    this.restartClock();
 };
 
 MoveAnimator.prototype.restartClock = function() {
@@ -47,6 +54,36 @@ MoveAnimator.prototype.getPiecesInMovimentAndTheStatics = function() {
             }
         }
     }
-    console.log(this.untouchablesPieces);
-    console.log(this.inMovementPieces);
+};
+
+MoveAnimator.prototype.setPiecesUsedToZero = function() {
+    this.indexBody = 0;
+    this.indexLeg = 0;
+    this.indexPincer = 0;
+};
+
+MoveAnimator.prototype.setUntouchablesPiecesInMainBoard = function() {
+
+    for (var i = 0; i < this.untouchablesPieces.length; i++) {
+        var r = this.untouchablesPieces[i][0] - 1;
+        var c = this.untouchablesPieces[i][1] - 1;
+        var color = (this.board[r][c][0] === 0) ? "white" : "black";
+        var numLegs = this.board[r][c][1];
+        var numPincers = this.board[r][c][2];
+
+        var legs = [];
+        for (var j = 0; j < numLegs; j++) {
+            legs.push(this.game.legs[this.indexLeg++]);
+        }
+        var pincers = [];
+        for (var j = 0; j < numPincers; j++) {
+            pincers.push(this.game.pincers[this.indexLeg++]);
+        }
+
+        this.game.mainBoard.setBodyInTile(this.game.bodies[this.indexBody++],
+                                            r + 1, c + 1, color);
+        this.game.mainBoard.setLegsInTile(legs, r + 1, c + 1, color);
+        this.game.mainBoard.setPincersInTile(pincers, r + 1, c + 1, color);
+    }
+
 };

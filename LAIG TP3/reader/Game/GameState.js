@@ -56,6 +56,8 @@ GameState.prototype.initBoards = function() {
     this.mainBoard.setBodyInTile(this.bodies[3], 6, 3, "white");
     this.mainBoard.setLegsInTile([this.legs[2]], 4, 2, "white");
     this.mainBoard.setPincersInTile([this.pincers[2]], 4, 2, "white");
+    this.mainBoard.setLegsInTile([this.legs[3]], 4, 6, "black");
+    this.mainBoard.setPincersInTile([this.pincers[3]], 1, 2, "white");
     this.auxBoardWhite.setBody(this.bodies[2], "white");
     this.auxBoardWhite.setLeg(this.legs[0], "white");
     this.auxBoardWhite.setPincer(this.pincers[0], "white");
@@ -67,7 +69,7 @@ GameState.prototype.initBoards = function() {
 GameState.prototype.display = function() {
 
     if (this.moveAnimator.waitingForMoveReply)
-        this.client.executeMove();
+        this.client.executeMove(); // TODO: Substitute this function to call server once
 
     /*if (this.stateMachine.currState == states.ANIMATION_MOVE) {
 

@@ -1,8 +1,6 @@
 /**
 * Tile
 * @constructor
-* @param scene
-* @param {String} texture represents the path of image of texture
 */
 function Tile(scene, gameBoard, row, collumn, radius, height, adaptoidBody, adaptoidLegs, adaptoidPincers) {
     this.scene = scene;
