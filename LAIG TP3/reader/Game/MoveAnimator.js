@@ -32,6 +32,8 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
     this.game.auxBoardBlack.takeAllPieces();
     this.setPiecesUsedToZero();
     this.setUntouchablesPiecesInMainBoard();
+    this.updateAuxsBoards();
+
 
     this.restartClock();
 };
@@ -86,4 +88,20 @@ MoveAnimator.prototype.setUntouchablesPiecesInMainBoard = function() {
         this.game.mainBoard.setPincersInTile(pincers, r + 1, c + 1, color);
     }
 
+};
+
+MoveAnimator.prototype.updateAuxsBoards = function() {
+    if (this.game.whitePlayer.numBodies > 0)
+        this.game.auxBoardWhite.setBody(this.game.bodies[this.indexBody++], "white");
+    if (this.game.whitePlayer.numLegs > 0)
+        this.game.auxBoardWhite.setLeg(this.game.legs[this.indexLeg++], "white");
+    if (this.game.whitePlayer.numPincers > 0)
+        this.game.auxBoardWhite.setPincer(this.game.pincers[this.indexPincer++], "white");
+
+    if (this.game.blackPlayer.numBodies > 0)
+        this.game.auxBoardBlack.setBody(this.game.bodies[this.indexBody++], "black");
+    if (this.game.blackPlayer.numLegs > 0)
+        this.game.auxBoardBlack.setLeg(this.game.legs[this.indexLeg++], "black");
+    if (this.game.blackPlayer.numPincers > 0)
+        this.game.auxBoardBlack.setPincer(this.game.pincers[this.indexPincer++], "black");
 };
