@@ -50,7 +50,7 @@ StateMachine.prototype.changeToNextState = function() {
 			// Humano ? Seleção de peça : jogada da máquina
 			break;
 		case states.MACHINE_MOVE:
-			//[pedido ao prolog] -> {jogada} -> Animação de movimento 
+			//[pedido ao prolog] -> {jogada} -> Animação de movimento
 			break;
 		case states.END_GAME:
 			this.currState = states.MENU;
@@ -65,4 +65,8 @@ StateMachine.prototype.changeToPreviousState = function() {
     if (this.currState == states.PIECE_SELECTION_TO) {
     	this.currState = states.PIECE_SELECTION_FROM;
     }
+};
+
+StateMachine.prototype.setState = function(newState) {
+    this.currState = newState;
 };

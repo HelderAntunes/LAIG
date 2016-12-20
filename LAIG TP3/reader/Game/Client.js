@@ -66,9 +66,10 @@ Client.prototype.executeMove = function() {
         request,
         function(data) {
             var responseInArray = JSON.parse(data.target.responseText);
-            console.log(responseInArray[0]);
-            console.log(responseInArray[1]);
-            console.log(responseInArray[2]);
+            game.stateMachine.setState(states.ANIMATION_MOVE);
+            game.moveAnimator.init(responseInArray[0],
+                                    responseInArray[1],
+                                    responseInArray[2]);
         });
 
     game.moveToExecute = null;

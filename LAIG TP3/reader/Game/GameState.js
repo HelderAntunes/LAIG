@@ -38,6 +38,8 @@ function GameState(scene) {
     this.moveToExecute = null;
     this.boardFromServer = null;
 
+    this.moveAnimator = new MoveAnimator(this);
+
 };
 
 GameState.prototype.constructor = GameState;
