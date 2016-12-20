@@ -12,7 +12,7 @@ function Leg(scene, tile, color, radius, height) {
 
     this.radiusCilinder = radius;
     this.heightCilinder = height;
-    this.cilinder = new MyCilinder(scene, "cilinder", this.radiusCilinder, 
+    this.cilinder = new MyCilinder(scene, "cilinder", this.radiusCilinder,
                             this.radiusCilinder, this.heightCilinder, 16, 3);
     this.cilinder2 = new MyCilinder(scene,"cilinder2",this.radiusCilinder,
                             this.radiusCilinder,this.heightCilinder/2,16,3);
@@ -36,20 +36,18 @@ Leg.prototype.display = function() {
     }
 
     this.scene.pushMatrix();
-        this.scene.translate(0, 
-                            this.tile.heightCilinder + this.radiusCilinder, 
+        this.scene.translate(0,
+                            this.radiusCilinder,
                             -this.heightCilinder);
         this.cilinder.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
-        this.scene.translate(0, 
-                            this.tile.heightCilinder + this.radiusCilinder, 
+        this.scene.translate(0,
+                            this.radiusCilinder, 
                             this.radiusCilinder-this.heightCilinder);
         this.scene.rotate(Math.PI/2,0,1,0);
         this.cilinder2.display();
      this.scene.popMatrix();
 
 };
-
-

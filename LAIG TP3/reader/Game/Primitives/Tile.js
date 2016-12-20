@@ -41,7 +41,10 @@ Tile.prototype.display = function() {
         this.scene.popMatrix();
 
         if (this.adaptoidBody.length > 0) {
+            this.scene.pushMatrix();
+            this.scene.translate(0, this.heightCilinder, 0);
             this.adaptoidBody[0].display();
+            this.scene.popMatrix();
         }
 
         var indexRot = 0;
@@ -53,6 +56,7 @@ Tile.prototype.display = function() {
                 this.scene.rotate(rotateAng*indexRot, 0, 1, 0);
                 if (this.adaptoidBody.length >= 1)
                     this.scene.translate(0,0,-this.adaptoidBody[0].radiusCilinder);
+                this.scene.translate(0, this.heightCilinder, 0);
                 this.adaptoidLegs[i].display();
             this.scene.popMatrix();
             indexRot++;
@@ -62,7 +66,8 @@ Tile.prototype.display = function() {
                 this.scene.rotate(rotateAng*indexRot, 0, 1, 0);
                 if (this.adaptoidBody.length >= 1)
                     this.scene.translate(0,0,-this.adaptoidBody[0].radiusCilinder);
-            this.adaptoidPincers[i].display();
+                this.scene.translate(0, this.heightCilinder, 0);
+                this.adaptoidPincers[i].display();
             this.scene.popMatrix();
             indexRot++;
         }

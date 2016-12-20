@@ -12,7 +12,7 @@ function Body(scene, tile, color, radius, height) {
 
     this.radiusCilinder = radius;
     this.heightCilinder = height;
-    this.cilinder = new MyCilinder(scene, "cilinder", this.radiusCilinder, 
+    this.cilinder = new MyCilinder(scene, "cilinder", this.radiusCilinder,
                             this.radiusCilinder, this.heightCilinder, 16, 3);
 
 
@@ -32,10 +32,7 @@ Body.prototype.display = function() {
         else {
             console.error("invalid color!!!");
         }
-        this.scene.translate(0, this.tile.heightCilinder, 0);
         this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.cilinder.display();
     this.scene.popMatrix();
 };
-
-

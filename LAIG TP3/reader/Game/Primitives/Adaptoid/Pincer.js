@@ -34,28 +34,26 @@ Pincer.prototype.display = function() {
     }
 
     this.scene.pushMatrix();
-        this.scene.translate(0, 
-                            this.tile.heightCilinder + this.radiusCilinder, 
+        this.scene.translate(0,
+                            this.radiusCilinder,
                             -this.heightCilinder);
         this.cilinder.display();
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
-        this.scene.translate(0, 
-                            this.tile.heightCilinder + this.radiusCilinder, 
+        this.scene.translate(0,
+                            this.radiusCilinder,
                             this.radiusCilinder-this.heightCilinder);
         this.scene.rotate((-Math.PI/2-Math.PI/3),0,1,0);
         this.cilinder2.display();
      this.scene.popMatrix();
 
     this.scene.pushMatrix();
-        this.scene.translate(0, 
-                            this.tile.heightCilinder + this.radiusCilinder, 
+        this.scene.translate(0,
+                            this.radiusCilinder,
                             this.radiusCilinder-this.heightCilinder);
         this.scene.rotate((Math.PI/2+Math.PI/3),0,1,0);
         this.cilinder3.display();
     this.scene.popMatrix();
 
 };
-
-
