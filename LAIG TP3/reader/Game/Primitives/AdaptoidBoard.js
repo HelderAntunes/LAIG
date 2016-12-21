@@ -102,6 +102,11 @@ AdaptoidBoard.prototype.getCoords_XZ = function(r, c) {
             this.radiusOfTile + (r - 1) * this.radiusOfTile * 2];
 };
 
+AdaptoidBoard.prototype.getRealCoords_XZ = function(r, c) {
+    return [this.getLeftSpaceOfRow(r) + (c - 1) * 2 * this.radiusOfTile - this.widthBoard/2,
+            this.radiusOfTile + (r - 1) * this.radiusOfTile * 2 - this.widthBoard/2];
+};
+
 AdaptoidBoard.prototype.getNumColumnsInRow = function(row) {
     var numColumns;
     switch(row) {

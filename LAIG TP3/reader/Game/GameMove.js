@@ -9,6 +9,10 @@ function GameMove(tileFrom, tileTo) {
 
 GameMove.prototype.constructor = GameMove;
 
-GameMove.prototype.doSomething = function() {
+GameMove.prototype.getRowAndCollumOfTileFrom = function() {
+    return [this.tileFrom.row, this.tileFrom.collumn];
+};
 
+GameMove.prototype.getRowAndCollumOfTileTo = function() {
+    return [this.tileTo.row, this.tileTo.collumn];
 };

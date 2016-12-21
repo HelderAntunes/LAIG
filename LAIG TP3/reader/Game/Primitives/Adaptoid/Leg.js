@@ -1,8 +1,6 @@
 /**
 * Leg
 * @constructor
-* @param scene
-* @param {String} texture represents the path of image of texture
 */
 function Leg(scene, game, color, radius, height) {
     CGFobject.call(this, scene);
@@ -25,10 +23,10 @@ Leg.prototype.constructor = Leg;
 
 Leg.prototype.display = function() {
 
-    if (this.color == "black") {
+    if (this.color === "black") {
         this.game.materialBlack.apply();
     }
-    else if (this.color == "white") {
+    else if (this.color === "white") {
         this.game.materialWhite.apply();
     }
     else {

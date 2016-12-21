@@ -43,9 +43,9 @@ GameState.prototype.constructor = GameState;
 
 GameState.prototype.createPieces = function() {
     for (var i = 0; i < 24; i++) {
-        this.bodies.push(new Body(this.scene, null, null, this.radiusOfTile/4, this.heightOfTile/4));
-        this.legs.push(new Leg(this.scene, null, null, this.radiusOfTile/15, this.radiusOfTile/2))
-        this.pincers.push(new Pincer(this.scene, null, null, this.radiusOfTile/15, this.radiusOfTile/2));
+        this.bodies.push(new Body(this.scene, this, null, this.radiusOfTile/4, this.heightOfTile/4));
+        this.legs.push(new Leg(this.scene, this, null, this.radiusOfTile/15, this.radiusOfTile/2))
+        this.pincers.push(new Pincer(this.scene, this, null, this.radiusOfTile/15, this.radiusOfTile/2));
     }
 };
 
@@ -70,7 +70,9 @@ GameState.prototype.display = function() {
 
     if (this.moveAnimator.waitingForMoveReply)
         this.client.executeMove(); // TODO: Substitute this function to call server once
+    else {
 
+    }
     if (this.stateMachine.currState == states.ANIMATION_MOVE) {
         this.scene.pushMatrix();
 
@@ -90,7 +92,7 @@ GameState.prototype.display = function() {
         this.scene.popMatrix();
 
         // display pieces in moviment
-        
+        this.moveAnimator.display();
     }
     else {
         this.scene.pushMatrix();

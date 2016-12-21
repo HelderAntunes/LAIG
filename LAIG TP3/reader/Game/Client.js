@@ -68,10 +68,11 @@ Client.prototype.executeMove = function() {
         request,
         function(data) {
             var responseInArray = JSON.parse(data.target.responseText);
+            game.moveAnimator.board = responseInArray[0];
+            game.moveAnimator.currPlayer = responseInArray[1];
+            game.moveAnimator.enemyPlayer = responseInArray[2];
+            game.moveAnimator.inited = false;
             game.stateMachine.setState(states.ANIMATION_MOVE);
-            game.moveAnimator.init(responseInArray[0],
-                                    responseInArray[1],
-                                    responseInArray[2]);
         });
 };
 

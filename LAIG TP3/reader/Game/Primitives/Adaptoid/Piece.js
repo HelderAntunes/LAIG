@@ -6,7 +6,7 @@ function Piece(scene, body, legs, pincers, color) {
     CGFobject.call(this, scene);
 
     this.body = [body];
-    this.legs =legs;
+    this.legs = legs;
     this.pincers = pincers;
     this.color = color;
     // TODO: eliminate color attribute ?
