@@ -34,8 +34,9 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
     this.setUntouchablesPiecesInMainBoard();
     this.updateAuxsBoards();
 
-
     this.restartClock();
+
+    
 };
 
 MoveAnimator.prototype.restartClock = function() {
