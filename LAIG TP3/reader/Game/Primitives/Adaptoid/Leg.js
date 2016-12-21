@@ -4,10 +4,10 @@
 * @param scene
 * @param {String} texture represents the path of image of texture
 */
-function Leg(scene, tile, color, radius, height) {
+function Leg(scene, game, color, radius, height) {
     CGFobject.call(this, scene);
 
-    this.tile = tile;
+    this.game = game;
     this.color = color;
 
     this.radiusCilinder = radius;
@@ -26,10 +26,10 @@ Leg.prototype.constructor = Leg;
 Leg.prototype.display = function() {
 
     if (this.color == "black") {
-        this.tile.gameBoard.game.materialBlack.apply();
+        this.game.materialBlack.apply();
     }
     else if (this.color == "white") {
-        this.tile.gameBoard.game.materialWhite.apply();
+        this.game.materialWhite.apply();
     }
     else {
         console.error("invalid color!!!");
@@ -44,7 +44,7 @@ Leg.prototype.display = function() {
 
     this.scene.pushMatrix();
         this.scene.translate(0,
-                            this.radiusCilinder, 
+                            this.radiusCilinder,
                             this.radiusCilinder-this.heightCilinder);
         this.scene.rotate(Math.PI/2,0,1,0);
         this.cilinder2.display();

@@ -43,7 +43,7 @@ AdaptoidBoard.prototype.takeAllPieces = function() {
 AdaptoidBoard.prototype.setBodyInTile = function(body, row, collumn, color) {
     var tile = this.tiles[row][collumn];
     tile.setBody([body]);
-    body.tile = tile;
+    body.game = this.game;
     body.color = color;
 };
 
@@ -51,7 +51,7 @@ AdaptoidBoard.prototype.setLegsInTile = function(legs, row, collumn, color) {
     var tile = this.tiles[row][collumn];
     tile.setLegs(legs);
     for (var i = 0; i < legs.length; i++) {
-        legs[i].tile = tile;
+        legs[i].game = this.game;
         legs[i].color = color;
     }
 };
@@ -60,7 +60,7 @@ AdaptoidBoard.prototype.setPincersInTile = function(pincers, row, collumn, color
     var tile = this.tiles[row][collumn];
     tile.setPincers(pincers);
     for (var i = 0; i < pincers.length; i++) {
-        pincers[i].tile = tile;
+        pincers[i].game = this.game;
         pincers[i].color = color;
     }
 };

@@ -71,10 +71,7 @@ GameState.prototype.display = function() {
     if (this.moveAnimator.waitingForMoveReply)
         this.client.executeMove(); // TODO: Substitute this function to call server once
 
-    /*if (this.stateMachine.currState == states.ANIMATION_MOVE) {
-
-    }
-    else {*/
+    if (this.stateMachine.currState == states.ANIMATION_MOVE) {
         this.scene.pushMatrix();
 
         this.mainBoard.display();
@@ -91,7 +88,28 @@ GameState.prototype.display = function() {
         this.scene.popMatrix();
 
         this.scene.popMatrix();
-    //}
+
+        // display pieces in moviment
+        
+    }
+    else {
+        this.scene.pushMatrix();
+
+        this.mainBoard.display();
+
+        this.scene.pushMatrix();
+        this.scene.translate(0, 0, this.mainBoard.widthBoard);
+        this.auxBoardWhite.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+        this.scene.translate(0, 0, -this.mainBoard.widthBoard);
+        this.scene.rotate(Math.PI, 0, 1, 0);
+        this.auxBoardBlack.display();
+        this.scene.popMatrix();
+
+        this.scene.popMatrix();
+    }
 
 };
 

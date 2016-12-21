@@ -1,13 +1,11 @@
 /**
 * Body
 * @constructor
-* @param scene
-* @param {String} texture represents the path of image of texture
 */
-function Body(scene, tile, color, radius, height) {
+function Body(scene, game, color, radius, height) {
     CGFobject.call(this, scene);
 
-    this.tile = tile;
+    this.game = game;
     this.color = color;
 
     this.radiusCilinder = radius;
@@ -24,10 +22,10 @@ Body.prototype.constructor = Body;
 Body.prototype.display = function() {
     this.scene.pushMatrix();
         if (this.color == "black") {
-            this.tile.gameBoard.game.materialBlack.apply();
+            this.game.materialBlack.apply();
         }
         else if (this.color == "white") {
-            this.tile.gameBoard.game.materialWhite.apply();
+            this.game.materialWhite.apply();
         }
         else {
             console.error("invalid color!!!");

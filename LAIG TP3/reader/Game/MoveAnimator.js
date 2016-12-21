@@ -10,13 +10,26 @@ function MoveAnimator(game) {
     this.moveToExecute = null;
     this.waitingForMoveReply = false;
 
-    this.untouchablesPieces = [];
-    this.inMovementPieces = [];
+    this.nonCapturedPieces = [];
+    this.capturedPieces = [];
+    this.pieceFrom;
+    this.pieceTo;
 
     // pieces used
     this.indexBody = 0;
     this.indexLeg = 0;
     this.indexPincer = 0;
+
+    // piece from and to information
+    this.pieceFromColor;
+    this.pieceFromBodies;
+    this.pieceFromLegs;
+    this.pieceFromPincers;
+    this.pieceToColor;
+    this.pieceToBodies;
+    this.pieceToLegs;
+    this.pieceToPincers;
+
 };
 
 MoveAnimator.prototype.constructor = MoveAnimator;
@@ -26,50 +39,65 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
     this.currPlayer = currPlayer;
     this.enemyPlayer = enemyPlayer;
 
-    this.getPiecesInMovimentAndTheStatics();
+    this.getInformationOfPieceFromAndPieceTo();
+    this.getCapturedAndNonCapturedPieces();
     this.game.mainBoard.takeAllPieces();
     this.game.auxBoardWhite.takeAllPieces();
     this.game.auxBoardBlack.takeAllPieces();
-    this.setPiecesUsedToZero();
-    this.setUntouchablesPiecesInMainBoard();
+    this.setNumPiecesUsedToZero();
+    this.setNonCapturedPiecesInMainBoard();
     this.updateAuxsBoards();
 
     this.restartClock();
 
-    
+
+
 };
 
 MoveAnimator.prototype.restartClock = function() {
     this.game.scene.firstTime = null;
 };
 
-MoveAnimator.prototype.getPiecesInMovimentAndTheStatics = function() {
-    this.untouchablesPieces = [];
-    this.inMovementPieces = [];
+MoveAnimator.prototype.getCapturedAndNonCapturedPieces = function() {
+    this.nonCapturedPieces = [];
+    this.capturedPieces = [];
     for (var r = 1; r <= 7; r++) {
         for (var c = 1; c <= this.game.mainBoard.getNumColumnsInRow(r); c++) {
+            if (this.pieceIsOfMove(r, c))
+                continue;
             if (!this.game.mainBoard.tiles[r][c].isEmpty()) {
                 if (this.board[r-1][c-1] != 0) // stays in the same position
-                    this.untouchablesPieces.push([r, c]);
-                else // in movemente or captured
-                    this.inMovementPieces.push([r, c]);
-
+                    this.nonCapturedPieces.push([r, c]);
+                else // in moviment or captured
+                    this.capturedPieces.push(this.getPieceCaptured(r, c));
             }
         }
     }
 };
 
-MoveAnimator.prototype.setPiecesUsedToZero = function() {
+MoveAnimator.prototype.pieceIsOfMove = function(r, c) {
+    var rowFrom = this.moveToExecute.tileFrom.row;
+    var colFrom = this.moveToExecute.tileFrom.collumn;
+    var rowTo = this.moveToExecute.tileTo.row;
+    var colTo = this.moveToExecute.tileTo.collumn;
+    if (rowFrom === r && colFrom === c)
+        return true;
+    if (rowTo === r && colTo === c)
+        return true;
+    return false;
+};
+
+MoveAnimator.prototype.setNumPiecesUsedToZero = function() {
     this.indexBody = 0;
     this.indexLeg = 0;
     this.indexPincer = 0;
 };
 
-MoveAnimator.prototype.setUntouchablesPiecesInMainBoard = function() {
+MoveAnimator.prototype.setNonCapturedPiecesInMainBoard = function() {
 
-    for (var i = 0; i < this.untouchablesPieces.length; i++) {
-        var r = this.untouchablesPieces[i][0] - 1;
-        var c = this.untouchablesPieces[i][1] - 1;
+    for (var i = 0; i < this.nonCapturedPieces.length; i++) {
+        var r = this.nonCapturedPieces[i][0] - 1;
+        var c = this.nonCapturedPieces[i][1] - 1;
         var color = (this.board[r][c][0] === 0) ? "white" : "black";
         var numLegs = this.board[r][c][1];
         var numPincers = this.board[r][c][2];
@@ -80,7 +108,7 @@ MoveAnimator.prototype.setUntouchablesPiecesInMainBoard = function() {
         }
         var pincers = [];
         for (var j = 0; j < numPincers; j++) {
-            pincers.push(this.game.pincers[this.indexLeg++]);
+            pincers.push(this.game.pincers[this.indexPincer++]);
         }
 
         this.game.mainBoard.setBodyInTile(this.game.bodies[this.indexBody++],
@@ -105,4 +133,39 @@ MoveAnimator.prototype.updateAuxsBoards = function() {
         this.game.auxBoardBlack.setLeg(this.game.legs[this.indexLeg++], "black");
     if (this.game.blackPlayer.numPincers > 0)
         this.game.auxBoardBlack.setPincer(this.game.pincers[this.indexPincer++], "black");
+};
+
+MoveAnimator.prototype.getInformationOfPieceFromAndPieceTo = function() {
+    var tileFrom = this.moveToExecute.tileFrom;
+    var tileTo = this.moveToExecute.tileTo;
+    this.pieceFromColor = (this.currPlayer[0] === 0) ? "white":"black";
+    this.pieceFromBodies = 1;
+    this.pieceFromLegs = tileFrom.getNumLegs();
+    this.pieceFromPincers = tileFrom.getNumPincers();
+    this.pieceToColor = (this.enemyPlayer[0] === 0) ? "white":"black";
+    this.pieceToBodies = (tileTo.isEmpty())? 0:1;
+    this.pieceToLegs = tileTo.getNumLegs();
+    this.pieceToPincers = tileTo.getNumPincers();
+};
+
+MoveAnimator.prototype.getPieceCaptured = function(r, c) {
+    var tile = this.game.mainBoard.tiles[r][c];
+    var color = tile.getColorOfHisPiece();
+
+    var numLegs = tile.getNumLegs();
+    var numPincers = tile.getNumPincers();
+    var body = this.game.bodies[this.indexBody++];
+    body.color = color;
+    var legs = [], pincers = [];
+    for (var i = 0; i < numLegs; i++) {
+        var leg = this.game.legs[this.indexLeg++];
+        leg.color = color;
+        legs.push(leg);
+    }
+    for (var i = 0; i < numPincers; i++) {
+        var pincer = this.game.pincers[this.indexPincer++];
+        pincer.color = color;
+        pincers.push(pincer);
+    }
+    return new Piece(this.game.scene, body, legs, pincers, color);
 };

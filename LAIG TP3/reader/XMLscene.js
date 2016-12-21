@@ -32,11 +32,6 @@ XMLscene.prototype.init = function (application) {
     this.setUpdatePeriod(20);
     this.vehicle = new Vehicle(this, 'airplane');
     this.game = new GameState(this);
-    this.keyFrameAnim = new KeyFrameAnimation("animation");
-    this.keyFrameAnim.addControlPoint(0, 0, 0, 0, 0, 0, 0, 1, 1, 1);
-    this.keyFrameAnim.addControlPoint(1, 1, 1, 1, Math.PI, 0, 0, 1, 1, 1);
-    this.keyFrameAnim.addControlPoint(2, 1, 1, 1, 0, Math.PI, 0, 1, 1, 1);
-    this.keyFrameAnim.addControlPoint(3, 1, 2, 1, 0, Math.PI, 0, 2, 1, 1);
 
     this.setPickEnabled(true);
     this.indexRegPick = 1;
@@ -244,11 +239,6 @@ XMLscene.prototype.display = function () {
         for (var i = 0; i < nLights; i++) {
             this.lights[i].update();
         }
-
-        this.pushMatrix();
-            this.multMatrix(this.keyFrameAnim.getTransformationMatrix(this.currTime));
-            this.vehicle.display();
-        this.popMatrix();
 
         if (this.pickMode) {
             this.indexRegPick = 1;

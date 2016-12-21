@@ -56,21 +56,21 @@ AuxiliaryBoard.prototype.displayTile = function(tile, typeTile) {
 AuxiliaryBoard.prototype.setBody = function(body, color) {
     var tile = this.bodyTile;
     tile.setBody([body]);
-    body.tile = tile;
+    body.game = this.game;
     body.color = color;
 };
 
 AuxiliaryBoard.prototype.setLeg = function(leg, color) {
     var tile = this.legTile;
     tile.setLegs([leg]);
-    leg.tile = tile;
+    leg.game = this.game;
     leg.color = color;
 };
 
 AuxiliaryBoard.prototype.setPincer = function(pincer, color) {
     var tile = this.pincerTile;
     tile.setPincers([pincer]);
-    pincer.tile = tile;
+    pincer.game = this.game;
     pincer.color = color;
 };
 
