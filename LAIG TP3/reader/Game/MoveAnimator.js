@@ -20,6 +20,8 @@ function MoveAnimator(game) {
     this.indexLeg = 0;
     this.indexPincer = 0;
 
+    this.animationOfMove = new KeyFrameAnimation("animationOfMove");
+
 };
 
 MoveAnimator.prototype.constructor = MoveAnimator;
@@ -29,7 +31,7 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
     this.currPlayer = currPlayer;
     this.enemyPlayer = enemyPlayer;
 
-    this.getInformationOfPieceFromAndPieceTo();
+    this.setPieceFromAndPieceTo();
     this.getCapturedAndNonCapturedPieces();
     this.game.mainBoard.takeAllPieces();
     this.game.auxBoardWhite.takeAllPieces();
@@ -40,10 +42,16 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
 
     this.restartClock();
 
-    console.log(this.capturedPieces);
-    console.log(this.pieceFrom);
-    console.log(this.pieceTo);
 
+    var tileFrom = this.moveToExecute.tileFrom;
+    var tileTo = this.moveToExecute.tileTo;
+    var iniPos_xz = this.game.mainBoard.getCoords_XZ(tileFrom.row, tileFrom.collumn);
+    var endPos_xz = this.game.mainBoard.getCoords_XZ(tileTo.row, tileTo.collumn);
+    this.animationOfMove.constructSimpleKeyFrameAnimation(iniPos_xz[0], iniPos_xz[1],
+                                                        endPos_xz[0], endPos_xz[1],
+                                                        this.game.heightOfTile,
+                                                        this.game.heightOfTile * 4,
+                                                        1);
 };
 
 MoveAnimator.prototype.restartClock = function() {
@@ -127,7 +135,7 @@ MoveAnimator.prototype.updateAuxsBoards = function() {
         this.game.auxBoardBlack.setPincer(this.game.pincers[this.indexPincer++], "black");
 };
 
-MoveAnimator.prototype.getInformationOfPieceFromAndPieceTo = function() {
+MoveAnimator.prototype.setPieceFromAndPieceTo = function() {
 
     var tileFrom = this.moveToExecute.tileFrom;
     var tileTo = this.moveToExecute.tileTo;

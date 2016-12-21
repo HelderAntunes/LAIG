@@ -73,3 +73,29 @@ KeyFrameAnimation.prototype.calcInterpolation = function(cp1, cp2, t) {
 	}
 	return interpolation;
 }
+
+KeyFrameAnimation.prototype.getTotalTimeOfAnimation = function() {
+	if (this.controlPoints.length == 0) {
+        console.error("No control points in key frame animation.");
+        return;
+    }
+    return this.controlPoints[this.controlPoints.length-1][0];
+}
+
+KeyFrameAnimation.prototype.constructSimpleKeyFrameAnimation = function(iniX, iniZ, endX, endZ, yInExtremes, yInMiddle, timeTotal) {
+    this.controlPoints = [];
+    this.addControlPoint(0,
+                        iniX, yInExtremes, iniZ,
+                        0, 0, 0,
+                        1, 1, 1);
+    var midX = (iniX + endX) / 2;
+    var midZ = (iniZ + endZ) / 2;
+    this.addControlPoint(timeTotal/2,
+                        midX, yInMiddle, midZ,
+                        0, Math.PI, 0,
+                        1, 1, 1);
+    this.addControlPoint(timeTotal,
+                        endX, yInExtremes, endZ,
+                        0, 2 * Math.PI, 0,
+                        1, 1, 1);
+}

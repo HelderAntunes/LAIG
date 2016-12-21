@@ -91,13 +91,16 @@ AdaptoidBoard.prototype.display = function() {
 
 AdaptoidBoard.prototype.displayTile = function(tile, r, c) {
     this.scene.pushMatrix();
-        this.scene.translate(this.getLeftSpaceOfRow(r) + (c-1) * 2 * this.radiusOfTile,
-                            0,
-                            this.radiusOfTile + (r - 1)*this.radiusOfTile*2);
+        var xz = this.getCoords_XZ(r, c);
+        this.scene.translate(xz[0], 0, xz[1]);
         tile.display();
     this.scene.popMatrix();
 };
 
+AdaptoidBoard.prototype.getCoords_XZ = function(r, c) {
+    return [this.getLeftSpaceOfRow(r) + (c - 1) * 2 * this.radiusOfTile,
+            this.radiusOfTile + (r - 1) * this.radiusOfTile * 2];
+};
 
 AdaptoidBoard.prototype.getNumColumnsInRow = function(row) {
     var numColumns;
