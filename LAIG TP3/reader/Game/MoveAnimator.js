@@ -20,16 +20,6 @@ function MoveAnimator(game) {
     this.indexLeg = 0;
     this.indexPincer = 0;
 
-    // piece from and to information
-    this.pieceFromColor;
-    this.pieceFromBodies;
-    this.pieceFromLegs;
-    this.pieceFromPincers;
-    this.pieceToColor;
-    this.pieceToBodies;
-    this.pieceToLegs;
-    this.pieceToPincers;
-
 };
 
 MoveAnimator.prototype.constructor = MoveAnimator;
@@ -50,7 +40,9 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
 
     this.restartClock();
 
-
+    console.log(this.capturedPieces);
+    console.log(this.pieceFrom);
+    console.log(this.pieceTo);
 
 };
 
@@ -136,16 +128,25 @@ MoveAnimator.prototype.updateAuxsBoards = function() {
 };
 
 MoveAnimator.prototype.getInformationOfPieceFromAndPieceTo = function() {
+
     var tileFrom = this.moveToExecute.tileFrom;
     var tileTo = this.moveToExecute.tileTo;
-    this.pieceFromColor = (this.currPlayer[0] === 0) ? "white":"black";
-    this.pieceFromBodies = 1;
-    this.pieceFromLegs = tileFrom.getNumLegs();
-    this.pieceFromPincers = tileFrom.getNumPincers();
-    this.pieceToColor = (this.enemyPlayer[0] === 0) ? "white":"black";
-    this.pieceToBodies = (tileTo.isEmpty())? 0:1;
-    this.pieceToLegs = tileTo.getNumLegs();
-    this.pieceToPincers = tileTo.getNumPincers();
+
+    var colorFrom = (this.currPlayer[0] === 0) ? "white":"black";
+    var numLegsFrom = tileFrom.getNumLegs();
+    var numPincersFrom = tileFrom.getNumPincers();
+    this.pieceFrom = this.createPiece(numLegsFrom, numPincersFrom, colorFrom);
+
+    if (tileTo.isEmpty()) {
+        this.pieceTo = null;
+        return;
+    }
+    else {
+        var colorTo = (this.enemyPlayer[0] === 0) ? "white":"black";
+        var numLegsTo = tileTo.getNumLegs();
+        var numPincersTo = tileTo.getNumPincers();
+        this.pieceTo = this.createPiece(numLegsTo, numPincersTo, colorTo);
+    }
 };
 
 MoveAnimator.prototype.getPieceCaptured = function(r, c) {
@@ -154,6 +155,12 @@ MoveAnimator.prototype.getPieceCaptured = function(r, c) {
 
     var numLegs = tile.getNumLegs();
     var numPincers = tile.getNumPincers();
+
+    return createPiece(numLegs, numPincersm, color);
+};
+
+MoveAnimator.prototype.createPiece = function(numLegs, numPincers, color) {
+
     var body = this.game.bodies[this.indexBody++];
     body.color = color;
     var legs = [], pincers = [];
@@ -167,5 +174,6 @@ MoveAnimator.prototype.getPieceCaptured = function(r, c) {
         pincer.color = color;
         pincers.push(pincer);
     }
+
     return new Piece(this.game.scene, body, legs, pincers, color);
 };
