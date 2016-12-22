@@ -58,10 +58,12 @@ setPieceWithMorePincers(RowTo, ColTo, PieceFrom, PieceTo, BoardIn, BoardOut, Pla
 	getPincersOfPiece(PieceFrom, PincersFrom), getPincersOfPiece(PieceTo, PincersTo),
 
 	(PincersFrom > PincersTo, setPiece(RowTo, ColTo, PieceFrom, BoardIn, BoardOut),
-	updateScoreOfPlayer(1, PlayerFromIn, PlayerFromInAux), updatePiecesOfPlayer(PieceTo, PlayerFromInAux, PlayerFromOut);
+	updateScoreOfPlayer(1, PlayerFromIn, PlayerFromInAux), updatePiecesOfPlayer(PieceTo, PlayerFromInAux, PlayerFromOut),
+    PlayerToOut = PlayerToIn;
 
 	PincersTo > PincersFrom, setPiece(RowTo, ColTo, PieceTo, BoardIn, BoardOut),
-	updateScoreOfPlayer(1, PlayerToIn, PlayerToInAux), updatePiecesOfPlayer(PieceFrom, PlayerToInAux, PlayerToOut);
+	updateScoreOfPlayer(1, PlayerToIn, PlayerToInAux), updatePiecesOfPlayer(PieceFrom, PlayerToInAux, PlayerToOut),
+    PlayerFromOut = PlayerFromIn;
 
 	PincersTo =:= PincersFrom, setPiece(RowTo, ColTo, empty, BoardIn, BoardOut),
 	updateScoreOfPlayer(1, PlayerFromIn, PlayerFromInAux), updateScoreOfPlayer(1, PlayerToIn, PlayerToInAux),
