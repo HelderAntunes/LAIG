@@ -211,17 +211,8 @@ MoveAnimator.prototype.displayIni = function(time) {
         this.state = this.state_mid;
         this.restartClock();
     }
-
-    this.game.scene.pushMatrix();
-    this.game.scene.multMatrix(this.animationIniFrom.getTransformationMatrix(time));
-    this.pieceFrom.display();
-    this.game.scene.popMatrix();
-
-    this.game.scene.pushMatrix();
-    this.game.scene.multMatrix(this.animationIniTo.getTransformationMatrix(time));
-    this.pieceTo.display();
-    this.game.scene.popMatrix();
-
+    this.drawPieceInBoard(this.pieceFrom, [this.animationIniFrom], time);
+    this.drawPieceInBoard(this.pieceTo, [this.animationIniTo], time);
 };
 
 MoveAnimator.prototype.displayMid = function(time) {
@@ -233,21 +224,68 @@ MoveAnimator.prototype.displayMid = function(time) {
             this.state = this.state_end;
             this.restartClock();
         }
-
-        this.game.scene.pushMatrix();
-        this.game.scene.multMatrix(this.animationMidFrom.getTransformationMatrix(time));
-        this.pieceFrom.display();
-        this.game.scene.popMatrix();
-
-        this.game.scene.pushMatrix();
-        this.game.scene.multMatrix(this.animationMidTo.getTransformationMatrix(time));
-        this.pieceTo.display();
-        this.game.scene.popMatrix();
+        this.drawPieceInBoard(this.pieceFrom, [this.animationMidFrom], time);
+        this.drawPieceInBoard(this.pieceTo, [this.animationMidTo], time);
     }
 };
 
 MoveAnimator.prototype.displayEnd = function(time) {
+    if (time > this.durationOfEachAnimation) {
+        this.state = this.state_end;
+        //this.restartClock();
+    }
 
+    if (this.animationEndFrom.length == 1) { // stay in position
+        this.drawPieceInBoard(this.pieceFrom, this.animationEndFrom, time);
+    }
+    else {  // was captured
+        this.drawPieceGoingOnToAuxBoard(this.pieceFrom, this.animationEndFrom, time);
+    }
+
+    if (this.pieceTo !== null) {
+        if (this.animationEndTo.length == 1) {
+            this.drawPieceInBoard(this.pieceTo, this.animationEndTo, time);
+        }
+        else {
+            this.drawPieceGoingOnToAuxBoard(this.pieceTo, this.animationEndTo, time);
+        }
+    }
+
+};
+
+MoveAnimator.prototype.drawPieceGoingOnToAuxBoard = function(piece, animation, time) {
+
+    // body
+    this.game.scene.pushMatrix();
+    this.game.scene.multMatrix(animation[0].getTransformationMatrix(time));
+    piece.body[0].display();
+    this.game.scene.popMatrix();
+
+    // legs
+    this.game.scene.pushMatrix();
+    this.game.scene.multMatrix(animation[1].getTransformationMatrix(time));
+    var legs = piece.legs;
+    for (var i = 0; i < legs.length; i++) {
+        legs[i].display();
+    }
+    this.game.scene.popMatrix();
+
+    // pincers
+    this.game.scene.pushMatrix();
+    this.game.scene.multMatrix(animation[2].getTransformationMatrix(time));
+    var pincers = piece.pincers;
+    for (var i = 0; i < pincers.length; i++) {
+        pincers[i].display();
+    }
+    this.game.scene.popMatrix();
+
+};
+
+MoveAnimator.prototype.drawPieceInBoard = function(piece, animation, time) {
+    this.game.scene.pushMatrix();
+    this.game.scene.multMatrix(animation[0].getTransformationMatrix(time));
+    piece.display();
+    this.game.scene.popMatrix();
 };
 
 MoveAnimator.prototype.getCapturedAndNonCapturedPieces = function() {
