@@ -21,14 +21,29 @@ function MoveAnimator(game) {
     this.indexLeg = 0;
     this.indexPincer = 0;
 
-    this.animationOfMove = new KeyFrameAnimation("animationOfMove");
-    this.animationOfAttackTo = new KeyFrameAnimation("animationOfAttackTo");
-    this.animationOfAttackFrom = new KeyFrameAnimation("animationOfAttackFrom");
+    this.durationOfEachAnimation = 1;
+
+    this.animationIniFrom = new KeyFrameAnimation("animationIniFrom");
+    this.animationIniTo = new KeyFrameAnimation("animationIniTo");
+    this.animationMidTo = new KeyFrameAnimation("animationMidTo");
+    this.animationMidFrom = new KeyFrameAnimation("animationMidFrom");
+    this.animationEndFrom = [];
+    this.animationEndTo = [];
 
     this.state = 0;
-    this.state_mainMove = 0;
-    this.state_atack = 1;
-    this.state_capturedPiecesMove = 2;
+    this.state_ini = 0;
+    this.state_mid = 1;
+    this.state_end = 2;
+
+    this.iniPos_xz;
+    this.endPos_xz;
+
+    this.posLegAuxBoard_white = this.game.auxBoardWhite.getRealXZCoords_legTile();
+    this.posBodyAuxBoard_white = this.game.auxBoardWhite.getRealXZCoords_bodyTile();
+    this.posPincerAuxBoard_white = this.game.auxBoardWhite.getRealXZCoords_PincerTile();
+    this.posLegAuxBoard_black = this.game.auxBoardBlack.getRealXZCoords_legTile();
+    this.posBodyAuxBoard_black = this.game.auxBoardBlack.getRealXZCoords_bodyTile();
+    this.posPincerAuxBoard_black = this.game.auxBoardBlack.getRealXZCoords_PincerTile();
 
 };
 
@@ -46,36 +61,128 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
     this.updateAuxsBoards();
     this.restartClock();
 
-    var tileFrom = this.moveToExecute.tileFrom;
-    var tileTo = this.moveToExecute.tileTo;
-    var iniPos_xz = this.game.mainBoard.getRealCoords_XZ(tileFrom.row, tileFrom.collumn);
-    var endPos_xz = this.game.mainBoard.getRealCoords_XZ(tileTo.row, tileTo.collumn);
-    this.animationOfMove.constructSimpleKeyFrameAnimation(iniPos_xz[0], iniPos_xz[1],
-                                                        endPos_xz[0], endPos_xz[1],
-                                                        this.game.heightOfTile,
-                                                        this.game.heightOfTile * 4,
-                                                        1);
+    this.setIniAndEndPositionsOfMove();
+    this.setIniAnimationsOfPiecesFromAndTo();
+    this.setMidAnimationsOfPiecesFromAndTo();
+    this.setEndAnimationsOfPiecesFromAndTo();
+
+    this.state = this.state_ini;
+    this.inited = true;
+};
+
+MoveAnimator.prototype.setIniAnimationsOfPiecesFromAndTo = function() {
+    this.animationIniFrom.constructSimpleKeyFrameAnimation(this.iniPos_xz[0], this.iniPos_xz[1],
+                                                            this.endPos_xz[0], this.endPos_xz[1],
+                                                            this.game.heightOfTile,
+                                                            this.game.heightOfTile * 4,
+                                                            this.durationOfEachAnimation);
+    this.animationIniTo.constructLinearAnimationWidthRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1],
+                                                                this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1],
+                                                                this.durationOfEachAnimation);
+};
+
+MoveAnimator.prototype.setMidAnimationsOfPiecesFromAndTo = function() {
+
     var pincersFrom = this.pieceFrom.numPincers();
     var pincersTo = -1;
     if (this.pieceTo !== null) {
         pincersTo = this.pieceTo.numPincers();
     }
     if (pincersFrom > pincersTo) {
-        this.animationOfAttackTo.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, 2, 1);
-        this.animationOfAttackFrom.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, this.game.heightOfTile, 1);
+        this.animationMidTo.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], 2, this.durationOfEachAnimation);
+        this.animationMidFrom.constructAttackedAnimation(this.endPos_xz[0], this.endPos_xz[1], this.game.heightOfTile, this.game.heightOfTile, this.durationOfEachAnimation);
     }
     else if (pincersFrom === pincersTo) {
-        this.animationOfAttackTo.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, 2, 1);
-        this.animationOfAttackFrom.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, 2, 1);
+        this.animationMidTo.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], 2, this.durationOfEachAnimation);
+        this.animationMidFrom.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], 2, this.durationOfEachAnimation);
     }
     else {
-        this.animationOfAttackFrom.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, 2, 1);
-        this.animationOfAttackTo.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, this.game.heightOfTile, 1);
+        this.animationMidFrom.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], 2, this.durationOfEachAnimation);
+        this.animationMidTo.constructAttackedAnimation(this.endPos_xz[0], this.endPos_xz[1], this.game.heightOfTile, this.game.heightOfTile, this.durationOfEachAnimation);
+    }
+};
+
+MoveAnimator.prototype.setEndAnimationsOfPiecesFromAndTo = function() {
+    this.animationEndFrom = [];
+    this.animationEndTo = [];
+
+    var pincersFrom = this.pieceFrom.numPincers();
+    var pincersTo = -1;
+    if (this.pieceTo !== null) {
+        pincersTo = this.pieceTo.numPincers();
     }
 
-    this.state = this.state_mainMove;
-    this.inited = true;
+    var colorFrom = (this.currPlayer[0] === 0) ? "white":"black";
+    var colorTo = (this.enemyPlayer[0] === 0) ? "white":"black";
+
+    if (pincersFrom > pincersTo) {
+        var animationFrom = new KeyFrameAnimation("animationEndFrom");
+        animationFrom.constructLinearAnimationWidthRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1],
+                                                                this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1],
+                                                                this.durationOfEachAnimation);
+        this.animationEndFrom.push(animationFrom);
+
+        this.animationEndTo = this.createEndAnimationOfSubPiecesOfPiece(colorTo, this.endPos_xz);
+    }
+    else if (pincersFrom === pincersTo) {
+        this.animationEndFrom = this.createEndAnimationOfSubPiecesOfPiece(colorFrom, this.endPos_xz);
+        this.animationEndTo = this.createEndAnimationOfSubPiecesOfPiece(colorTo, this.endPos_xz);
+    }
+    else {
+        this.animationEndFrom = this.createEndAnimationOfSubPiecesOfPiece(colorFrom, this.endPos_xz);
+
+        var animationTo = new KeyFrameAnimation("animationEndFrom");
+        animationTo.constructLinearAnimationWidthRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1],
+                                                                this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1],
+                                                                this.durationOfEachAnimation);
+        this.animationEndFrom.push(animationTo);
+    }
 };
+
+MoveAnimator.prototype.createEndAnimationOfSubPiecesOfPiece = function(color, iniPos) {
+
+    var animationEndToLegs = new KeyFrameAnimation("animationEndToLegs");
+    var animationEndToBody = new KeyFrameAnimation("animationEndToBody");
+    var animationEndToPincers = new KeyFrameAnimation("animationEndToPincers");
+
+    var finalPosLeg, finalPosBody, finalPosPincer;
+    if (color == "white") {
+        finalPosLeg = this.posLegAuxBoard_white;
+        finalPosBody = this.posBodyAuxBoard_white;
+        finalPosPincer = this.posPincerAuxBoard_white;
+    }
+    else {
+        finalPosLeg = this.posLegAuxBoard_black;
+        finalPosBody = this.posBodyAuxBoard_black;
+        finalPosPincer = this.posPincerAuxBoard_black;
+    }
+
+    animationEndToLegs.constructSimpleKeyFrameAnimation(iniPos[0], iniPos[1],
+                                                        finalPosLeg[0], finalPosLeg[1],
+                                                        this.game.heightOfTile,
+                                                        this.game.heightOfTile * 4,
+                                                        this.durationOfEachAnimation);
+    animationEndToBody.constructSimpleKeyFrameAnimation(iniPos[0], iniPos[1],
+                                                        finalPosBody[0], finalPosBody[1],
+                                                        this.game.heightOfTile,
+                                                        this.game.heightOfTile * 4,
+                                                        this.durationOfEachAnimation);
+    animationEndToPincers.constructSimpleKeyFrameAnimation(iniPos[0], iniPos[1],
+                                                        finalPosPincer[0], finalPosPincer[1],
+                                                        this.game.heightOfTile,
+                                                        this.game.heightOfTile * 4,
+                                                        this.durationOfEachAnimation);
+
+    return [animationEndToBody, animationEndToLegs, animationEndToPincers];
+};
+
+MoveAnimator.prototype.setIniAndEndPositionsOfMove = function() {
+    var tileFrom = this.moveToExecute.tileFrom;
+    var tileTo = this.moveToExecute.tileTo;
+    this.iniPos_xz = this.game.mainBoard.getRealCoords_XZ(tileFrom.row, tileFrom.collumn);
+    this.endPos_xz = this.game.mainBoard.getRealCoords_XZ(tileTo.row, tileTo.collumn);
+};
+
 
 MoveAnimator.prototype.restartClock = function() {
     this.game.scene.firstTime = null;
@@ -87,38 +194,61 @@ MoveAnimator.prototype.display = function () {
         this.init();
     else {
         var time = this.game.scene.currTime;
-        if (this.state === this.state_mainMove) {
-            if (time > this.animationOfMove.getTotalTimeOfAnimation()) {
-                this.state = this.state_atack;
-                this.restartClock();
-            }
-            this.game.scene.pushMatrix();
-            this.game.scene.multMatrix(this.animationOfMove.getTransformationMatrix(time));
-            this.pieceFrom.display();
-            this.game.scene.popMatrix();
+        if (this.state === this.state_ini) {
+            this.displayIni(time);
         }
-        else if (this.state === this.state_atack) {
-            if (this.pieceTo === null) {
-                this.state = this.state_capturedPiecesMove;
-            }
-            else {
-                this.game.scene.pushMatrix();
-                this.game.scene.multMatrix(this.animationOfAttackFrom.getTransformationMatrix(time));
-                this.pieceFrom.display();
-                this.game.scene.popMatrix();
-                this.game.scene.pushMatrix();
-                this.game.scene.multMatrix(this.animationOfAttackTo.getTransformationMatrix(time));
-                this.pieceTo.display();
-                this.game.scene.popMatrix();
-            }
+        else if (this.state === this.state_mid) {
+            this.displayMid(time);
         }
-        else {
+        else if (this.state === this.state_end){
+            this.displayEnd(time);
+        }
+    }
+}
 
-        }
-
+MoveAnimator.prototype.displayIni = function(time) {
+    if (time > this.durationOfEachAnimation) {
+        this.state = this.state_mid;
+        this.restartClock();
     }
 
-}
+    this.game.scene.pushMatrix();
+    this.game.scene.multMatrix(this.animationIniFrom.getTransformationMatrix(time));
+    this.pieceFrom.display();
+    this.game.scene.popMatrix();
+
+    this.game.scene.pushMatrix();
+    this.game.scene.multMatrix(this.animationIniTo.getTransformationMatrix(time));
+    this.pieceTo.display();
+    this.game.scene.popMatrix();
+
+};
+
+MoveAnimator.prototype.displayMid = function(time) {
+    if (this.pieceTo === null) {
+        this.state = this.state_end;
+    }
+    else {
+        if (time > this.durationOfEachAnimation) {
+            this.state = this.state_end;
+            this.restartClock();
+        }
+
+        this.game.scene.pushMatrix();
+        this.game.scene.multMatrix(this.animationMidFrom.getTransformationMatrix(time));
+        this.pieceFrom.display();
+        this.game.scene.popMatrix();
+
+        this.game.scene.pushMatrix();
+        this.game.scene.multMatrix(this.animationMidTo.getTransformationMatrix(time));
+        this.pieceTo.display();
+        this.game.scene.popMatrix();
+    }
+};
+
+MoveAnimator.prototype.displayEnd = function(time) {
+
+};
 
 MoveAnimator.prototype.getCapturedAndNonCapturedPieces = function() {
     this.nonCapturedPieces = [];
@@ -225,7 +355,7 @@ MoveAnimator.prototype.getPieceCaptured = function(r, c) {
     var numLegs = tile.getNumLegs();
     var numPincers = tile.getNumPincers();
 
-    return createPiece(numLegs, numPincersm, color);
+    return createPiece(numLegs, numPincers, color);
 };
 
 MoveAnimator.prototype.createPiece = function(numLegs, numPincers, color) {

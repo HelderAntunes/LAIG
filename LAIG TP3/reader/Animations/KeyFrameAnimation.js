@@ -112,3 +112,31 @@ KeyFrameAnimation.prototype.constructAttackedAnimation = function(x, z, initialH
                         0, 2 * Math.PI, 0,
                         1, 1, 1);
 }
+
+KeyFrameAnimation.prototype.constructLinearAnimationWidthRotationInY = function(xIni, yIni, zIni, xEnd, yEnd, zEnd, timeTotal) {
+    this.controlPoints = [];
+    this.addControlPoint(0,
+                        xIni, yIni, zIni,
+                        0, 0, 0,
+                        1, 1, 1);
+    this.addControlPoint(timeTotal,
+                        xEnd, yEnd, zEnd,
+                        0, 2 * Math.PI, 0,
+                        1, 1, 1);
+}
+
+KeyFrameAnimation.prototype.constructUpAndDownAnimationWithRotationInY = function(xIni, yIni, zIni, finalHeight, timeTotal) {
+    this.controlPoints = [];
+    this.addControlPoint(0,
+                        xIni, yIni, zIni,
+                        0, 0, 0,
+                        1, 1, 1);
+    this.addControlPoint(timeTotal/2,
+                        xIni, finalHeight, zIni,
+                        0, Math.PI, 0,
+                        1, 1, 1);
+    this.addControlPoint(timeTotal,
+                        xIni, yIni, zIni,
+                        0, 2 * Math.PI, 0,
+                        1, 1, 1);
+}

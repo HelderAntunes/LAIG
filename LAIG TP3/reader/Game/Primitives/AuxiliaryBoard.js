@@ -2,9 +2,10 @@
 * AuxiliaryBoard
 * @constructor
 */
-function AuxiliaryBoard(scene, game, radiusOfTile, heightOfTile) {
+function AuxiliaryBoard(scene, game, radiusOfTile, heightOfTile, color) {
     this.scene = scene;
     this.game = game;
+    this.color = color;
 
     this.widthEachBoard_x = 6 * radiusOfTile * 2;
     this.widthEachBoard_z = 5 * radiusOfTile * 2;
@@ -46,8 +47,6 @@ AuxiliaryBoard.prototype.displayTile = function(tile, typeTile) {
     else if (typeTile == "legTile") {
         this.scene.translate(this.widthEachBoard_x/4, 0, 0);
     }
-
-    this.scene.translate(0, 0, -this.widthEachBoard_z/2);
     tile.display();
 
     this.scene.popMatrix();
@@ -78,4 +77,31 @@ AuxiliaryBoard.prototype.takeAllPieces = function() {
     this.bodyTile.adaptoidBody = [];
     this.legTile.adaptoidLegs = [];
     this.pincerTile.adaptoidPincers = [];
+};
+
+AuxiliaryBoard.prototype.getRealXZCoords_bodyTile = function() {
+    if (this.color === "white") {
+        return [0, this.game.mainBoard.widthBoard*0.7];
+    }
+    else { // "black"
+        return [0, -this.game.mainBoard.widthBoard*0.7];
+    }
+};
+
+AuxiliaryBoard.prototype.getRealXZCoords_legTile = function() {
+    if (this.color === "white") {
+        return [this.widthEachBoard_x/4, this.game.mainBoard.widthBoard*0.7];
+    }
+    else { // "black"
+        return [-this.widthEachBoard_x/4, -this.game.mainBoard.widthBoard*0.7];
+    }
+};
+
+AuxiliaryBoard.prototype.getRealXZCoords_PincerTile = function() {
+    if (this.color === "white") {
+        return [-this.widthEachBoard_x/4, this.game.mainBoard.widthBoard*0.7];
+    }
+    else { // "black"
+        return [this.widthEachBoard_x/4, -this.game.mainBoard.widthBoard*0.7];
+    }
 };

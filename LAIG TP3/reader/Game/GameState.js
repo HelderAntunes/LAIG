@@ -20,8 +20,8 @@ function GameState(scene) {
     this.createPieces();
 
     this.mainBoard = new AdaptoidBoard(scene, this, this.radiusOfTile, this.heightOfTile);
-    this.auxBoardBlack = new AuxiliaryBoard(scene, this, this.radiusOfTile, this.heightOfTile);
-    this.auxBoardWhite = new AuxiliaryBoard(scene, this, this.radiusOfTile, this.heightOfTile);
+    this.auxBoardBlack = new AuxiliaryBoard(scene, this, this.radiusOfTile, this.heightOfTile, "black");
+    this.auxBoardWhite = new AuxiliaryBoard(scene, this, this.radiusOfTile, this.heightOfTile, "white");
     this.initBoards();
 
     this.hotspots = this.getHotspots();
@@ -79,12 +79,12 @@ GameState.prototype.display = function() {
         this.mainBoard.display();
 
         this.scene.pushMatrix();
-        this.scene.translate(0, 0, this.mainBoard.widthBoard);
+        this.scene.translate(0, 0, this.mainBoard.widthBoard*0.7);
         this.auxBoardWhite.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(0, 0, -this.mainBoard.widthBoard);
+        this.scene.translate(0, 0, -this.mainBoard.widthBoard*0.7);
         this.scene.rotate(Math.PI, 0, 1, 0);
         this.auxBoardBlack.display();
         this.scene.popMatrix();
@@ -100,12 +100,12 @@ GameState.prototype.display = function() {
         this.mainBoard.display();
 
         this.scene.pushMatrix();
-        this.scene.translate(0, 0, this.mainBoard.widthBoard);
+        this.scene.translate(0, 0, this.mainBoard.widthBoard*0.7);
         this.auxBoardWhite.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(0, 0, -this.mainBoard.widthBoard);
+        this.scene.translate(0, 0, -this.mainBoard.widthBoard*0.7);
         this.scene.rotate(Math.PI, 0, 1, 0);
         this.auxBoardBlack.display();
         this.scene.popMatrix();
