@@ -30,6 +30,9 @@ function MoveAnimator(game) {
     this.animationEndFrom = [];
     this.animationEndTo = [];
 
+    this.staticAnimationsOfCapturesPieces = [];
+    this.movingAnimationsOfCapturesPieces = [];
+
     this.state = 0;
     this.state_ini = 0;
     this.state_mid = 1;
@@ -65,10 +68,33 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
     this.setIniAnimationsOfPiecesFromAndTo();
     this.setMidAnimationsOfPiecesFromAndTo();
     this.setEndAnimationsOfPiecesFromAndTo();
+    this.setAnimationsOfCapturedPieces();
 
     this.state = this.state_ini;
     this.inited = true;
 };
+
+// TODO: Foolish mistake, there is not captured pieces in this phase of game.
+MoveAnimator.prototype.setAnimationsOfCapturedPieces = function() {
+
+    this.staticAnimationsOfCapturesPieces = [];
+    this.movingAnimationsOfCapturesPieces = [];
+
+    for (var i = 0; i < this.capturedPieces.length; i++) {
+
+        var piece = this.capturedPieces[i];
+
+        var staticAnim = new KeyFrameAnimation("static animation");
+        staticAnim.constructStaticAnimation(piece.row, this.game.heightOfTile, piece.col, this.durationOfEachAnimation);
+        this.staticAnimationsOfCapturesPieces.push(staticAnim);
+
+        var pos = this.game.mainBoard.getRealCoords_XZ(piece.row, piece.col);
+        var movAnim = this.createEndAnimationOfSubPiecesOfPiece(piece.color, pos);
+        this.movingAnimationsOfCapturesPieces.push(movAnim);
+    }
+
+};
+
 
 MoveAnimator.prototype.setIniAnimationsOfPiecesFromAndTo = function() {
     this.animationIniFrom.constructSimpleKeyFrameAnimation(this.iniPos_xz[0], this.iniPos_xz[1],
@@ -226,6 +252,11 @@ MoveAnimator.prototype.displayMid = function(time) {
         }
         this.drawPieceInBoard(this.pieceFrom, [this.animationMidFrom], time);
         this.drawPieceInBoard(this.pieceTo, [this.animationMidTo], time);
+
+        /*for (var i = 0; i < this.capturedPieces.length; i++) {
+            var piece = this.capturedPieces[i];
+            this.drawPieceInBoard(piece, [this.staticAnimationsOfCapturesPieces[i]], time);
+        }*/
     }
 };
 
@@ -235,6 +266,7 @@ MoveAnimator.prototype.displayEnd = function(time) {
         //this.restartClock();
     }
 
+    // pieceFrom
     if (this.animationEndFrom.length == 1) { // stay in position
         this.drawPieceInBoard(this.pieceFrom, this.animationEndFrom, time);
     }
@@ -242,6 +274,7 @@ MoveAnimator.prototype.displayEnd = function(time) {
         this.drawPieceGoingOnToAuxBoard(this.pieceFrom, this.animationEndFrom, time);
     }
 
+    // piece To
     if (this.pieceTo !== null) {
         if (this.animationEndTo.length == 1) {
             this.drawPieceInBoard(this.pieceTo, this.animationEndTo, time);
@@ -250,6 +283,11 @@ MoveAnimator.prototype.displayEnd = function(time) {
             this.drawPieceGoingOnToAuxBoard(this.pieceTo, this.animationEndTo, time);
         }
     }
+
+    /*for (var i = 0; i < this.capturedPieces.length; i++) {
+        var piece = this.capturedPieces[i];
+        this.drawPieceGoingOnToAuxBoard(piece, this.movingAnimationsOfCapturesPieces[i], time);
+    }*/
 
 };
 
@@ -373,7 +411,7 @@ MoveAnimator.prototype.setPieceFromAndPieceTo = function() {
     var colorFrom = (this.currPlayer[0] === 0) ? "white":"black";
     var numLegsFrom = tileFrom.getNumLegs();
     var numPincersFrom = tileFrom.getNumPincers();
-    this.pieceFrom = this.createPiece(numLegsFrom, numPincersFrom, colorFrom);
+    this.pieceFrom = this.createPiece(numLegsFrom, numPincersFrom, colorFrom, -1, -1);
     if (tileTo.isEmpty()) {
         this.pieceTo = null;
         return;
@@ -382,7 +420,7 @@ MoveAnimator.prototype.setPieceFromAndPieceTo = function() {
         var colorTo = (this.enemyPlayer[0] === 0) ? "white":"black";
         var numLegsTo = tileTo.getNumLegs();
         var numPincersTo = tileTo.getNumPincers();
-        this.pieceTo = this.createPiece(numLegsTo, numPincersTo, colorTo);
+        this.pieceTo = this.createPiece(numLegsTo, numPincersTo, colorTo, -1, -1);
     }
 };
 
@@ -393,10 +431,10 @@ MoveAnimator.prototype.getPieceCaptured = function(r, c) {
     var numLegs = tile.getNumLegs();
     var numPincers = tile.getNumPincers();
 
-    return createPiece(numLegs, numPincers, color);
+    return createPiece(numLegs, numPincers, color, r, c);
 };
 
-MoveAnimator.prototype.createPiece = function(numLegs, numPincers, color) {
+MoveAnimator.prototype.createPiece = function(numLegs, numPincers, color, r, c) {
 
     var body = this.game.bodies[this.indexBody++];
     body.color = color;
@@ -411,5 +449,5 @@ MoveAnimator.prototype.createPiece = function(numLegs, numPincers, color) {
         pincer.color = color;
         pincers.push(pincer);
     }
-    return new Piece(this.game.scene, body, legs, pincers, color);
+    return new Piece(this.game.scene, body, legs, pincers, color, r, c);
 };

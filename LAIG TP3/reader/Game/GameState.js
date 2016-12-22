@@ -53,11 +53,14 @@ GameState.prototype.initBoards = function() {
     this.mainBoard.setBodyInTile(this.bodies[0], 4, 2, "white");
     this.mainBoard.setBodyInTile(this.bodies[1], 4, 6, "black");
     this.mainBoard.setBodyInTile(this.bodies[2], 1, 2, "black");
+    this.mainBoard.setLegsInTile([this.legs[7], this.legs[8], this.legs[9]], 1, 2, "black");
     this.mainBoard.setBodyInTile(this.bodies[3], 4, 3, "black");
     this.mainBoard.setLegsInTile([this.legs[2]], 4, 2, "white");
+    this.mainBoard.setLegsInTile([this.legs[5]], 4, 3, "black");
+    this.mainBoard.setLegsInTile([this.legs[6], this.legs[7]], 4, 3, "black");
     this.mainBoard.setPincersInTile([this.pincers[2]], 4, 2, "white");
     this.mainBoard.setLegsInTile([this.legs[3]], 4, 6, "black");
-    this.mainBoard.setPincersInTile([this.pincers[3]], 1, 2, "black");
+    this.mainBoard.setPincersInTile([this.pincers[3], this.pincers[7], this.pincers[8]], 1, 2, "black");
     this.auxBoardWhite.setBody(this.bodies[4], "white");
     this.auxBoardWhite.setLeg(this.legs[0], "white");
     this.auxBoardWhite.setPincer(this.pincers[0], "white");

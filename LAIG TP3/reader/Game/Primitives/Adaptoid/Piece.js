@@ -2,14 +2,15 @@
 * Piece
 * @constructor
 */
-function Piece(scene, body, legs, pincers, color) {
+function Piece(scene, body, legs, pincers, color, row, col) {
     CGFobject.call(this, scene);
 
     this.body = [body];
     this.legs = legs;
     this.pincers = pincers;
     this.color = color;
-    // TODO: eliminate color attribute ?
+    this.row = row;
+    this.col = col;
 };
 
 Piece.prototype = Object.create(CGFobject.prototype);

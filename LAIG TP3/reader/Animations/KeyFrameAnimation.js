@@ -140,3 +140,15 @@ KeyFrameAnimation.prototype.constructUpAndDownAnimationWithRotationInY = functio
                         0, 2 * Math.PI, 0,
                         1, 1, 1);
 }
+
+KeyFrameAnimation.prototype.constructStaticAnimation = function(xIni, yIni, zIni, timeTotal) {
+    this.controlPoints = [];
+    this.addControlPoint(0,
+                        xIni, yIni, zIni,
+                        0, 0, 0,
+                        1, 1, 1);
+    this.addControlPoint(timeTotal,
+                        xIni, yIni, zIni,
+                        0, 0, 0,
+                        1, 1, 1);
+}
