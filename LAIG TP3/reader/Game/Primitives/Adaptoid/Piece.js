@@ -44,3 +44,8 @@ Piece.prototype.display = function() {
         indexRot++;
     }
 };
+
+
+Piece.prototype.numPincers = function() {
+    return this.pincers.length;
+};

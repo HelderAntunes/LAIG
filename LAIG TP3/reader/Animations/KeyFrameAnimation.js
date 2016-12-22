@@ -99,3 +99,16 @@ KeyFrameAnimation.prototype.constructSimpleKeyFrameAnimation = function(iniX, in
                         0, 2 * Math.PI, 0,
                         1, 1, 1);
 }
+
+
+KeyFrameAnimation.prototype.constructAttackedAnimation = function(x, z, initialHeight, finalHeight, timeTotal) {
+    this.controlPoints = [];
+    this.addControlPoint(0,
+                        x, initialHeight, z,
+                        0, 0, 0,
+                        1, 1, 1);
+    this.addControlPoint(timeTotal,
+                        x, finalHeight, z,
+                        0, 2 * Math.PI, 0,
+                        1, 1, 1);
+}

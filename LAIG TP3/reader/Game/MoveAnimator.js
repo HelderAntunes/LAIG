@@ -22,6 +22,13 @@ function MoveAnimator(game) {
     this.indexPincer = 0;
 
     this.animationOfMove = new KeyFrameAnimation("animationOfMove");
+    this.animationOfAttackTo = new KeyFrameAnimation("animationOfAttackTo");
+    this.animationOfAttackFrom = new KeyFrameAnimation("animationOfAttackFrom");
+
+    this.state = 0;
+    this.state_mainMove = 0;
+    this.state_atack = 1;
+    this.state_capturedPiecesMove = 2;
 
 };
 
@@ -48,11 +55,31 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
                                                         this.game.heightOfTile,
                                                         this.game.heightOfTile * 4,
                                                         1);
+    var pincersFrom = this.pieceFrom.numPincers();
+    var pincersTo = -1;
+    if (this.pieceTo !== null) {
+        pincersTo = this.pieceTo.numPincers();
+    }
+    if (pincersFrom > pincersTo) {
+        this.animationOfAttackTo.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, 2, 1);
+        this.animationOfAttackFrom.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, this.game.heightOfTile, 1);
+    }
+    else if (pincersFrom === pincersTo) {
+        this.animationOfAttackTo.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, 2, 1);
+        this.animationOfAttackFrom.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, 2, 1);
+    }
+    else {
+        this.animationOfAttackFrom.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, 2, 1);
+        this.animationOfAttackTo.constructAttackedAnimation(endPos_xz[0], endPos_xz[1], this.game.heightOfTile, this.game.heightOfTile, 1);
+    }
+
+    this.state = this.state_mainMove;
     this.inited = true;
 };
 
 MoveAnimator.prototype.restartClock = function() {
     this.game.scene.firstTime = null;
+    this.game.scene.currTime = 0;
 };
 
 MoveAnimator.prototype.display = function () {
@@ -60,12 +87,35 @@ MoveAnimator.prototype.display = function () {
         this.init();
     else {
         var time = this.game.scene.currTime;
-        this.game.scene.pushMatrix();
-        var pos = this.moveToExecute.getRowAndCollumOfTileFrom();
-        xzCoords = this.game.mainBoard.getCoords_XZ(pos[0], pos[1]);
-        this.game.scene.multMatrix(this.animationOfMove.getTransformationMatrix(time));
-        this.pieceFrom.display();
-        this.game.scene.popMatrix();
+        if (this.state === this.state_mainMove) {
+            if (time > this.animationOfMove.getTotalTimeOfAnimation()) {
+                this.state = this.state_atack;
+                this.restartClock();
+            }
+            this.game.scene.pushMatrix();
+            this.game.scene.multMatrix(this.animationOfMove.getTransformationMatrix(time));
+            this.pieceFrom.display();
+            this.game.scene.popMatrix();
+        }
+        else if (this.state === this.state_atack) {
+            if (this.pieceTo === null) {
+                this.state = this.state_capturedPiecesMove;
+            }
+            else {
+                this.game.scene.pushMatrix();
+                this.game.scene.multMatrix(this.animationOfAttackFrom.getTransformationMatrix(time));
+                this.pieceFrom.display();
+                this.game.scene.popMatrix();
+                this.game.scene.pushMatrix();
+                this.game.scene.multMatrix(this.animationOfAttackTo.getTransformationMatrix(time));
+                this.pieceTo.display();
+                this.game.scene.popMatrix();
+            }
+        }
+        else {
+
+        }
+
     }
 
 }
@@ -185,7 +235,7 @@ MoveAnimator.prototype.createPiece = function(numLegs, numPincers, color) {
     var legs = [], pincers = [];
     for (var i = 0; i < numLegs; i++) {
         var leg = this.game.legs[this.indexLeg++];
-        leg.color = 'white';
+        leg.color = color;
         legs.push(leg);
     }
     for (var i = 0; i < numPincers; i++) {
