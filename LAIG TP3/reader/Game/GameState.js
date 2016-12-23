@@ -38,6 +38,7 @@ function GameState(scene) {
     this.moveAnimator = new MoveAnimator(this);
     this.updateAnimator = new UpdateAnimator(this);
     this.captureAnimator = new CaptureAnimator(this);
+    this.turnChangeAnimator = new TurnChangeAnimator(this);
 
 };
 
@@ -96,7 +97,7 @@ GameState.prototype.display = function() {
         }
     }
     else if (this.stateMachine.currState == states.TURN_CHANGE) {
-        this.drawBoards();
+        this.turnChangeAnimator.display();
     }
     else {
         this.drawBoards();
