@@ -36,6 +36,7 @@ function GameState(scene) {
     this.stateMachine = new StateMachine(states.PIECE_SELECTION_FROM, turn.WHITE);
 
     this.moveAnimator = new MoveAnimator(this);
+    this.updateAnimator = new UpdateAnimator(this);
 
 };
 
@@ -71,51 +72,41 @@ GameState.prototype.initBoards = function() {
 
 GameState.prototype.display = function() {
 
-    if (this.moveAnimator.waitingForMoveReply)
-        this.client.executeMove(); // TODO: Substitute this function to call server once
-    else {
-
-    }
     if (this.stateMachine.currState == states.ANIMATION_MOVE) {
-        this.scene.pushMatrix();
-
-        this.mainBoard.display();
-
-        this.scene.pushMatrix();
-        this.scene.translate(0, 0, this.mainBoard.widthBoard*0.7);
-        this.auxBoardWhite.display();
-        this.scene.popMatrix();
-
-        this.scene.pushMatrix();
-        this.scene.translate(0, 0, -this.mainBoard.widthBoard*0.7);
-        this.scene.rotate(Math.PI, 0, 1, 0);
-        this.auxBoardBlack.display();
-        this.scene.popMatrix();
-
-        this.scene.popMatrix();
-
-        // display pieces in moviment
         this.moveAnimator.display();
     }
+    else if (this.stateMachine.currState == states.ANIMATION_UPDATE) {
+        this.updateAnimator.display();
+    }
+    else if (this.stateMachine.currState == states.UPDATE_PIECE_FROM) {
+        this.drawBoards();
+    }
+    else if (this.stateMachine.currState == states.ANIMATION_CAPTURE) {
+        this.drawBoards();
+    }
     else {
-        this.scene.pushMatrix();
-
-        this.mainBoard.display();
-
-        this.scene.pushMatrix();
-        this.scene.translate(0, 0, this.mainBoard.widthBoard*0.7);
-        this.auxBoardWhite.display();
-        this.scene.popMatrix();
-
-        this.scene.pushMatrix();
-        this.scene.translate(0, 0, -this.mainBoard.widthBoard*0.7);
-        this.scene.rotate(Math.PI, 0, 1, 0);
-        this.auxBoardBlack.display();
-        this.scene.popMatrix();
-
-        this.scene.popMatrix();
+        this.drawBoards();
     }
 
+};
+
+GameState.prototype.drawBoards = function() {
+   this.scene.pushMatrix();
+
+   this.mainBoard.display();
+
+   this.scene.pushMatrix();
+   this.scene.translate(0, 0, this.mainBoard.widthBoard*0.7);
+   this.auxBoardWhite.display();
+   this.scene.popMatrix();
+
+   this.scene.pushMatrix();
+   this.scene.translate(0, 0, -this.mainBoard.widthBoard*0.7);
+   this.scene.rotate(Math.PI, 0, 1, 0);
+   this.auxBoardBlack.display();
+   this.scene.popMatrix();
+
+   this.scene.popMatrix();
 };
 
 GameState.prototype.setMaterials = function() {
@@ -147,14 +138,56 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
 
     if (this.hotspotFrom === null) { // first select
         this.hotspotFrom = hotspot;
-        this.stateMachine.setState(states.PIECE_SELECTION_TO);
+
+        if (this.stateMachine.currState === states.PIECE_SELECTION_FROM) {
+            if (this.stateMachine.turn === turn.WHITE) {
+
+            }
+            this.stateMachine.setState(states.PIECE_SELECTION_TO);
+        }
+        else if (this.stateMachine.currState === states.UPDATE_PIECE_FROM) {
+            if (this.stateMachine.turn === turn.WHITE) {
+                if (hotspot.tile.gameBoard.constructor.name === "AuxiliaryBoard"
+                    && hotspot.tile.gameBoard.color == "white") {
+                    this.stateMachine.setState(states.UPDATE_PIECE_TO);
+                }
+                else {
+                    this.hotspotFrom = null;
+                }
+
+            }
+            else {
+                if (hotspot.tile.gameBoard.constructor.name === "AuxiliaryBoard"
+                    && hotspot.tile.gameBoard.color == "black") {
+                    this.stateMachine.setState(states.UPDATE_PIECE_TO);
+                }
+                else {
+                    this.hotspotFrom = null
+                }
+            }
+        }
     }
     else if (this.hotspotFrom === hotspot) { // unselect
         this.hotspotFrom = null;
-        this.stateMachine.setState(states.PIECE_SELECTION_FROM);
+        if (this.stateMachine.currState === states.PIECE_SELECTION_TO) {
+            this.stateMachine.setState(states.PIECE_SELECTION_FROM);
+        }
+        else if (this.stateMachine.currState === states.UPDATE_PIECE_TO)
+            this.stateMachine.setState(states.UPDATE_PIECE_FROM);
     }
     else { // move a piece
         this.hotspotTo = hotspot;
-        this.client.checkIfMoveIsValid();
+        if (this.stateMachine.currState === states.PIECE_SELECTION_TO) {
+            this.client.requestMove();
+        }
+        else if (this.stateMachine.currState === states.UPDATE_PIECE_TO) {
+            
+            if (hotspot.tile.gameBoard.constructor.name === "AdaptoidBoard") {
+                this.client.requestUpdate();
+            }
+            else {
+                this.stateMachine.setState(states.UPDATE_PIECE_FROM);
+            }
+        }
     }
 };

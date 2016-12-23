@@ -8,8 +8,6 @@ function MoveAnimator(game) {
     this.currPlayer = null;
     this.enemyPlayer = null;
     this.moveToExecute = null;
-    this.waitingForMoveReply = false;
-    this.inited = false;
 
     this.nonCapturedPieces = [];
     this.capturedPieces = [];
@@ -172,7 +170,7 @@ MoveAnimator.prototype.createEndAnimationOfSubPiecesOfPiece = function(color, in
     var animationEndToPincers = new KeyFrameAnimation("animationEndToPincers");
 
     var finalPosLeg, finalPosBody, finalPosPincer;
-    if (color == "white") {
+    if (color == "black") {
         finalPosLeg = this.posLegAuxBoard_white;
         finalPosBody = this.posBodyAuxBoard_white;
         finalPosPincer = this.posPincerAuxBoard_white;
@@ -219,6 +217,7 @@ MoveAnimator.prototype.display = function () {
     if (this.inited === false)
         this.init();
     else {
+        this.game.drawBoards();
         var time = this.game.scene.currTime;
         if (this.state === this.state_ini) {
             this.displayIni(time);
@@ -238,7 +237,8 @@ MoveAnimator.prototype.displayIni = function(time) {
         this.restartClock();
     }
     this.drawPieceInBoard(this.pieceFrom, [this.animationIniFrom], time);
-    this.drawPieceInBoard(this.pieceTo, [this.animationIniTo], time);
+    if (this.pieceTo !== null)
+        this.drawPieceInBoard(this.pieceTo, [this.animationIniTo], time);
 };
 
 MoveAnimator.prototype.displayMid = function(time) {
@@ -263,7 +263,11 @@ MoveAnimator.prototype.displayMid = function(time) {
 MoveAnimator.prototype.displayEnd = function(time) {
     if (time > this.durationOfEachAnimation) {
         this.state = this.state_end;
-        //this.restartClock();
+        this.updatePlayers();
+        this.updateAuxsBoards2();
+        this.setPieceFromAndPieceToInBoardIfThetSurvive();
+        this.game.stateMachine.currState = states.UPDATE_PIECE_FROM;
+        this.inited = false;
     }
 
     // pieceFrom
@@ -290,6 +294,74 @@ MoveAnimator.prototype.displayEnd = function(time) {
     }*/
 
 };
+
+MoveAnimator.prototype.updatePlayers = function() {
+    var colorFrom = (this.currPlayer[0] === 0) ? "white":"black";
+    var colorTo = (this.enemyPlayer[0] === 0) ? "white":"black";
+
+    var player = (colorFrom == "white") ? this.currPlayer:this.enemyPlayer;
+    this.game.whitePlayer.numBodies = player[1];
+    this.game.whitePlayer.numLegs = player[2];
+    this.game.whitePlayer.numPincers = player[3];
+    this.game.whitePlayer.score = player[4];
+
+    player = (colorFrom == "black") ? this.currPlayer:this.enemyPlayer;
+    this.game.blackPlayer.numBodies = player[1];
+    this.game.blackPlayer.numLegs = player[2];
+    this.game.blackPlayer.numPincers = player[3];
+    this.game.blackPlayer.score = player[4];
+
+}
+
+MoveAnimator.prototype.updateAuxsBoards2 = function() {
+    if (this.game.whitePlayer.numBodies > 1 && this.game.auxBoardWhite.bodyTile.isEmpty()) {
+        this.game.auxBoardWhite.setBody(this.game.bodies[this.indexBody++], "white");
+    }
+
+    if (this.game.whitePlayer.numLegs > 1 && this.game.auxBoardWhite.legTile.isEmpty()) {
+        this.game.auxBoardWhite.setLeg(this.game.legs[this.indexLeg++], "white");
+    }
+
+    if (this.game.whitePlayer.numPincers > 1 && this.game.auxBoardWhite.pincerTile.isEmpty()) {
+        this.game.auxBoardWhite.setPincer(this.game.pincers[this.indexPincer++], "white");
+    }
+
+    if (this.game.blackPlayer.numBodies > 1 && this.game.auxBoardBlack.bodyTile.isEmpty()) {
+        this.game.auxBoardBlack.setBody(this.game.bodies[this.indexBody++], "black");
+    }
+
+    if (this.game.blackPlayer.numLegs > 1 && this.game.auxBoardBlack.legTile.isEmpty()) {
+        this.game.auxBoardBlack.setLeg(this.game.legs[this.indexLeg++], "black");
+    }
+
+    if (this.game.blackPlayer.numPincers > 1 && this.game.auxBoardBlack.pincerTile.isEmpty()) {
+        this.game.auxBoardBlack.setPincer(this.game.pincers[this.indexPincer++], "black");
+    }
+
+}
+
+MoveAnimator.prototype.setPieceFromAndPieceToInBoardIfThetSurvive = function() {
+    var pincersFrom = this.pieceFrom.numPincers();
+    var pincersTo = -1;
+    if (this.pieceTo !== null) {
+        pincersTo = this.pieceTo.numPincers();
+    }
+
+    var posTo = this.moveToExecute.getRowAndCollumOfTileTo();
+
+    if (pincersFrom > pincersTo) {
+        this.game.mainBoard.setLegsInTile(this.pieceFrom.legs, posTo[0], posTo[1], this.pieceFrom.color);
+        this.game.mainBoard.setBodyInTile(this.pieceFrom.body[0], posTo[0], posTo[1], this.pieceFrom.color);
+        this.game.mainBoard.setPincersInTile(this.pieceFrom.pincers, posTo[0], posTo[1], this.pieceFrom.color);
+    }
+    else if (pincersFrom < pincersTo) {
+        this.game.mainBoard.setLegsInTile(this.pieceTo.legs, posTo[0], posTo[1], this.pieceTo.color);
+        this.game.mainBoard.setBodyInTile(this.pieceTo.body[0], posTo[0], posTo[1], this.pieceTo.color);
+        this.game.mainBoard.setPincersInTile(this.pieceTo.pincers, posTo[0], posTo[1], this.pieceTo.color);
+    }
+
+}
+
 
 MoveAnimator.prototype.drawPieceGoingOnToAuxBoard = function(piece, animation, time) {
 

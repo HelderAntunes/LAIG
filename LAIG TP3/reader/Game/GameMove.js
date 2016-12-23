@@ -2,9 +2,10 @@
 * GameMove
 * @constructor
 */
-function GameMove(tileFrom, tileTo) {
+function GameMove(tileFrom, tileTo, type) {
     this.tileFrom = tileFrom;
     this.tileTo = tileTo;
+    this.type = type;
 };
 
 GameMove.prototype.constructor = GameMove;
