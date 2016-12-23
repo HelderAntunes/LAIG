@@ -46,11 +46,13 @@ function MoveAnimator(game) {
     this.posBodyAuxBoard_black = this.game.auxBoardBlack.getRealXZCoords_bodyTile();
     this.posPincerAuxBoard_black = this.game.auxBoardBlack.getRealXZCoords_PincerTile();
 
+    this.inited = false;
+
 };
 
 MoveAnimator.prototype.constructor = MoveAnimator;
 
-MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
+MoveAnimator.prototype.init = function() {
 
     this.setNumPiecesUsedToZero();
     this.setPieceFromAndPieceTo();
@@ -66,33 +68,10 @@ MoveAnimator.prototype.init = function(board, currPlayer, enemyPlayer) {
     this.setIniAnimationsOfPiecesFromAndTo();
     this.setMidAnimationsOfPiecesFromAndTo();
     this.setEndAnimationsOfPiecesFromAndTo();
-    this.setAnimationsOfCapturedPieces();
 
     this.state = this.state_ini;
     this.inited = true;
 };
-
-// TODO: Foolish mistake, there is not captured pieces in this phase of game.
-MoveAnimator.prototype.setAnimationsOfCapturedPieces = function() {
-
-    this.staticAnimationsOfCapturesPieces = [];
-    this.movingAnimationsOfCapturesPieces = [];
-
-    for (var i = 0; i < this.capturedPieces.length; i++) {
-
-        var piece = this.capturedPieces[i];
-
-        var staticAnim = new KeyFrameAnimation("static animation");
-        staticAnim.constructStaticAnimation(piece.row, this.game.heightOfTile, piece.col, this.durationOfEachAnimation);
-        this.staticAnimationsOfCapturesPieces.push(staticAnim);
-
-        var pos = this.game.mainBoard.getRealCoords_XZ(piece.row, piece.col);
-        var movAnim = this.createEndAnimationOfSubPiecesOfPiece(piece.color, pos);
-        this.movingAnimationsOfCapturesPieces.push(movAnim);
-    }
-
-};
-
 
 MoveAnimator.prototype.setIniAnimationsOfPiecesFromAndTo = function() {
     this.animationIniFrom.constructSimpleKeyFrameAnimation(this.iniPos_xz[0], this.iniPos_xz[1],
@@ -252,11 +231,6 @@ MoveAnimator.prototype.displayMid = function(time) {
         }
         this.drawPieceInBoard(this.pieceFrom, [this.animationMidFrom], time);
         this.drawPieceInBoard(this.pieceTo, [this.animationMidTo], time);
-
-        /*for (var i = 0; i < this.capturedPieces.length; i++) {
-            var piece = this.capturedPieces[i];
-            this.drawPieceInBoard(piece, [this.staticAnimationsOfCapturesPieces[i]], time);
-        }*/
     }
 };
 
@@ -288,10 +262,7 @@ MoveAnimator.prototype.displayEnd = function(time) {
         }
     }
 
-    /*for (var i = 0; i < this.capturedPieces.length; i++) {
-        var piece = this.capturedPieces[i];
-        this.drawPieceGoingOnToAuxBoard(piece, this.movingAnimationsOfCapturesPieces[i], time);
-    }*/
+    
 
 };
 

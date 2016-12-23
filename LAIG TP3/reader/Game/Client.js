@@ -132,3 +132,42 @@ Client.prototype.makeRequestString_update = function(predicate) {
     return request;
 };
 
+Client.prototype.requestCapture = function() {
+    var game = this.game;
+    game.captureAnimator.requestSent = true;
+
+    var typeOfMove = (game.stateMachine.turn == states.WHITE) ? "capture_turnWhite":"capture_turnBlack"; 
+    game.captureAnimator.moveToExecute = new GameMove(null, null, typeOfMove);
+    
+    var request = this.makeRequestString_capture();
+
+    this.getPrologRequest(
+        request,
+        function(data) {
+            var responseInArray = JSON.parse(data.target.responseText);
+            game.captureAnimator.board = responseInArray[0];
+            game.captureAnimator.currPlayer = responseInArray[1];
+            game.captureAnimator.inited = false;
+            game.captureAnimator.requestReply = true;
+        });
+};
+
+Client.prototype.makeRequestString_capture = function() {
+
+    var request = "captureAdaptoids(";
+    var playerIn, color;
+    if (this.game.stateMachine.turn == turn.WHITE) {
+        color = "b";
+        playerIn = this.game.whitePlayer.getPlayerInStringFormat();
+    }
+    else {
+        color = "w";
+        playerIn = this.game.blackPlayer.getPlayerInStringFormat();
+    }
+    request += color + "," + this.game.mainBoard.getBoardInStringFormat() + "," + playerIn + ")";
+
+    return request;
+};
+
+
+

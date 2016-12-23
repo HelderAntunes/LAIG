@@ -37,6 +37,7 @@ function GameState(scene) {
 
     this.moveAnimator = new MoveAnimator(this);
     this.updateAnimator = new UpdateAnimator(this);
+    this.captureAnimator = new CaptureAnimator(this);
 
 };
 
@@ -82,6 +83,19 @@ GameState.prototype.display = function() {
         this.drawBoards();
     }
     else if (this.stateMachine.currState == states.ANIMATION_CAPTURE) {
+        if (this.captureAnimator.requestSent === false) {
+            this.client.requestCapture();   
+        }
+        else {
+            if (this.captureAnimator.requestReply === true) {
+                this.captureAnimator.display();
+            }
+            else {
+                this.drawBoards();
+            }
+        }
+    }
+    else if (this.stateMachine.currState == states.TURN_CHANGE) {
         this.drawBoards();
     }
     else {
