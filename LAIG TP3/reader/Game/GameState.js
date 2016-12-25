@@ -50,7 +50,8 @@ function GameState(scene) {
     this.endGameSentToInterface = false;
 
     this.type = null; //  ['human-human', 'human-computer']
-    this.botResquestMove = false;
+    this.botRequestMove = false;
+    this.botRequestUpdate = false;
 
 };
 
@@ -106,9 +107,11 @@ GameState.prototype.display = function() {
         }
         else {
             if (this.stateMachine.turn === turn.BLACK &&
-                this.type === "human-computer" && this.botResquestMove == false) {
-                this.client.botResquestMove();
-                this.botResquestMove = true;
+                this.type === "human-computer") {
+                if (this.botRequestMove == false) {
+                    this.client.botRequestMove();
+                    this.botRequestMove = true;
+                }
             }
         }
         this.drawBoards();
@@ -128,6 +131,12 @@ GameState.prototype.display = function() {
         else {
             if (this.blackPlayer.stockIsExpired()) {
                 this.stateMachine.currState = states.ANIMATION_CAPTURE;
+            }
+            else {
+                if (this.type === "human-computer" && this.botRequestUpdate == false) {
+                    this.client.botRequestUpdate();
+                    this.botRequestUpdate = true;
+                }
             }
         }
         this.drawBoards();
@@ -246,7 +255,6 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
             else {
                 this.hotspotFrom = null;
             }
-            
         }
         else if (this.stateMachine.currState === states.UPDATE_PIECE_FROM) {
             if (this.stateMachine.turn === turn.WHITE) {

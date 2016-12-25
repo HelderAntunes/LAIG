@@ -142,6 +142,9 @@ parse_input(botMoveAndCapture(Color,BoardIn,PlayerFromIn,PlayerToIn), Res) :-
 	botMoveAndCapture(Color, BoardIn, BoardOut, PlayerFromIn, PlayerFromOut, PlayerToIn, PlayerToOut, RFrom, CFrom, RTo, CTo),
 	Res = [BoardOut,PlayerFromOut,PlayerToOut,RFrom,CFrom,RTo,CTo].
 
+parse_input(botCreateOrUpdate(Color,BoardIn,PlayerIn,Enemy), Res) :-
+	botCreateOrUpdate(Color, BoardIn, BoardOut, PlayerIn, PlayerOut, Enemy, Type, Row, Col),
+	Res = [BoardOut,PlayerOut,Type,Row,Col].
 
 	
 	

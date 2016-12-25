@@ -226,11 +226,23 @@ test_findBestFirstMove :-
 	write(RFrom), write('-'), write(CFrom), 
 	write(' -> '), 
 	write(RTo), write('-'), write(CTo), nl, nl.
+	
+botCreateOrUpdate(Color, BoardIn, BoardOut, PlayerIn, PlayerOut, Enemy, Type, Row, Col):-
+    bestMoveCreateOrUpdate(BoardIn, PlayerIn, Enemy, BestMove),
+    BestMove = [Type, Row, Col],
+    botCreateOrUpdateByType(Type, Row, Col, Color, BoardIn, BoardOut, PlayerIn, PlayerOut).
+    
+botCreateOrUpdateByType(0, Row, Col, Color, BoardIn, BoardOut, PlayerIn, PlayerOut):-
+    createAdaptoid(Color, PlayerIn, Row, Col, BoardIn, BoardOut, PlayerOut).
+botCreateOrUpdateByType(1, Row, Col, Color, BoardIn, BoardOut, PlayerIn, PlayerOut):-
+    addLeg(Color, PlayerIn, Row, Col, BoardIn, BoardOut, PlayerOut).
+botCreateOrUpdateByType(2, Row, Col, Color, BoardIn, BoardOut, PlayerIn, PlayerOut):-
+    addPincer(Color, PlayerIn, Row, Col, BoardIn, BoardOut, PlayerOut).
 
 %Choses the best move to be done in this part of the game returns BestMove = [Type,Row,Column].
 %bestMoveCreateOrUpdate(+Board, +Player, -BestMove   
-bestMoveCreateOrUpdate(Board, Player,BestMove):-
-    setof([Value, Type, R, C], valueOfCreateOrUpdate(Type, R, C, Board, Player, Value), Values),
+bestMoveCreateOrUpdate(Board, Player, Enemy, BestMove):-
+    setof([Value, Type, R, C], valueOfCreateOrUpdate(Type, R, C, Board, Player, Enemy, Value), Values),
     last(Values, [MaxValue| _]),
     getCreateOrUpdateMaxValue(MaxValue, Values , BestMoves),
     random_member(BestMove, BestMoves).  
@@ -243,25 +255,22 @@ getEnemy(Color, Enemy):-
 
 %Given the coordinates the board and the player returns the value of the move of type Type
 %valueOfCreation(+Type, +R, +C, +BoardIn, +Player, -Value)    
-valueOfCreateOrUpdate('creation', R, C, BoardIn, Player, Value):-
+valueOfCreateOrUpdate(0, R, C, BoardIn, Player, Enemy, Value):-
     Player = [Color | _],
-    getEnemy(Color, Enemy),
     createAdaptoidValid(R, C, BoardIn, Player), 
-    createAdaptoid(Color, R, C, BoardIn, BoardOut, PlayerOut),
+    createAdaptoid(Color, Player, R, C, BoardIn, BoardOut, PlayerOut),
     value(BoardOut, PlayerOut, Enemy, Value).
-    
-valueOfCreateOrUpdate('addLeg', R, C, BoardIn, Player, Value):-
+	
+valueOfCreateOrUpdate(1, R, C, BoardIn, Player, Enemy, Value):-
     Player = [Color | _],
-    getEnemy(Color, Enemy),
     addLegValid(R, C, BoardIn, Player), 
-    addLeg(Color, R, C, BoardIn, BoardOut, PlayerOut),
+    addLeg(Color, Player, R, C, BoardIn, BoardOut, PlayerOut),
     value(BoardOut, PlayerOut, Enemy, Value).
     
-valueOfCreateOrUpdate('addPincer', R, C, BoardIn, Player, Value):-
+valueOfCreateOrUpdate(2, R, C, BoardIn, Player, Enemy, Value):-
     Player = [Color | _],
-    getEnemy(Color, Enemy),
     addPincerValid(R, C, BoardIn, Player), 
-    addPincer(Color, R, C, BoardIn, BoardOut, PlayerOut),
+    addPincer(Color, Player, R, C, BoardIn, BoardOut, PlayerOut),
     value(BoardOut, PlayerOut, Enemy, Value).
 
 %Get the list of best moves

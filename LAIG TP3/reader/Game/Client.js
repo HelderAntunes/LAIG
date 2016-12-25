@@ -136,6 +136,59 @@ Client.prototype.makeRequestString_update = function(predicate) {
     return request;
 };
 
+Client.prototype.botRequestUpdate = function() {
+    
+    var game = this.game;
+    var request = this.makeRequestString_botResquestUpdate();
+
+    this.getPrologRequest(
+        request,
+        function(data) {
+            var responseInArray = JSON.parse(data.target.responseText);
+            game.updateAnimator.board = responseInArray[0];
+            game.updateAnimator.currPlayer = responseInArray[1];
+            game.updateAnimator.inited = false;
+            
+            var typeOfMove = responseInArray[2];
+            if (typeOfMove === 0) {
+                typeOfMove = "update_createAdaptoid";
+            } else if (typeOfMove === 1) {
+                typeOfMove = "update_addLeg";
+            } else if (typeOfMove === 2) {
+                typeOfMove = "update_addPincer";
+            }
+            var row = responseInArray[3];
+            var col = responseInArray[4];
+            var tileTo = game.mainBoard.tiles[row][col];
+            game.updateAnimator.moveToExecute = new GameMove(null, tileTo, typeOfMove);
+            game.stateMachine.setState(states.ANIMATION_UPDATE);
+            game.botRequestUpdate = false;
+            game.hotspotFrom = null;
+            game.hotspotTo = null;
+        });
+};
+
+Client.prototype.makeRequestString_botResquestUpdate = function(predicate) {
+
+    var request = "botCreateOrUpdate(";
+    var color, playerIn, enemy;
+    if (this.game.stateMachine.turn == turn.WHITE) {
+        playerIn = this.game.whitePlayer.getPlayerInStringFormat();
+        color = "w";
+        enemy = this.game.blackPlayer.getPlayerInStringFormat();
+    }
+    else {
+        playerIn = this.game.blackPlayer.getPlayerInStringFormat();
+        color = "b";
+        enemy = this.game.whitePlayer.getPlayerInStringFormat();
+    }
+    request += color + "," + this.game.mainBoard.getBoardInStringFormat() 
+            + "," + playerIn + "," + enemy + ")";
+
+    return request;
+
+};
+
 Client.prototype.requestCapture = function() {
     var game = this.game;
     game.captureAnimator.requestSent = true;
@@ -173,7 +226,7 @@ Client.prototype.makeRequestString_capture = function() {
     return request;
 };
 
-Client.prototype.botResquestMove = function() {
+Client.prototype.botRequestMove = function() {
     var game = this.game;
     var request = this.makeRequestString_botResquestMove();
     this.getPrologRequest(
@@ -190,8 +243,7 @@ Client.prototype.botResquestMove = function() {
             game.moveAnimator.inited = false;
             game.moveAnimator.moveToExecute = new GameMove(tileFrom, tileTo, "move");
             game.stateMachine.setState(states.ANIMATION_MOVE);
-            console.log(game.moveAnimator);
-            game.botResquestMove = false;
+            game.botRequestMove = false;
         });
 };
 

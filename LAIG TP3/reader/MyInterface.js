@@ -36,8 +36,8 @@ MyInterface.prototype.init = function(application) {
 	});
 	gameCtrl.onFinishChange(function(value) {
 		// Fires when a controller loses focus.
-		game.type = value;
-		console.log(game.type);
+		if (game.configured == false)
+			game.type = value;
 	});
 
 	return true;

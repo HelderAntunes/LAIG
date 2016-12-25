@@ -95,7 +95,8 @@ UpdateAnimator.prototype.display = function () {
             this.setPiecesUsedInAnimationInMainBoard();
             this.game.stateMachine.currState = states.ANIMATION_CAPTURE;
             this.inited = false;
-            this.moveToExecute.tileFrom.selected = false;
+            if (this.moveToExecute.tileFrom !== null)
+                this.moveToExecute.tileFrom.selected = false;
             this.moveToExecute.tileTo.selected = false;
             var end = this.game.isEnded();
             if (end === "white wins") {
