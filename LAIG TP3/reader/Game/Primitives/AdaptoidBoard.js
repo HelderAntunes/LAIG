@@ -30,6 +30,19 @@ AdaptoidBoard.prototype.initTiles = function() {
 
 };
 
+AdaptoidBoard.prototype.playerCanMoveAndCapture = function(colorPlayer) {
+    for (var r = 1; r <= 7; r++) {
+        for (var c = 1; c <= this.getNumColumnsInRow(r); c++) {
+            if (!this.tiles[r][c].isEmpty() &&
+                this.tiles[r][c].getColorOfHisPiece() === colorPlayer &&
+                this.tiles[r][c].getNumLegs() > 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}; 
+
 AdaptoidBoard.prototype.takeAllPieces = function() {
     for (var r = 1; r <= 7; r++) {
         for (var c = 1; c <= this.getNumColumnsInRow(r); c++) {
@@ -87,6 +100,18 @@ AdaptoidBoard.prototype.display = function() {
         }
 
     this.scene.popMatrix();
+};
+
+AdaptoidBoard.prototype.numPiecesOfAColorInBoard = function(color) {
+    var res = 0;
+    for (var r = 1; r <= 7; r++) {
+        for (var c = 1; c <= this.getNumColumnsInRow(r); c++) {
+            if (this.tiles[r][c].isEmpty() === false
+                && this.tiles[r][c].getColorOfHisPiece() === color)
+                res++;
+        }
+    }
+    return res;
 };
 
 AdaptoidBoard.prototype.displayTile = function(tile, r, c) {

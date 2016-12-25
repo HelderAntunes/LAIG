@@ -31,6 +31,8 @@ Client.prototype.requestMove = function() {
         function(data) {
         	if (data.target.responseText === "invalidMove") {
         		game.stateMachine.currState = states.PIECE_SELECTION_FROM;
+                game.hotspotFrom.tile.selected = false;
+                game.hotspotTo.tile.selected = false;
         	}
         	else {
         		var responseInArray = JSON.parse(data.target.responseText);
@@ -102,6 +104,8 @@ Client.prototype.requestUpdate = function() {
             
             if (data.target.responseText === "invalidMove") {
                 game.stateMachine.currState = states.UPDATE_PIECE_FROM;
+                game.hotspotFrom.tile.selected = false;
+                game.hotspotTo.tile.selected = false;
             }
             else {
                 var responseInArray = JSON.parse(data.target.responseText);
@@ -168,6 +172,50 @@ Client.prototype.makeRequestString_capture = function() {
 
     return request;
 };
+
+Client.prototype.botResquestMove = function() {
+    var game = this.game;
+    var request = this.makeRequestString_botResquestMove();
+    this.getPrologRequest(
+        request,
+        function(data) {
+            var responseInArray = JSON.parse(data.target.responseText);
+            game.moveAnimator.board = responseInArray[0];
+            game.moveAnimator.currPlayer = responseInArray[1];
+            game.moveAnimator.enemyPlayer = responseInArray[2];
+            var rowFrom = responseInArray[3], colFrom = responseInArray[4];
+            var rowTo = responseInArray[5], colTo = responseInArray[6];
+            var tileFrom = game.mainBoard.tiles[rowFrom][colFrom];
+            var tileTo = game.mainBoard.tiles[rowTo][colTo];
+            game.moveAnimator.inited = false;
+            game.moveAnimator.moveToExecute = new GameMove(tileFrom, tileTo, "move");
+            game.stateMachine.setState(states.ANIMATION_MOVE);
+            console.log(game.moveAnimator);
+            game.botResquestMove = false;
+        });
+};
+
+Client.prototype.makeRequestString_botResquestMove = function() {
+
+    var request = "botMoveAndCapture(";
+    var playerFromIn, playerToIn, color;
+    if (this.game.stateMachine.turn == turn.WHITE) {
+        color = "w";
+        playerFromIn = this.game.whitePlayer.getPlayerInStringFormat();
+        playerToIn = this.game.blackPlayer.getPlayerInStringFormat();
+    }
+    else {
+        color = "b";
+        playerFromIn = this.game.blackPlayer.getPlayerInStringFormat();
+        playerToIn = this.game.whitePlayer.getPlayerInStringFormat();
+    }
+    request += color + "," + this.game.mainBoard.getBoardInStringFormat() + "," + playerFromIn + ","
+            + playerToIn + ")";
+
+    return request;
+};
+
+
 
 
 

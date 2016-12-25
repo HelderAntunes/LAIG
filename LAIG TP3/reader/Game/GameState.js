@@ -7,6 +7,7 @@ function GameState(scene) {
     this.scene = scene;
 
     this.materialTile;
+    this.materialTileSelected;
     this.materialWhite;
     this.materialBlack;
     this.setMaterials();
@@ -40,6 +41,17 @@ function GameState(scene) {
     this.captureAnimator = new CaptureAnimator(this);
     this.turnChangeAnimator = new TurnChangeAnimator(this);
 
+    this.scorePrinter = new Score(scene, this);
+
+    this.inited = false;
+    this.configured = false;
+
+    this.endGame = [];
+    this.endGameSentToInterface = false;
+
+    this.type = null; //  ['human-human', 'human-computer']
+    this.botResquestMove = false;
+
 };
 
 GameState.prototype.constructor = GameState;
@@ -53,39 +65,77 @@ GameState.prototype.createPieces = function() {
 };
 
 GameState.prototype.initBoards = function() {
+    
     this.mainBoard.setBodyInTile(this.bodies[0], 4, 2, "white");
+    this.mainBoard.setLegsInTile([this.legs[2], this.legs[3], this.legs[4], this.legs[5]], 4, 2, "white");
+    this.mainBoard.setPincersInTile([this.pincers[3], this.pincers[7]], 4, 2, "white");
+
     this.mainBoard.setBodyInTile(this.bodies[1], 4, 6, "black");
-    this.mainBoard.setBodyInTile(this.bodies[2], 1, 2, "black");
-    this.mainBoard.setLegsInTile([this.legs[7], this.legs[8], this.legs[9]], 1, 2, "black");
-    this.mainBoard.setBodyInTile(this.bodies[3], 4, 3, "black");
-    this.mainBoard.setLegsInTile([this.legs[2]], 4, 2, "white");
-    this.mainBoard.setLegsInTile([this.legs[5]], 4, 3, "black");
-    this.mainBoard.setLegsInTile([this.legs[6], this.legs[7]], 4, 3, "black");
-    this.mainBoard.setPincersInTile([this.pincers[2]], 4, 2, "white");
-    this.mainBoard.setLegsInTile([this.legs[3]], 4, 6, "black");
-    this.mainBoard.setPincersInTile([this.pincers[3], this.pincers[7], this.pincers[8]], 1, 2, "black");
+    this.mainBoard.setLegsInTile([this.legs[7], this.legs[8], this.legs[9], this.legs[10], this.legs[11]], 4, 6, "black");
+    this.mainBoard.setPincersInTile([this.pincers[2]], 4, 6, "black");
+
     this.auxBoardWhite.setBody(this.bodies[4], "white");
     this.auxBoardWhite.setLeg(this.legs[0], "white");
     this.auxBoardWhite.setPincer(this.pincers[0], "white");
+
     this.auxBoardBlack.setBody(this.bodies[5], "black");
     this.auxBoardBlack.setLeg(this.legs[1], "black");
     this.auxBoardBlack.setPincer(this.pincers[1], "black");
+
+   /* this.mainBoard.setBodyInTile(this.bodies[0], 4, 2, "white");
+    this.mainBoard.setBodyInTile(this.bodies[1], 4, 6, "black");*/
 };
 
 GameState.prototype.display = function() {
 
-    if (this.stateMachine.currState == states.ANIMATION_MOVE) {
+    if (!this.configured) {
+        this.scene.interface.showPlayerInfo();
+        this.configured = true;
+        return;
+    }
+
+    if (this.scene.pickMode) {
+        this.drawBoards();
+        return;
+    }
+
+    if (this.stateMachine.currState == states.PIECE_SELECTION_FROM) {
+        var colorPlayer = (this.stateMachine.turn === turn.WHITE) ? "white":"black";
+        if (!this.mainBoard.playerCanMoveAndCapture(colorPlayer)) {
+            this.stateMachine.currState = states.UPDATE_PIECE_FROM;
+        }
+        else {
+            if (this.stateMachine.turn === turn.BLACK &&
+                this.type === "human-computer" && this.botResquestMove == false) {
+                this.client.botResquestMove();
+                this.botResquestMove = true;
+            }
+        }
+        this.drawBoards();
+    }
+    else if (this.stateMachine.currState == states.ANIMATION_MOVE) {
         this.moveAnimator.display();
     }
     else if (this.stateMachine.currState == states.ANIMATION_UPDATE) {
         this.updateAnimator.display();
     }
     else if (this.stateMachine.currState == states.UPDATE_PIECE_FROM) {
+        if (this.stateMachine.turn == turn.WHITE) {
+            if (this.whitePlayer.stockIsExpired()) {
+                this.stateMachine.currState = states.ANIMATION_CAPTURE;
+            }
+        }
+        else {
+            if (this.blackPlayer.stockIsExpired()) {
+                this.stateMachine.currState = states.ANIMATION_CAPTURE;
+            }
+        }
         this.drawBoards();
     }
     else if (this.stateMachine.currState == states.ANIMATION_CAPTURE) {
         if (this.captureAnimator.requestSent === false) {
-            this.client.requestCapture();   
+            this.client.requestCapture(); 
+            this.drawBoards();  
         }
         else {
             if (this.captureAnimator.requestReply === true) {
@@ -99,6 +149,14 @@ GameState.prototype.display = function() {
     else if (this.stateMachine.currState == states.TURN_CHANGE) {
         this.turnChangeAnimator.display();
     }
+    else if (this.stateMachine.currState == states.END_GAME) {
+        if (this.endGameSentToInterface == false) {
+            this.endGame['endOfGame'] = (this.stateMachine.winner == "white") ? "white wins":"black wins";
+            this.scene.interface.gui.add(this.endGame, 'endOfGame');
+            this.endGameSentToInterface = true;
+        }
+        this.drawBoards();
+    }
     else {
         this.drawBoards();
     }
@@ -106,8 +164,6 @@ GameState.prototype.display = function() {
 };
 
 GameState.prototype.drawBoards = function() {
-   this.scene.pushMatrix();
-
    this.mainBoard.display();
 
    this.scene.pushMatrix();
@@ -121,6 +177,8 @@ GameState.prototype.drawBoards = function() {
    this.auxBoardBlack.display();
    this.scene.popMatrix();
 
+   this.scene.pushMatrix();
+   this.scorePrinter.display();
    this.scene.popMatrix();
 };
 
@@ -130,6 +188,12 @@ GameState.prototype.setMaterials = function() {
     this.materialTile.setSpecular( 0.5, 0.5, 0.5, 1);
     this.materialTile.setShininess(50);
     this.materialTile.loadTexture("scenes/chessboard.jpg");
+
+    this.materialTileSelected = new CGFappearance(this.scene);
+    this.materialTileSelected.setDiffuse(0.4, 0.4, 1.0, 1);
+    this.materialTileSelected.setSpecular( 0.2, 0.2, 0.5, 1);
+    this.materialTileSelected.setShininess(50);
+    this.materialTileSelected.loadTexture("scenes/chessboard.jpg");
 
     this.materialWhite = new CGFappearance(this.scene);
     this.materialWhite.setDiffuse( 1.0, 1.0, 1.0, 1);
@@ -149,21 +213,46 @@ GameState.prototype.getHotspots = function() {
     return hotspots;
 };
 
+GameState.prototype.isEnded = function() {
+    if (this.whitePlayer.score == 5) {
+        return "white wins";
+    }
+    if (this.blackPlayer.score == 5) {
+        return "black wins";  
+    }
+
+    if (this.mainBoard.numPiecesOfAColorInBoard("white") === 0) {
+        return "black wins";
+    }
+
+    if (this.mainBoard.numPiecesOfAColorInBoard("black") === 0) {
+        return "white wins";
+    }
+
+    return false;
+};
+
+
 GameState.prototype.updatePieceSelected = function(hotspot) {
 
     if (this.hotspotFrom === null) { // first select
         this.hotspotFrom = hotspot;
 
         if (this.stateMachine.currState === states.PIECE_SELECTION_FROM) {
-            if (this.stateMachine.turn === turn.WHITE) {
-
+            if (hotspot.tile.gameBoard.constructor.name === "AdaptoidBoard") {
+                this.hotspotFrom.tile.selected = true;
+                this.stateMachine.setState(states.PIECE_SELECTION_TO);
             }
-            this.stateMachine.setState(states.PIECE_SELECTION_TO);
+            else {
+                this.hotspotFrom = null;
+            }
+            
         }
         else if (this.stateMachine.currState === states.UPDATE_PIECE_FROM) {
             if (this.stateMachine.turn === turn.WHITE) {
                 if (hotspot.tile.gameBoard.constructor.name === "AuxiliaryBoard"
                     && hotspot.tile.gameBoard.color == "white") {
+                    this.hotspotFrom.tile.selected = true;
                     this.stateMachine.setState(states.UPDATE_PIECE_TO);
                 }
                 else {
@@ -175,11 +264,15 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
                 if (hotspot.tile.gameBoard.constructor.name === "AuxiliaryBoard"
                     && hotspot.tile.gameBoard.color == "black") {
                     this.stateMachine.setState(states.UPDATE_PIECE_TO);
+                    this.hotspotFrom.tile.selected = true;
                 }
                 else {
                     this.hotspotFrom = null
                 }
             }
+        }
+        else {
+            this.hotspotFrom = null;
         }
     }
     else if (this.hotspotFrom === hotspot) { // unselect
@@ -189,20 +282,27 @@ GameState.prototype.updatePieceSelected = function(hotspot) {
         }
         else if (this.stateMachine.currState === states.UPDATE_PIECE_TO)
             this.stateMachine.setState(states.UPDATE_PIECE_FROM);
+        hotspot.tile.selected = false;
     }
     else { // move a piece
         this.hotspotTo = hotspot;
         if (this.stateMachine.currState === states.PIECE_SELECTION_TO) {
             this.client.requestMove();
+            this.hotspotTo.tile.selected = true;
         }
         else if (this.stateMachine.currState === states.UPDATE_PIECE_TO) {
             
             if (hotspot.tile.gameBoard.constructor.name === "AdaptoidBoard") {
                 this.client.requestUpdate();
+                this.hotspotTo.tile.selected = true;
             }
             else {
                 this.stateMachine.setState(states.UPDATE_PIECE_FROM);
             }
+        }
+        else {
+            this.hotspotFrom = null;
+            this.hotspotTo = null;
         }
     }
 };

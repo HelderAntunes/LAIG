@@ -26,3 +26,10 @@ Player.prototype.getPlayerInStringFormat = function() {
     return "[" + this.color + "," + this.numBodies + "," + this.numLegs +
     "," + this.numPincers + "," + this.score + "]";
 };
+
+Player.prototype.stockIsExpired = function() {
+    if (this.numPincers == 0 && this.numLegs == 0 && this.numPincers == 0)
+        return true;
+    return false;
+};
+

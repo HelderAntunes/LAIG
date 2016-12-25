@@ -4,7 +4,7 @@
  */
 
 
-function MyInterface() {
+function MyInterface(scene) {
 	//call CGFinterface constructor
 	CGFinterface.call(this);
 };
@@ -25,8 +25,74 @@ MyInterface.prototype.init = function(application) {
 
 	this.gui = new dat.GUI();
 
+	var text = new initInterface(this.scene);
+
+	this.gui.add(text, 'initGame');
+	var gameCtrl = this.gui.add(text, 'modeGame', ['human-human', 'human-computer']);
+
+	var game = this.scene.game;
+	gameCtrl.onChange(function(value) {
+	  	// Fires on every change, drag, keypress, etc.
+	});
+	gameCtrl.onFinishChange(function(value) {
+		// Fires when a controller loses focus.
+		game.type = value;
+		console.log(game.type);
+	});
+
 	return true;
 };
+
+var initInterface = function(scene) {
+	this.initGame = function() {
+		scene.game.inited = true;
+	};
+	this.modeGame = "human-human";
+};
+
+var putInformationOfPlayerOnInterface = function(Score, Adaptoids, Legs, Pincers) {
+    this.score = Score;
+    this.adaptoids = Adaptoids;
+    this.legs = Legs;
+    this.pincers = Pincers;
+};
+
+var configWhite = new putInformationOfPlayerOnInterface(0, 11, 12, 12);
+var configBlack = new putInformationOfPlayerOnInterface(0, 11, 12, 12);
+
+
+MyInterface.prototype.showPlayerInfo = function() {
+	var gui = this.gui;
+    var whitePlayer = gui.addFolder('White Player');
+    var blackPlayer = gui.addFolder('black Player');
+    whitePlayer.add(configWhite, 'score').listen();
+    whitePlayer.add(configWhite, 'adaptoids').listen();
+    whitePlayer.add(configWhite, 'legs').listen();
+    whitePlayer.add(configWhite, 'pincers').listen();
+    blackPlayer.add(configBlack, 'score').listen();
+    blackPlayer.add(configBlack, 'adaptoids').listen();
+    blackPlayer.add(configBlack, 'legs').listen();
+    blackPlayer.add(configBlack, 'pincers').listen();	
+
+    var scene = this.scene;
+    var update = function() {
+		requestAnimationFrame(update);
+		configWhite.score = scene.game.whitePlayer.score;
+		configWhite.adaptoids = scene.game.whitePlayer.numBodies;
+		configWhite.legs = scene.game.whitePlayer.numLegs;
+		configWhite.pincers = scene.game.whitePlayer.numPincers;
+		configBlack.score = scene.game.blackPlayer.score;
+		configBlack.adaptoids = scene.game.blackPlayer.numBodies;
+		configBlack.legs = scene.game.blackPlayer.numLegs;
+		configBlack.pincers = scene.game.blackPlayer.numPincers;
+	};
+
+    update();
+};
+
+
+
+
 
 /**
  * processKeyUp

@@ -106,8 +106,10 @@ CaptureAnimator.prototype.restartClock = function() {
 };
 
 CaptureAnimator.prototype.display = function () {
-    if (this.inited === false)
+    if (this.inited === false) {
+        this.game.drawBoards();
         this.init();
+    }
     else {
 
         this.game.drawBoards();
@@ -121,6 +123,15 @@ CaptureAnimator.prototype.display = function () {
             this.inited = false;
             this.requestReply = false;
             this.requestSent = false;
+            var end = this.game.isEnded();
+            if (end === "white wins") {
+                this.game.stateMachine.currState = states.END_GAME;
+                this.game.stateMachine.winner = "white";
+            }
+            else if (end === "black wins") {
+                this.game.stateMachine.currState = states.END_GAME;
+                this.game.stateMachine.winner = "black";
+            }
         }
 
         for (var i = 0; i < this.capturedPieces.length; i++) {

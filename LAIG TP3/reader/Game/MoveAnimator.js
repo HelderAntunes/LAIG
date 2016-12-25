@@ -193,8 +193,10 @@ MoveAnimator.prototype.restartClock = function() {
 };
 
 MoveAnimator.prototype.display = function () {
-    if (this.inited === false)
+    if (this.inited === false) {
+        this.game.drawBoards();
         this.init();
+    }
     else {
         this.game.drawBoards();
         var time = this.game.scene.currTime;
@@ -242,6 +244,19 @@ MoveAnimator.prototype.displayEnd = function(time) {
         this.setPieceFromAndPieceToInBoardIfThetSurvive();
         this.game.stateMachine.currState = states.UPDATE_PIECE_FROM;
         this.inited = false;
+        this.moveToExecute.tileFrom.selected = false;
+        this.moveToExecute.tileTo.selected = false;
+
+        var end = this.game.isEnded();
+        if (end === "white wins") {
+            this.game.stateMachine.currState = states.END_GAME;
+            this.game.stateMachine.winner = "white";
+        }
+        else if (end === "black wins") {
+            this.game.stateMachine.currState = states.END_GAME;
+            this.game.stateMachine.winner = "black";
+        }
+        
     }
 
     // pieceFrom

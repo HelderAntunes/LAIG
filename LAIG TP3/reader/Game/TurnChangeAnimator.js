@@ -30,10 +30,13 @@ TurnChangeAnimator.prototype.display = function() {
 
     if (time > this.durationOfAnimation) {
         this.game.stateMachine.currState = states.PIECE_SELECTION_FROM;
-        if (this.game.stateMachine.turn == turn.WHITE)
+        if (this.game.stateMachine.turn == turn.WHITE) {
             this.game.stateMachine.turn = turn.BLACK;
-        else
+        }
+        else {
             this.game.stateMachine.turn = turn.WHITE;
+        }
+
         this.inited = false;
         this.game.drawBoards();
         return;
@@ -41,10 +44,10 @@ TurnChangeAnimator.prototype.display = function() {
 
     var perc = time / this.durationOfAnimation, ang;
     if (this.game.stateMachine.turn == turn.WHITE) {
-        ang = -Math.PI/4 + perc * Math.PI/2;
+        ang = -Math.PI/4 + perc * Math.PI;
     }
     else {
-        ang = Math.PI/4 - perc * Math.PI/2;
+        ang = 3*Math.PI/4 - perc * Math.PI;
     }
     this.game.scene.camera.setPosition(vec3.fromValues(10 * Math.cos(ang), 20, -10 * Math.sin(ang)));
     this.game.drawBoards();

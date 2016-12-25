@@ -2,6 +2,7 @@
 :-use_module(library(lists)).
 :-use_module(library(codesio)).
 :- include('Logic.pl').
+:- include('Bot.pl').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%                                        Server                                                   %%%%
@@ -103,17 +104,47 @@ print_header_line(_).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Require your Prolog Files here
-%parse_input(T, T).
 parse_input(handshake, handshake).
 parse_input(test(C,N), Res) :- test(C,Res,N).
 parse_input(quit, goodbye).
 
-parse_input(moveValid(Color,RowFrom,ColFrom,RowTo,ColTo,BoardIn), Res) :-
-	moveValid(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, Res).
 
 parse_input(moveAndCapture(Color,RowFrom,ColFrom,RowTo,ColTo,BoardIn,PlayerFromIn,PlayerToIn), Res) :-
     moveAndCapture(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, BoardOut, PlayerFromIn, PlayerFromOut, PlayerToIn, PlayerToOut),
     Res = [BoardOut,PlayerFromOut,PlayerToOut].
+parse_input(moveAndCapture(Color,RowFrom,ColFrom,RowTo,ColTo,BoardIn,PlayerFromIn,PlayerToIn), 'invalidMove') :-
+    \+ moveAndCapture(Color, RowFrom, ColFrom, RowTo, ColTo, BoardIn, _, PlayerFromIn, _, PlayerToIn, _).
+
+
+parse_input(createAdaptoid(Color,PlayerIn,Row,Column,BoardIn), Res) :-
+	createAdaptoid(Color, PlayerIn, Row, Column, BoardIn, BoardOut, PlayerOut),
+	Res = [BoardOut, PlayerOut].
+parse_input(createAdaptoid(Color,PlayerIn,Row,Column,BoardIn), 'invalidMove') :-
+	\+ createAdaptoid(Color, PlayerIn, Row, Column, BoardIn, _, _).
+
+parse_input(addLeg(Color,PlayerIn,Row,Column,BoardIn), Res) :-
+	addLeg(Color, PlayerIn, Row, Column, BoardIn, BoardOut, PlayerOut),
+	Res = [BoardOut, PlayerOut].
+parse_input(addLeg(Color,PlayerIn,Row,Column,BoardIn), 'invalidMove') :-
+	\+ addLeg(Color, PlayerIn, Row, Column, BoardIn, _, _).
+	
+parse_input(addPincer(Color,PlayerIn,Row,Column,BoardIn), Res) :-
+	addPincer(Color, PlayerIn, Row, Column, BoardIn, BoardOut, PlayerOut),
+	Res = [BoardOut, PlayerOut].
+parse_input(addPincer(Color,PlayerIn,Row,Column,BoardIn), 'invalidMove') :-
+	\+ addPincer(Color, PlayerIn, Row, Column, BoardIn, _, _).
+
+parse_input(captureAdaptoids(Color,BoardIn,PlayerIn), Res) :-
+	captureAdaptoids(Color, BoardIn, BoardOut, PlayerIn, PlayerOut),
+	Res = [BoardOut,PlayerOut].
+
+parse_input(botMoveAndCapture(Color,BoardIn,PlayerFromIn,PlayerToIn), Res) :-
+	botMoveAndCapture(Color, BoardIn, BoardOut, PlayerFromIn, PlayerFromOut, PlayerToIn, PlayerToOut, RFrom, CFrom, RTo, CTo),
+	Res = [BoardOut,PlayerFromOut,PlayerToOut,RFrom,CFrom,RTo,CTo].
+
+
+	
+	
 
 test(_,[],N) :- N =< 0.
 test(A,[A|Bs],N) :- N1 is N-1, test(A,Bs,N1).

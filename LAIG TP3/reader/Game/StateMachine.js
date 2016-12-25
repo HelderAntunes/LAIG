@@ -25,6 +25,7 @@ var turn = {
 function StateMachine(initialState, initialTurn) {
     this.currState = initialState;
     this.turn = initialTurn;
+    this.winner = null;
 };
 
 StateMachine.prototype.constructor = StateMachine;

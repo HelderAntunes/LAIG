@@ -19,6 +19,7 @@ function Tile(scene, gameBoard, row, collumn, radius, height, adaptoidBody, adap
     this.adaptoidPincers = [];
 
     this.hotspot = new Hotspot(scene, this, 0.9 * this.radiusCilinder);
+    this.selected = false;
 
 };
 
@@ -33,7 +34,12 @@ Tile.prototype.display = function() {
     } else {
 
         this.scene.pushMatrix();
-        this.gameBoard.game.materialTile.apply();
+        if (this.selected) {
+            this.gameBoard.game.materialTileSelected.apply();
+        } 
+        else {
+            this.gameBoard.game.materialTile.apply();
+        }
         this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.cilinder.display();
         this.scene.popMatrix();

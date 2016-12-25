@@ -82,8 +82,10 @@ UpdateAnimator.prototype.setNumPiecesUsedToZero = function() {
 };
 
 UpdateAnimator.prototype.display = function () {
-    if (this.inited === false)
+    if (this.inited === false) {
+        this.game.drawBoards();
         this.init();
+    }
     else {
         this.game.drawBoards();
 
@@ -93,6 +95,18 @@ UpdateAnimator.prototype.display = function () {
             this.setPiecesUsedInAnimationInMainBoard();
             this.game.stateMachine.currState = states.ANIMATION_CAPTURE;
             this.inited = false;
+            this.moveToExecute.tileFrom.selected = false;
+            this.moveToExecute.tileTo.selected = false;
+            var end = this.game.isEnded();
+            if (end === "white wins") {
+                this.game.stateMachine.currState = states.END_GAME;
+                this.game.stateMachine.winner = "white";
+            }
+            else if (end === "black wins") {
+                this.game.stateMachine.currState = states.END_GAME;
+                this.game.stateMachine.winner = "black";
+            }
+        
         }
 
         this.game.scene.pushMatrix();
@@ -100,7 +114,7 @@ UpdateAnimator.prototype.display = function () {
         this.pieceToAdd.display();
         this.game.scene.popMatrix();
 
-        if (this.isPieceUpdated !== null) {
+        if (this.isPieceUpdated !== null && this.pieceUpdated !== null) {
             this.game.scene.pushMatrix();
             this.game.scene.multMatrix(this.animationOfPieceUpdated.getTransformationMatrix(time));
             this.pieceUpdated.display();

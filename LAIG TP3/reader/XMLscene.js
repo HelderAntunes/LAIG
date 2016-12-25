@@ -61,7 +61,7 @@ XMLscene.prototype.initLights = function () {
 };
 
 XMLscene.prototype.initCameras = function () {
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(0, 15, 0), vec3.fromValues(0, 0, 0));
+    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(10 * Math.cos(-Math.PI/4), 20, -10 * Math.sin(-Math.PI/4)), vec3.fromValues(0, 0, 0));
 };
 
 XMLscene.prototype.setDefaultAppearance = function () {
@@ -94,8 +94,8 @@ XMLscene.prototype.setDefaulCamera = function () {
     for (var i = 0; i < this.graph.cameras.length; i++)
     if (this.graph.cameras[i].id == defaultCam) {
         this.camera = this.graph.cameras[i].camera;
-        // this.interface.setActiveCamera(this.camera);
-        this.camera = this.camera;
+       // this.interface.setActiveCamera(this.camera);
+       // this.camera = this.camera;
         this.ativeCameraIndex = i;
         break;
     }
@@ -241,6 +241,9 @@ XMLscene.prototype.display = function () {
             this.lights[i].update();
         }
 
+        if (this.game.inited == false) {
+            return;
+        }
         if (this.pickMode) {
             this.indexRegPick = 1;
             this.game.display();

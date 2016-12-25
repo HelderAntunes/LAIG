@@ -167,14 +167,15 @@ validPosition(R, C, Board) :- getPiece(R, C, Board, _).
 
 % Create basic adaptoid of give color
 % createAdaptoid( + Color, + Row, + Column, + BoardIn, - BoardOut)
-createAdaptoid(Color, Row, Column, BoardIn, BoardOut, PlayerOut):-
+createAdaptoid(Color, PlayerIn, Row, Column, BoardIn, BoardOut, PlayerOut):-
     getPiece(Row,Column,BoardIn, Piece),
     Piece = empty,
 	neighborValid(Row, Column, _, _, Color, BoardIn),
-    player(Color, Adaptoids, Legs, Pincers, Score),
-    PlayerIn = [Color, Adaptoids, Legs, Pincers, Score],
-	takePiecesFromPlayer([1, 0, 0], PlayerIn, PlayerOut), !,
-    setPiece(Row,Column,[Color,0,0],BoardIn,BoardOut).
+    PlayerIn = [Color|_],
+	takePiecesFromPlayer([1, 0, 0], PlayerIn, PlayerInAux), !,
+    setPiece(Row,Column,[Color,0,0],BoardIn,BoardInAux),
+    transformPlayer(PlayerInAux, PlayerOut),
+    transformBoard(BoardInAux, BoardOut).
 
 neighborValid(Row, Col, NeighborRow, NeighborCol, Color, Board) :-
 	connected([Row,Col], [NeighborRow, NeighborCol], Board),
@@ -182,41 +183,44 @@ neighborValid(Row, Col, NeighborRow, NeighborCol, Color, Board) :-
 
 % Add pincer of given colour to a piece in board
 %           +     +      +       +        -
-addPincer(Color, Row, Column, BoardIn, BoardOut, PlayerOut):-
+addPincer(Color, PlayerIn, Row, Column, BoardIn, BoardOut, PlayerOut):-
    getPiece(Row,Column,BoardIn, Piece),
    Piece = [Color, Legs, Pincers], !,
    Total is Legs + Pincers + 1,
    Total =< 6,
-   player(Color, Adaptoids, Leg, Pin, S),
-   PlayerIn = [Color, Adaptoids, Leg, Pin, S],
-   takePiecesFromPlayer([0, 0, 1], PlayerIn, PlayerOut), !,
+   PlayerIn = [Color|_],
+   takePiecesFromPlayer([0, 0, 1], PlayerIn, PlayerInAux), !,
    P1 is Pincers+1,
    P = [Color, Legs, P1],
-   setPiece(Row, Column, P, BoardIn, BoardOut).
+   setPiece(Row, Column, P, BoardIn, BoardInAux),
+   transformPlayer(PlayerInAux, PlayerOut),
+   transformBoard(BoardInAux, BoardOut).
 
 
 % Add leg of given colour to a piece in board
 %        +     +      +       +        -
-addLeg(Color, Row, Column, BoardIn, BoardOut, PlayerOut):-
+addLeg(Color, PlayerIn, Row, Column, BoardIn, BoardOut, PlayerOut):-
    getPiece(Row,Column,BoardIn, Piece),
    Piece = [Color, Legs, Pincers], !,
    Total is Legs + Pincers + 1,
    Total =< 6,
-   player(Color, Adaptoids, Leg, Pin, S),
-   PlayerIn = [Color, Adaptoids, Leg, Pin, S],
-   takePiecesFromPlayer([0, 1, 0],PlayerIn,PlayerOut), !,
+   PlayerIn = [Color|_],
+   takePiecesFromPlayer([0, 1, 0],PlayerIn,PlayerInAux), !,
    L is Legs+1,
    P = [Color, L, Pincers],
-   setPiece(Row, Column, P, BoardIn, BoardOut).
+   setPiece(Row, Column, P, BoardIn, BoardInAux),
+   transformPlayer(PlayerInAux, PlayerOut),
+   transformBoard(BoardInAux, BoardOut).
 
 % Capture starving adaptoids of a given colour
 % captureAdaptoids( + Color, + BoardIn, - BoardOut)
-captureAdaptoids(Color, BoardIn, BoardOut,PlayerOut) :-
+captureAdaptoids(Color, BoardIn, BoardOut, PlayerIn, PlayerOut) :-
 	findall([R,C], getPiece(R,C,BoardIn,[Color|_]), Pieces),
     getColorOfEnemy(Color, ColorEnemy),
-    player(ColorEnemy, Adaptoids, Legs, Pincers, Score),
-    PlayerIn = [ColorEnemy, Adaptoids, Legs, Pincers, Score],
-	tryCaptureAPiece(Pieces, BoardIn, BoardOut, PlayerIn, PlayerOut).
+    PlayerIn = [ColorEnemy|_],
+	tryCaptureAPiece(Pieces, BoardIn, BoardInAux, PlayerIn, PlayerInAux),
+	transformPlayer(PlayerInAux, PlayerOut),
+    transformBoard(BoardInAux, BoardOut).
 
 tryCaptureAPiece([], Board, Board, PlayerIn, PlayerIn).
 tryCaptureAPiece([[R,C]|Ps], BoardIn, BoardOut, PlayerIn, PlayerOut) :-
