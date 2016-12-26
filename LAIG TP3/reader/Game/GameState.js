@@ -12,8 +12,8 @@ function GameState(scene) {
     this.materialBlack;
     this.setMaterials();
 
-    this.radiusOfTile = 0.5;
-    this.heightOfTile = 0.25;
+    this.radiusOfTile = 0.125;
+    this.heightOfTile = 0.1;
 
     this.bodies = [];
     this.legs = [];
@@ -55,6 +55,8 @@ function GameState(scene) {
 
     this.undo = new Undo(this);
 
+    this.height = 1;
+
 };
 
 GameState.prototype.constructor = GameState;
@@ -91,18 +93,17 @@ GameState.prototype.initBoards = function() {
 
 GameState.prototype.display = function() {
 
+    this.scene.pushMatrix();
+    this.scene.translate(0, this.height, 0);
+
     if (!this.configured) {
         this.scene.interface.showPlayerInfo();
         this.configured = true;
-        return;
     }
-
-    if (this.scene.pickMode) {
+    else if (this.scene.pickMode) {
         this.drawBoards();
-        return;
     }
-
-    if (this.stateMachine.currState == states.PIECE_SELECTION_FROM) {
+    else if (this.stateMachine.currState == states.PIECE_SELECTION_FROM) {
         var colorPlayer = (this.stateMachine.turn === turn.WHITE) ? "white":"black";
         if (!this.mainBoard.playerCanMoveAndCapture(colorPlayer)) {
             this.stateMachine.currState = states.UPDATE_PIECE_FROM;
@@ -174,6 +175,8 @@ GameState.prototype.display = function() {
     else {
         this.drawBoards();
     }
+
+    this.scene.popMatrix();
 
 };
 

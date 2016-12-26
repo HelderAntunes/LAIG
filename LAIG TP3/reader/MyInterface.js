@@ -68,7 +68,8 @@ var setUndo = function(scene) {
     		state !== states.ANIMATION_CAPTURE &&
     		state !== states.TURN_CHANGE &&
     		state !== states.UNDO &&
-    		state !== states.END_GAME) {
+    		state !== states.END_GAME &&
+    		!(scene.game.type === 'human-computer' && scene.game.stateMachine.turn == turn.BLACK)) {
     		if (scene.game.undo.isPossibleExecuteUndo()) {
 			scene.game.undo.executeUndo();
     		}

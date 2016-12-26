@@ -22,7 +22,7 @@ serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MyTransformat
                 'Game/Player.js', 'Game/StateMachine.js', 'Game/GameMove.js', 'Game/MoveAnimator.js',
                 'Animations/KeyFrameAnimation.js', 'Game/Primitives/Adaptoid/Piece.js', 'Game/UpdateAnimator.js',
                 'Game/CaptureAnimator.js', 'Game/TurnChangeAnimator.js', 'Game/Primitives/Score.js',  
-                'Game/Primitives/Flag.js', 'Game/Undo.js',           
+                'Game/Primitives/Flag.js', 'Game/Undo.js', 'MyUnitCubeQuad.js', "MyTable.js", "MyQuad.js",     
 
 main=function()
 {
@@ -42,7 +42,7 @@ main=function()
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml
 	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor)
 
-	var filename=getUrlVars()['file'] || "LAIG_TP1_DSX_T1_G10_v02.xml";
+	var filename=getUrlVars()['file'] || "scene1.dsx";
 	//var filename=getUrlVars()['file'] || "demo.xml";
 
 

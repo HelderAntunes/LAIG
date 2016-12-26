@@ -21,19 +21,19 @@ Score.prototype.display = function() {
 
     this.scene.pushMatrix();
     this.material.apply();
-    this.scene.translate(-4, 0, 4.5);
-    this.scene.rotate(Math.PI/2, 0, 1, 0);
+    this.scene.translate(-0.60, 0, 1.5);
+    //this.scene.rotate(Math.PI/2, 0, 1, 0);
     var indexFlag = 0;
     for (var i = 0; i < 5; i++, indexFlag++) {
         if (i < this.game.whitePlayer.score) {
             this.scene.pushMatrix();
-            this.scene.translate(indexFlag*0.7, 0, 0);
+            this.scene.translate(indexFlag*0.3, 0, 0);
             this.flag.display(true);
             this.scene.popMatrix();
         }
         else {
             this.scene.pushMatrix();
-            this.scene.translate(indexFlag*0.7, 0, 0);
+            this.scene.translate(indexFlag*0.3, 0, 0);
             this.flag.display(false);
             this.scene.popMatrix();
         }
@@ -44,19 +44,19 @@ Score.prototype.display = function() {
    
     this.scene.pushMatrix();
     this.material.apply();
-    this.scene.translate(4, 0, -4.5);
-    this.scene.rotate(-Math.PI/2, 0, 1, 0);
+    this.scene.translate(0.60, 0, -1.5);
+    this.scene.rotate(Math.PI, 0, 1, 0);
     var indexFlag = 0;
     for (var i = 0; i < 5; i++, indexFlag++) {
         if (i < this.game.blackPlayer.score) {
             this.scene.pushMatrix();
-            this.scene.translate(indexFlag*0.7, 0, 0);
+            this.scene.translate(indexFlag*0.3, 0, 0);
             this.flag.display(true);
             this.scene.popMatrix();
         }
         else {
             this.scene.pushMatrix();
-            this.scene.translate(indexFlag*0.7, 0, 0);
+            this.scene.translate(indexFlag*0.3, 0, 0);
             this.flag.display(false);
             this.scene.popMatrix();
         }

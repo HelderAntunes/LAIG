@@ -31,6 +31,7 @@ XMLscene.prototype.init = function (application) {
 
     this.setUpdatePeriod(20);
     this.vehicle = new Vehicle(this, 'airplane');
+    this.table = new MyTable(this);
     this.game = new GameState(this);
 
     this.setPickEnabled(true);
@@ -94,7 +95,7 @@ XMLscene.prototype.setDefaulCamera = function () {
     for (var i = 0; i < this.graph.cameras.length; i++)
     if (this.graph.cameras[i].id == defaultCam) {
         this.camera = this.graph.cameras[i].camera;
-       // this.interface.setActiveCamera(this.camera);
+       this.interface.setActiveCamera(this.camera);
        // this.camera = this.camera;
         this.ativeCameraIndex = i;
         break;
@@ -242,6 +243,8 @@ XMLscene.prototype.display = function () {
         }
 
         if (this.game.inited == false) {
+            this.graph.drawGraph();
+            this.table.display();
             return;
         }
         if (this.pickMode) {
@@ -249,7 +252,9 @@ XMLscene.prototype.display = function () {
             this.game.display();
         }
         else {
+            this.graph.drawGraph();
             this.game.display();
+            this.table.display();
         }
 
     };

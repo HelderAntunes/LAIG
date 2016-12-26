@@ -74,53 +74,55 @@ MySceneGraph.prototype.parseDSXFile = function(rootElement) {
 MySceneGraph.prototype.checkOrderOfMainTags = function(rootElement) {
 
     var numTags = rootElement.children.length;
+    console.log(numTags);
 
-    var sceneTag = rootElement.children[0];
+    var sceneTag = rootElement.children[1];
+    console.log(sceneTag);
     if (sceneTag === null || sceneTag.nodeName != "scene") {
         return "'scene' tag is missing or is in wrong position.";
     }
 
-    var viewsTag = rootElement.children[1];
+    var viewsTag = rootElement.children[2];
     if (viewsTag === null || viewsTag.nodeName != "views") {
         return "'views' tag is missing or is in wrong position.";
     }
 
-    var illuminationTag = rootElement.children[2];
+    var illuminationTag = rootElement.children[3];
     if (illuminationTag === null || illuminationTag.nodeName != "illumination") {
         return "'illumination' tag is missing or is in wrong position.";
     }
 
-    var lightsTag = rootElement.children[3];
+    var lightsTag = rootElement.children[4];
     if (lightsTag === null || lightsTag.nodeName != "lights") {
         return "'lights' tag is missing or is in wrong position.";
     }
 
-    var texturesTag = rootElement.children[4];
+    var texturesTag = rootElement.children[5];
     if (texturesTag === null || texturesTag.nodeName != "textures") {
         return "'textures' tag is missing or is in wrong position.";
     }
 
-    var materialsTag = rootElement.children[5];
+    var materialsTag = rootElement.children[6];
     if (materialsTag === null || materialsTag.nodeName != "materials") {
         return "'materials' tag is missing or is in wrong position.";
     }
 
-    var transformationsTag = rootElement.children[6];
+    var transformationsTag = rootElement.children[7];
     if (transformationsTag === null || transformationsTag.nodeName != "transformations") {
         return "'transformations' tag is missing or is in wrong position.";
     }
 
-    var animationsTag = rootElement.children[7];
+    var animationsTag = rootElement.children[8];
     if (animationsTag === null || animationsTag.nodeName != "animations") {
         return "'animations' tag is missing or is in wrong position.";
     }
 
-    var primitivesTag = rootElement.children[8];
+    var primitivesTag = rootElement.children[9];
     if (primitivesTag === null || primitivesTag.nodeName != "primitives") {
         return "'primitives' tag is missing or is in wrong position.";
     }
 
-    var componentsTag = rootElement.children[9];
+    var componentsTag = rootElement.children[10];
     if (componentsTag === null || componentsTag.nodeName != "components") {
         return "'components' tag is missing or is in wrong position.";
     }
