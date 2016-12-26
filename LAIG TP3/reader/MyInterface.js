@@ -60,6 +60,21 @@ var putInformationOfPlayerOnInterface = function(Score, Adaptoids, Legs, Pincers
 var configWhite = new putInformationOfPlayerOnInterface(0, 11, 12, 12);
 var configBlack = new putInformationOfPlayerOnInterface(0, 11, 12, 12);
 
+var setUndo = function(scene) {
+    this.undoGame = function() {
+    	var state = scene.game.stateMachine.currState;
+    	if (state !== states.ANIMATION_MOVE &&
+    		state !== states.ANIMATION_UPDATE &&
+    		state !== states.ANIMATION_CAPTURE &&
+    		state !== states.TURN_CHANGE &&
+    		state !== states.UNDO &&
+    		state !== states.END_GAME) {
+    		if (scene.game.undo.isPossibleExecuteUndo()) {
+			scene.game.undo.executeUndo();
+    		}
+    	}
+	};
+};
 
 MyInterface.prototype.showPlayerInfo = function() {
 	var gui = this.gui;
@@ -88,6 +103,10 @@ MyInterface.prototype.showPlayerInfo = function() {
 	};
 
     update();
+
+    var undo = new setUndo(this.scene);
+	this.gui.add(undo, 'undoGame');
+
 };
 
 

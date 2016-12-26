@@ -53,6 +53,8 @@ function GameState(scene) {
     this.botRequestMove = false;
     this.botRequestUpdate = false;
 
+    this.undo = new Undo(this);
+
 };
 
 GameState.prototype.constructor = GameState;
@@ -115,6 +117,9 @@ GameState.prototype.display = function() {
             }
         }
         this.drawBoards();
+    }
+    else if (this.stateMachine.currState == states.UNDO) {
+        this.undo.display();
     }
     else if (this.stateMachine.currState == states.ANIMATION_MOVE) {
         this.moveAnimator.display();

@@ -10,7 +10,8 @@ var states = {
     ANIMATION_CAPTURE: 8,
     TURN_CHANGE: 9,
     MACHINE_MOVE: 10,
-    END_GAME: 11
+    END_GAME: 11,
+    UNDO: 12
 };
 
 var turn = {

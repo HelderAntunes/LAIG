@@ -211,3 +211,22 @@ AdaptoidBoard.prototype.getBoardInStringFormat = function() {
     boardString += "]";
     return boardString;
 };
+
+AdaptoidBoard.prototype.getBoardInArrayFormat = function() {
+    var board = [];
+    for (var r = 1; r <= 7; r++) {
+        var row = [];
+        for (var c = 1; c <= this.getNumColumnsInRow(r); c++) {
+            if (this.tiles[r][c].isEmpty()) {
+                row.push(0);
+            }
+            else {
+                var color = this.tiles[r][c].getColorOfHisPiece();
+                color = (color === "white") ? 0 : 1;
+                row.push([color, this.tiles[r][c].getNumLegs(), this.tiles[r][c].getNumPincers()]);
+            }
+        }
+        board.push(row);
+    }
+    return board;
+};

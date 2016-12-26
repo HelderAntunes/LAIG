@@ -33,3 +33,12 @@ Player.prototype.stockIsExpired = function() {
     return false;
 };
 
+Player.prototype.update = function(score, numBodies, numLegs, numPincers) {
+    this.score = score;
+    this.numBodies = numBodies;
+    this.numLegs = numLegs;
+    this.numPincers = numPincers;
+};
+
+
+

@@ -22,6 +22,15 @@ Client.prototype.getPrologRequest = function(requestString, onSuccess, onError, 
 
 Client.prototype.requestMove = function() {
 	var game = this.game;
+
+    this.game.undo.previousBoard = this.game.mainBoard.getBoardInArrayFormat();
+    var whitePlayer = this.game.whitePlayer;
+    var blackPlayer = this.game.blackPlayer;
+    this.game.undo.previousWhitePlayer = [whitePlayer.score, whitePlayer.numBodies, whitePlayer.numLegs, whitePlayer.numPincers];
+    this.game.undo.previousBlackPlayer = [blackPlayer.score, blackPlayer.numBodies, blackPlayer.numLegs, blackPlayer.numPincers];
+    this.game.undo.previousState = states.PIECE_SELECTION_FROM;
+    this.game.undo.previousTurn = this.game.stateMachine.turn;
+
 	var tileFrom = game.hotspotFrom.tile;
     var tileTo = game.hotspotTo.tile;
     game.moveAnimator.moveToExecute = new GameMove(tileFrom, tileTo, "move");
@@ -74,6 +83,14 @@ Client.prototype.makeRequestString_moveAndCapture = function() {
 };
 
 Client.prototype.requestUpdate = function() {
+
+    this.game.undo.previousBoard = this.game.mainBoard.getBoardInArrayFormat();
+    var whitePlayer = this.game.whitePlayer;
+    var blackPlayer = this.game.blackPlayer;
+    this.game.undo.previousWhitePlayer = [whitePlayer.score, whitePlayer.numBodies, whitePlayer.numLegs, whitePlayer.numPincers];
+    this.game.undo.previousBlackPlayer = [blackPlayer.score, blackPlayer.numBodies, blackPlayer.numLegs, blackPlayer.numPincers];
+    this.game.undo.previousState = states.UPDATE_PIECE_FROM;
+    this.game.undo.previousTurn = this.game.stateMachine.turn;
     
     var game = this.game;
     
