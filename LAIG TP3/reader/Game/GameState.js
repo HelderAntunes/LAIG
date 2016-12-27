@@ -55,7 +55,7 @@ function GameState(scene) {
 
     this.undo = new Undo(this);
 
-    this.height = 1;
+    this.height = 0.95;
 
 };
 

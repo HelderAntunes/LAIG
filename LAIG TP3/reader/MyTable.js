@@ -2,8 +2,10 @@
  * MyTable
  * @constructor
  */
- function MyTable(scene) {
+ function MyTable(scene, id) {
  	CGFobject.call(this, scene);
+
+ 	this.id = id;
 
  	// table top - wood material
 	// rgb color -> 133;94;66 

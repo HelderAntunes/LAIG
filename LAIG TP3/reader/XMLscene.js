@@ -31,7 +31,8 @@ XMLscene.prototype.init = function (application) {
 
     this.setUpdatePeriod(20);
     this.vehicle = new Vehicle(this, 'airplane');
-    this.table = new MyTable(this);
+   // this.table = new MyTable(this);
+    //this.sofa = new MySofa(this);
     this.game = new GameState(this);
 
     this.setPickEnabled(true);
@@ -244,7 +245,6 @@ XMLscene.prototype.display = function () {
 
         if (this.game.inited == false) {
             this.graph.drawGraph();
-            this.table.display();
             return;
         }
         if (this.pickMode) {
@@ -254,7 +254,6 @@ XMLscene.prototype.display = function () {
         else {
             this.graph.drawGraph();
             this.game.display();
-            this.table.display();
         }
 
     };

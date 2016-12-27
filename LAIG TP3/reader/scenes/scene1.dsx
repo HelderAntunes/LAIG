@@ -236,6 +236,13 @@
             <plane dimX="5" dimY="0.1" partsX="3" partsY="1" />
         </primitive>
 
+        <primitive id="sofa">
+            <sofa />
+        </primitive>
+
+        <primitive id="table">
+            <table />
+        </primitive>
 
         <primitive id="patch1">
             <patch orderU="2" orderV="3" partsU="50" partsV="50" >
@@ -273,7 +280,65 @@
             <texture id="none" />
 
             <children>
-                <componentref id="walls" />
+                <componentref id="walls" /> 
+                <componentref id="tableC" /> 
+                <componentref id="sofaWhite" /> 
+                <componentref id="sofaBlack" /> 
+            </children>
+
+        </component>
+
+        <component id="sofaBlack" >
+
+            <transformation>
+                <translate x="0" y="0" z="-3" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+                <primitiveref id="sofa" />
+            </children>
+
+        </component>
+
+        <component id="sofaWhite" >
+
+            <transformation>
+                <translate x="0" y="0" z="3" />
+                <rotate axis="y" angle="180" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+                <primitiveref id="sofa" />
+            </children>
+
+        </component>
+
+        <component id="tableC" >
+
+            <transformation>
+                <scale x="1" y="1" z="1" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+                <primitiveref id="table" />
             </children>
 
         </component>
@@ -703,5 +768,7 @@
             </children>
 
         </component>
+
+    </components>
 
 </dsx>
