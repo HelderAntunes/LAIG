@@ -42,7 +42,7 @@ XMLscene.prototype.init = function (application) {
     this.currAmbient = 1;
     this.ambientSentToInterface = false;
 
-    this.lightSetted = false;
+    this.graph1Loaded = false;
 };
 
 XMLscene.prototype.logPicking = function ()
@@ -82,6 +82,10 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function ()
 {
+    if (this.graph1Loaded)
+        return;
+    else
+        this.graph1Loaded = true;
     this.axis = new CGFaxis(this, this.graph1.axisLenght);
 
     this.setDefaulCamera();
@@ -101,7 +105,7 @@ XMLscene.prototype.setDefaulCamera = function () {
     for (var i = 0; i < this.graph1.cameras.length; i++)
     if (this.graph1.cameras[i].id == defaultCam) {
         this.camera = this.graph1.cameras[i].camera;
-       this.interface.setActiveCamera(this.camera);
+      // this.interface.setActiveCamera(this.camera);
        // this.camera = this.camera;
         this.ativeCameraIndex = i;
         break;
@@ -109,10 +113,7 @@ XMLscene.prototype.setDefaulCamera = function () {
 };
 
 XMLscene.prototype.setLights = function () {
-    if (this.lightSetted == true)
-        return;
-    else
-        this.lightSetted = true;
+
     var group = this.interface.gui.addFolder("Luzes");
     group.open();
 
@@ -170,7 +171,8 @@ XMLscene.prototype.updateLights = function() {
 XMLscene.prototype.changeCamera = function() {
     this.ativeCameraIndex = (this.ativeCameraIndex + 1) % this.graph1.cameras.length;
     this.camera = this.graph1.cameras[this.ativeCameraIndex].camera;
-    this.interface.setActiveCamera(this.camera);
+    if (this.graph1.cameras[this.ativeCameraIndex].id != defaultCam)
+        this.interface.setActiveCamera(this.camera);
 };
 
 /*

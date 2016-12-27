@@ -69,7 +69,7 @@ Undo.prototype.display = function() {
         else {
             ang = 3*Math.PI/4 - perc * Math.PI;
         }
-        this.game.scene.camera.setPosition(vec3.fromValues(10 * Math.cos(ang), 20, -10 * Math.sin(ang)));
+        this.game.scene.camera.setPosition(vec3.fromValues(5 * Math.cos(ang), 10, -5 * Math.sin(ang)));
     }
     
     this.game.drawBoards();

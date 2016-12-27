@@ -25,7 +25,7 @@
 	
 	// table top texture
 	this.tableAppearance = new CGFappearance(scene);
-	this.tableAppearance.loadTexture("scenes/chessboard.jpg");
+	this.tableAppearance.loadTexture("scenes/wood2.jpg");
 	this.tableAppearance.setDiffuse( 1.0, 1.0, 1.0, 1);
 	this.tableAppearance.setSpecular( 0.1, 0.1, 0.1, 1);
 	this.tableAppearance.setShininess(20);
