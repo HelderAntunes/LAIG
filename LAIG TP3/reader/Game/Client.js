@@ -33,7 +33,9 @@ Client.prototype.requestMove = function() {
 
 	var tileFrom = game.hotspotFrom.tile;
     var tileTo = game.hotspotTo.tile;
-    game.moveAnimator.moveToExecute = new GameMove(tileFrom, tileTo, "move");
+    game.moveAnimator.moveToExecute = new GameMove(tileFrom, tileTo, "move", "user");
+    game.moves.push(game.moveAnimator.moveToExecute);
+
     var request = this.makeRequestString_moveAndCapture();
     this.getPrologRequest(
         request,
@@ -110,7 +112,8 @@ Client.prototype.requestUpdate = function() {
         typeOfMove = "update_addPincer";
     }
 
-    game.updateAnimator.moveToExecute = new GameMove(tileFrom, tileTo, typeOfMove);
+    game.updateAnimator.moveToExecute = new GameMove(tileFrom, tileTo, typeOfMove, "user");
+    game.moves.push(game.updateAnimator.moveToExecute);
 
     var request = this.makeRequestString_update(predicate);
 
@@ -177,7 +180,7 @@ Client.prototype.botRequestUpdate = function() {
             var row = responseInArray[3];
             var col = responseInArray[4];
             var tileTo = game.mainBoard.tiles[row][col];
-            game.updateAnimator.moveToExecute = new GameMove(null, tileTo, typeOfMove);
+            game.updateAnimator.moveToExecute = new GameMove(null, tileTo, typeOfMove, "bot");
             game.stateMachine.setState(states.ANIMATION_UPDATE);
             game.botRequestUpdate = false;
             game.hotspotFrom = null;
@@ -211,8 +214,9 @@ Client.prototype.requestCapture = function() {
     game.captureAnimator.requestSent = true;
 
     var typeOfMove = (game.stateMachine.turn == states.WHITE) ? "capture_turnWhite":"capture_turnBlack"; 
-    game.captureAnimator.moveToExecute = new GameMove(null, null, typeOfMove);
-    
+    game.captureAnimator.moveToExecute = new GameMove(null, null, typeOfMove, "capture");
+    game.moves.push(game.captureAnimator.moveToExecute);
+
     var request = this.makeRequestString_capture();
 
     this.getPrologRequest(
@@ -258,7 +262,7 @@ Client.prototype.botRequestMove = function() {
             var tileFrom = game.mainBoard.tiles[rowFrom][colFrom];
             var tileTo = game.mainBoard.tiles[rowTo][colTo];
             game.moveAnimator.inited = false;
-            game.moveAnimator.moveToExecute = new GameMove(tileFrom, tileTo, "move");
+            game.moveAnimator.moveToExecute = new GameMove(tileFrom, tileTo, "move", "bot");
             game.stateMachine.setState(states.ANIMATION_MOVE);
             game.botRequestMove = false;
         });

@@ -126,7 +126,7 @@ XMLscene.prototype.setLights = function () {
             this.lights[i].setDiffuse(light.diffuse[0], light.diffuse[1], light.diffuse[2], light.diffuse[3]);
             this.lights[i].setAmbient(light.ambient[0], light.ambient[1], light.ambient[2], light.ambient[3]);
             this.lights[i].setSpecular(light.specular[0], light.specular[1], light.specular[2], light.specular[3]);
-            this.lights[i].setVisible(light.enabled);
+            this.lights[i].setVisible(false);
             this.lights[i].update();
         } else if (light.constructor.name == "MySpotLight") {
             this.lights[i].setPosition(light.location[0], light.location[1], light.location[2], 1);
@@ -139,7 +139,7 @@ XMLscene.prototype.setLights = function () {
             this.lights[i].setSpotDirection(xdir, ydir, zdir);
             this.lights[i].setSpotExponent(light.exponent);
             this.lights[i].setSpotCutOff(light.angle);
-            this.lights[i].setVisible(light.enabled);
+            this.lights[i].setVisible(false);
             this.lights[i].update();
         }
         var aux;
@@ -169,6 +169,8 @@ XMLscene.prototype.updateLights = function() {
  * Change the position of
  */
 XMLscene.prototype.changeCamera = function() {
+    if (this.game.stateMachine.currState == states.TURN_CHANGE)
+        return;
     this.ativeCameraIndex = (this.ativeCameraIndex + 1) % this.graph1.cameras.length;
     this.camera = this.graph1.cameras[this.ativeCameraIndex].camera;
     if (this.graph1.cameras[this.ativeCameraIndex].id != defaultCam)

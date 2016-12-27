@@ -92,15 +92,15 @@ MoveAnimator.prototype.setMidAnimationsOfPiecesFromAndTo = function() {
         pincersTo = this.pieceTo.numPincers();
     }
     if (pincersFrom > pincersTo) {
-        this.animationMidTo.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], 2, this.durationOfEachAnimation);
+        this.animationMidTo.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], this.game.heightOfTile*6, this.durationOfEachAnimation);
         this.animationMidFrom.constructAttackedAnimation(this.endPos_xz[0], this.endPos_xz[1], this.game.heightOfTile, this.game.heightOfTile, this.durationOfEachAnimation);
     }
     else if (pincersFrom === pincersTo) {
-        this.animationMidTo.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], 2, this.durationOfEachAnimation);
-        this.animationMidFrom.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], 2, this.durationOfEachAnimation);
+        this.animationMidTo.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], this.game.heightOfTile*6, this.durationOfEachAnimation);
+        this.animationMidFrom.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], this.game.heightOfTile*6, this.durationOfEachAnimation);
     }
     else {
-        this.animationMidFrom.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], 2, this.durationOfEachAnimation);
+        this.animationMidFrom.constructUpAndDownAnimationWithRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], this.game.heightOfTile*6, this.durationOfEachAnimation);
         this.animationMidTo.constructAttackedAnimation(this.endPos_xz[0], this.endPos_xz[1], this.game.heightOfTile, this.game.heightOfTile, this.durationOfEachAnimation);
     }
 };
@@ -138,7 +138,7 @@ MoveAnimator.prototype.setEndAnimationsOfPiecesFromAndTo = function() {
         animationTo.constructLinearAnimationWidthRotationInY(this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1],
                                                                 this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1],
                                                                 this.durationOfEachAnimation);
-        this.animationEndFrom.push(animationTo);
+        this.animationEndTo.push(animationTo);
     }
 };
 

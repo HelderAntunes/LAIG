@@ -57,6 +57,9 @@ function GameState(scene) {
 
     this.height = 0.95;
 
+    this.moves = [];
+    this.movie = new GameMovie(this);
+
 };
 
 GameState.prototype.constructor = GameState;
@@ -71,13 +74,13 @@ GameState.prototype.createPieces = function() {
 
 GameState.prototype.initBoards = function() {
     
-    this.mainBoard.setBodyInTile(this.bodies[0], 4, 2, "white");
+   /* this.mainBoard.setBodyInTile(this.bodies[0], 4, 2, "white");
     this.mainBoard.setLegsInTile([this.legs[2], this.legs[3], this.legs[4], this.legs[5]], 4, 2, "white");
     this.mainBoard.setPincersInTile([this.pincers[3], this.pincers[7]], 4, 2, "white");
 
     this.mainBoard.setBodyInTile(this.bodies[1], 4, 6, "black");
     this.mainBoard.setLegsInTile([this.legs[7], this.legs[8], this.legs[9], this.legs[10], this.legs[11]], 4, 6, "black");
-    this.mainBoard.setPincersInTile([this.pincers[2]], 4, 6, "black");
+    this.mainBoard.setPincersInTile([this.pincers[2]], 4, 6, "black");*/
 
     this.auxBoardWhite.setBody(this.bodies[4], "white");
     this.auxBoardWhite.setLeg(this.legs[0], "white");
@@ -87,8 +90,8 @@ GameState.prototype.initBoards = function() {
     this.auxBoardBlack.setLeg(this.legs[1], "black");
     this.auxBoardBlack.setPincer(this.pincers[1], "black");
 
-   /* this.mainBoard.setBodyInTile(this.bodies[0], 4, 2, "white");
-    this.mainBoard.setBodyInTile(this.bodies[1], 4, 6, "black");*/
+    this.mainBoard.setBodyInTile(this.bodies[0], 4, 2, "white");
+    this.mainBoard.setBodyInTile(this.bodies[1], 4, 6, "black");
 };
 
 GameState.prototype.display = function() {
@@ -96,12 +99,16 @@ GameState.prototype.display = function() {
     this.scene.pushMatrix();
     this.scene.translate(0, this.height, 0);
 
+    
     if (!this.configured) {
         this.scene.interface.showPlayerInfo();
         this.configured = true;
     }
     else if (this.scene.pickMode) {
         this.drawBoards();
+    }
+    if (this.movie.isActive()) {
+        this.movie.display();
     }
     else if (this.stateMachine.currState == states.PIECE_SELECTION_FROM) {
         var colorPlayer = (this.stateMachine.turn === turn.WHITE) ? "white":"black";
@@ -117,6 +124,7 @@ GameState.prototype.display = function() {
                 }
             }
         }
+
         this.drawBoards();
     }
     else if (this.stateMachine.currState == states.UNDO) {
@@ -167,7 +175,12 @@ GameState.prototype.display = function() {
     else if (this.stateMachine.currState == states.END_GAME) {
         if (this.endGameSentToInterface == false) {
             this.endGame['endOfGame'] = (this.stateMachine.winner == "white") ? "white wins":"black wins";
+            var game = this;
+            this.endGame['initMovie'] = function() {
+                game.movie.prepareMovie();
+            };
             this.scene.interface.gui.add(this.endGame, 'endOfGame');
+            this.scene.interface.gui.add(this.endGame, 'initMovie');
             this.endGameSentToInterface = true;
         }
         this.drawBoards();
@@ -251,6 +264,10 @@ GameState.prototype.isEnded = function() {
 
 
 GameState.prototype.updatePieceSelected = function(hotspot) {
+
+    if (this.movie.isActive()) {
+        return;
+    }
 
     if (this.hotspotFrom === null) { // first select
         this.hotspotFrom = hotspot;

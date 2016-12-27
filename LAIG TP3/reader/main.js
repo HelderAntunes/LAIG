@@ -23,7 +23,7 @@ serialInclude(['../lib/CGF.js', 'XMLscene.js', 'MySceneGraph.js', 'MyTransformat
                 'Animations/KeyFrameAnimation.js', 'Game/Primitives/Adaptoid/Piece.js', 'Game/UpdateAnimator.js',
                 'Game/CaptureAnimator.js', 'Game/TurnChangeAnimator.js', 'Game/Primitives/Score.js',  
                 'Game/Primitives/Flag.js', 'Game/Undo.js', 'MyUnitCubeQuad.js', "MyTable.js", "MyQuad.js",   
-                'MySofa.js',  
+                'MySofa.js', 'Game/GameMovie.js', 
 
 main=function()
 {

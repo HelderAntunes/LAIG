@@ -2,10 +2,11 @@
 * GameMove
 * @constructor
 */
-function GameMove(tileFrom, tileTo, type) {
+function GameMove(tileFrom, tileTo, type, userOrBot) {
     this.tileFrom = tileFrom;
     this.tileTo = tileTo;
     this.type = type;
+    this.userOrBot = userOrBot;
 };
 
 GameMove.prototype.constructor = GameMove;

@@ -25,7 +25,6 @@ Piece.prototype.display = function() {
     var rotateAng = Math.PI * 2 /
                     (this.legs.length + this.pincers.length);
 
-    // TODO: two for in one, using one array !!
     for (var i = 0; i < this.legs.length; i++) {
         this.scene.pushMatrix();
             this.scene.rotate(rotateAng*indexRot, 0, 1, 0);
