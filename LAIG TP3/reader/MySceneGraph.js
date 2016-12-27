@@ -1,10 +1,15 @@
  
-function MySceneGraph(filename, scene) {
+function MySceneGraph(filename, scene, id) {
     this.loadedOk = null;
 
     // Establish bidirectional references between scene and graph
     this.scene = scene;
-    scene.graph = this;
+    if (id == 1) {
+        scene.graph1 = this;
+    }
+    else if (id == 2) {
+        scene.graph2 = this;
+    }
 
     // File reading
     this.reader = new CGFXMLreader();

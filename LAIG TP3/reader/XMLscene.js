@@ -38,6 +38,11 @@ XMLscene.prototype.init = function (application) {
     this.setPickEnabled(true);
     this.indexRegPick = 1;
     this.hotspotSelected = null;
+
+    this.currAmbient = 1;
+    this.ambientSentToInterface = false;
+
+    this.lightSetted = false;
 };
 
 XMLscene.prototype.logPicking = function ()
@@ -73,16 +78,16 @@ XMLscene.prototype.setDefaultAppearance = function () {
     this.setShininess(10.0);
 };
 
-// Handler called when the graph is finally loaded.
+// Handler called when the graph1 is finally loaded.
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function ()
 {
-    this.axis = new CGFaxis(this, this.graph.axisLenght);
+    this.axis = new CGFaxis(this, this.graph1.axisLenght);
 
     this.setDefaulCamera();
 
-    this.gl.clearColor(this.graph.background[0],this.graph.background[1],this.graph.background[2],this.graph.background[3]);
-    this.setGlobalAmbientLight(this.graph.ambientLight[0], this.graph.ambientLight[1], this.graph.ambientLight[2], this.graph.ambientLight[3]);
+    this.gl.clearColor(this.graph1.background[0],this.graph1.background[1],this.graph1.background[2],this.graph1.background[3]);
+    this.setGlobalAmbientLight(this.graph1.ambientLight[0], this.graph1.ambientLight[1], this.graph1.ambientLight[2], this.graph1.ambientLight[3]);
 
     this.setLights();
 
@@ -92,10 +97,10 @@ XMLscene.prototype.onGraphLoaded = function ()
 };
 
 XMLscene.prototype.setDefaulCamera = function () {
-    var defaultCam = this.graph.defaultCam;
-    for (var i = 0; i < this.graph.cameras.length; i++)
-    if (this.graph.cameras[i].id == defaultCam) {
-        this.camera = this.graph.cameras[i].camera;
+    var defaultCam = this.graph1.defaultCam;
+    for (var i = 0; i < this.graph1.cameras.length; i++)
+    if (this.graph1.cameras[i].id == defaultCam) {
+        this.camera = this.graph1.cameras[i].camera;
        this.interface.setActiveCamera(this.camera);
        // this.camera = this.camera;
         this.ativeCameraIndex = i;
@@ -104,12 +109,16 @@ XMLscene.prototype.setDefaulCamera = function () {
 };
 
 XMLscene.prototype.setLights = function () {
+    if (this.lightSetted == true)
+        return;
+    else
+        this.lightSetted = true;
     var group = this.interface.gui.addFolder("Luzes");
     group.open();
 
-    var nLights = this.graph.lights.length;
+    var nLights = this.graph1.lights.length;
     for (var i = 0; i < nLights; i++) {
-        var light = this.graph.lights[i];
+        var light = this.graph1.lights[i];
 
         if (light.constructor.name == "MyOmniLight") {
             this.lights[i].setPosition(light.location[0], light.location[1], light.location[2], light.location[3]);
@@ -159,8 +168,8 @@ XMLscene.prototype.updateLights = function() {
  * Change the position of
  */
 XMLscene.prototype.changeCamera = function() {
-    this.ativeCameraIndex = (this.ativeCameraIndex + 1) % this.graph.cameras.length;
-    this.camera = this.graph.cameras[this.ativeCameraIndex].camera;
+    this.ativeCameraIndex = (this.ativeCameraIndex + 1) % this.graph1.cameras.length;
+    this.camera = this.graph1.cameras[this.ativeCameraIndex].camera;
     this.interface.setActiveCamera(this.camera);
 };
 
@@ -232,19 +241,24 @@ XMLscene.prototype.display = function () {
 
     // ---- END Background, camera and axis setup
 
-    // it is important that things depending on the proper loading of the graph
-    // only get executed after the graph has loaded correctly.
+    // it is important that things depending on the proper loading of the graph1
+    // only get executed after the graph1 has loaded correctly.
     // This is one possible way to do it
 
-    if (this.graph.loadedOk)
+    if (this.graph1.loadedOk && this.graph2.loadedOk)
     {
-        var nLights = this.graph.lights.length;
+        if (this.ambientSentToInterface == false) {
+            this.interface.showSceneOption();
+            this.ambientSentToInterface = true;
+        }
+        var graph = (this.currAmbient == "1") ? this.graph1:this.graph2;
+        var nLights = this.graph1.lights.length;
         for (var i = 0; i < nLights; i++) {
             this.lights[i].update();
         }
 
         if (this.game.inited == false) {
-            this.graph.drawGraph();
+            graph.drawGraph();
             return;
         }
         if (this.pickMode) {
@@ -252,7 +266,7 @@ XMLscene.prototype.display = function () {
             this.game.display();
         }
         else {
-            this.graph.drawGraph();
+            graph.drawGraph();
             this.game.display();
         }
 

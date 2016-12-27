@@ -50,6 +50,24 @@ var initInterface = function(scene) {
 	this.modeGame = "human-human";
 };
 
+var sceneOption = function() {
+	this.scene = '1';
+};
+
+MyInterface.prototype.showSceneOption = function() {
+	var optionScene = new sceneOption();
+	var sceneCtrl = this.gui.add(optionScene, 'scene', ['1', '2']);
+	var scene = this.scene;
+	sceneCtrl.onChange(function(value) {
+	  	// Fires on every change, drag, keypress, etc.
+	});
+	sceneCtrl.onFinishChange(function(value) {
+		// Fires when a controller loses focus.
+		scene.currAmbient = value;
+	});
+
+};
+
 var putInformationOfPlayerOnInterface = function(Score, Adaptoids, Legs, Pincers) {
     this.score = Score;
     this.adaptoids = Adaptoids;
@@ -109,10 +127,6 @@ MyInterface.prototype.showPlayerInfo = function() {
 	this.gui.add(undo, 'undoGame');
 
 };
-
-
-
-
 
 /**
  * processKeyUp

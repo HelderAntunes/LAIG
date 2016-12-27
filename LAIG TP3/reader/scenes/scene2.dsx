@@ -1,0 +1,774 @@
+<dsx>
+
+    <scene root="root" axis_length="3" />
+
+    <views default="initView" >
+
+        <perspective id="initView" near="0.1" far="500.0" angle="25">
+            <from x="10" y="20" z="10" />
+            <to x="0.0" y="0.0" z="0.0" />
+        </perspective>
+
+        <perspective id="view2" near="0.1" far="500.0" angle="25">
+            <from x="60.0" y="40.0" z="0.0" />
+            <to x="0.0" y="0.0" z="0.0" />
+        </perspective>
+
+        <perspective id="view3" near="0.1" far="500.0" angle="25">
+            <from x="-60.0" y="40.0" z="0.0" />
+            <to x="0.0" y="0.0" z="0.0" />
+        </perspective>
+
+    </views>
+
+    <illumination doublesided="1" local="1" >
+
+        <ambient r="0.4" g="0.4" b="0.4" a="1" />
+        <background r="0" g="0" b="0" a="1" />
+
+    </illumination>
+
+    <lights>
+
+        <omni id="omniLight" enabled="1" >
+            <location x="5" y="5" z="0" w="1" />
+            <ambient r="1.0" g="1" b="1" a="1.0" />
+            <diffuse r="1.0" g="1" b="1" a="1.0" />
+            <specular r="1" g="1" b="1" a="1.0" />
+        </omni>
+
+        <omni id="omniLight2" enabled="1" >
+            <location x="-5" y="5" z="0" w="1" />
+            <ambient r="1.0" g="1" b="1" a="1.0" />
+            <diffuse r="1.0" g="1" b="1" a="1.0" />
+            <specular r="1" g="1" b="1" a="1.0" />
+        </omni>
+
+        <spot id="spotLight" enabled="1" angle="2" exponent="100">
+            <target x="3.5" y="2.5" z="0" />
+            <location x="3.5" y="2.5" z="1.6" />
+            <ambient r="1" g="0.2" b="0.2" a="1" />
+            <diffuse r="1" g="0.2" b="0.2" a="1" />
+            <specular r="1" g="0.2" b="0.2" a="1" />
+        </spot>
+
+    </lights>
+
+    <textures>
+        <texture id="floorText" file="scenes/repete.jpg" length_s="10" length_t="10" />
+        <texture id="woodText" file="scenes/texture_wood.jpg" length_s="8" length_t="8" />
+        <texture id="topTreeText" file="scenes/texture_topTree.jpg" length_s="8" length_t="8" />
+        <texture id="streetText" file="scenes/texture_street.jpg" length_s="7" length_t="7" />
+        <texture id="sandText" file="scenes/texture_sand.jpg" length_s="10" length_t="10" />
+        <texture id="chessboardText" file="scenes/chessboard.jpg" length_s="1" length_t="1" />
+
+        <!-- game -->
+        <texture id="carpet" file="scenes/carpet.jpg" length_s="1" length_t="1" />
+        <texture id="floor" file="scenes/floor2.jpg" length_s="1" length_t="1" />
+        <texture id="mona_lisa" file="scenes/ceu_estrelado.jpg" length_s="1" length_t="1" />
+        <texture id="o_grito" file="scenes/salvador_dali.jpg" length_s="1" length_t="1" />
+        <texture id="wall" file="scenes/wall2.jpg" length_s="1" length_t="1" />
+        <texture id="door" file="scenes/door2.jpg" length_s="1" length_t="1" />
+        <texture id="tira" file="scenes/tira.jpg" length_s="1" length_t="1" />
+
+    </textures>
+
+    <materials>
+
+        <material id="blueMat" >
+            <emission r="0" g="0" b="1" a="1" />
+            <ambient r="0" g="0" b="1" a="1" />
+            <diffuse r="0" g="0" b="1" a="1" />
+            <specular r="0" g="0" b="1" a="1" />
+            <shininess value="1" />
+        </material>
+
+        <material id="default" >
+            <emission r="0.1" g="0.1" b="0.1" a="1" />
+            <ambient r="1" g="1" b="1" a="1" />
+            <diffuse r="0.8" g="0.8" b="0.8" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <shininess value="0.5" />
+        </material>
+
+    </materials>
+
+    <transformations>
+
+        <transformation id="trans1">
+           <translate x="1" y="1" z="1" />
+           <rotate axis="x" angle="90" />
+           <scale x="1" y="1" z="1" />
+        </transformation>
+
+        <transformation id="trans2">
+            <rotate axis="y" angle="-90" />
+        </transformation>
+
+    </transformations>
+
+    <!-- novo bloco de animacao -->
+    <animations>
+        <!-- podem existir zero ou mais nós "animation" -->
+        <!-- span é o tempo, em segundos, que a animação deve -->
+        <!-- demorar. Nesta versão do formato DSX, type pode ter -->
+        <!-- o valor "linear" ou "circular"; na animacao circular -->
+        <!-- os angulos sao expressos em graus  -->
+        <animation id="animation1" span="2.5" type="linear">
+            <controlpoint xx="-5" yy="0" zz="5" />
+            <controlpoint xx="0" yy="0" zz="5" />
+        </animation>
+
+        <animation id="animation2" span="15.5" type="circular" centerx="0" centery="0" centerz="0"
+        radius="5" startang="-90" rotang="360" />
+
+        <animation id="animation3" span="3.6" type="linear">
+            <controlpoint xx="-7" yy="0" zz="-5" />
+            <controlpoint xx="-7" yy="0" zz="5" />
+        </animation>
+
+        <animation id="animation4" span="10" type="circular" centerx="0" centery="0" centerz="5"
+        radius="7" startang="180" rotang="180" />
+
+        <animation id="animation5" span="3.6" type="linear">
+            <controlpoint xx="7" yy="0" zz="5" />
+            <controlpoint xx="7" yy="0" zz="-5" />
+        </animation>
+
+        <animation id="animation6" span="18" type="linear">
+            <controlpoint xx="0" yy="5" zz="10" />
+            <controlpoint xx="0" yy="0" zz="-10" />
+            <controlpoint xx="0" yy="5" zz="-20" />
+        </animation>
+
+     </animations>
+
+    <primitives>
+
+        <primitive id="Pfloor">
+            <!-- <rectangle x1="-11" y1="-11" x2="11" y2="11" /> -->
+            <triangle x1="-11" y1="-11" z1="0" x2="11" y2="-11" z2="0" x3="0" y3="11" z3="0" />
+        </primitive>
+
+        <primitive id="Ptronco">
+            <cylinder base="0.3" top="0.3" height="2" slices="20" stacks="20" />
+        </primitive>
+
+        <primitive id="Pcopa">
+            <cylinder base="0.8" top="0" height="2" slices="20" stacks="20" />
+        </primitive>
+
+        <primitive id="Pstreet">
+            <rectangle x1="-3" y1="-5" x2="3" y2="5" />
+        </primitive>
+
+        <primitive id="PborderStreet">
+            <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
+        </primitive>
+
+        <primitive id="Ppilar">
+            <cylinder base="0.5" top="0.5" height="5" slices="20" stacks="30" />
+        </primitive>
+
+        <primitive id="Ppilar2">
+            <cylinder base="0.5" top="0.5" height="5.66" slices="20" stacks="30" />
+        </primitive>
+
+        <primitive id="Ppilar3">
+            <sphere radius="0.5" slices="15" stacks="15" />
+        </primitive>
+
+        <primitive id="esferaCarro">
+            <sphere radius="0.5" slices="15" stacks="15" />
+        </primitive>
+
+        <primitive id="rectangle1">
+            <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
+        </primitive>
+
+        <primitive id="tri1">
+            <triangle x1="-1" y1="-1" z1="0" x2="1" y2="-1" z2="0" x3="0" y3="1" z3="0" />
+        </primitive>
+
+        <primitive id="torus1">
+            <torus inner="1.75" outer="2" slices="20" loops="20" />
+        </primitive>
+
+        <primitive id="plane1">
+            <plane dimX="4" dimY="2" partsX="10" partsY="5"/>
+        </primitive>
+
+        <!-- game -->
+
+        <primitive id="wall_big">
+            <plane dimX="15" dimY="10" partsX="15" partsY="10" />
+        </primitive>
+
+        <primitive id="wall_small">
+            <plane dimX="10" dimY="10" partsX="10" partsY="10" />
+        </primitive>
+
+        <primitive id="floor">
+            <plane dimX="15" dimY="10" partsX="15" partsY="10" />
+        </primitive>
+
+        <primitive id="mona_lisa">
+            <plane dimX="3" dimY="3" partsX="4" partsY="6" />
+        </primitive>
+
+        <primitive id="tira1">
+            <plane dimX="2" dimY="0.1" partsX="2" partsY="1" />
+        </primitive>
+
+        <primitive id="tira2">
+            <plane dimX="3" dimY="0.1" partsX="2" partsY="1" />
+        </primitive>
+
+        <primitive id="carpet">
+            <plane dimX="4" dimY="2" partsX="8" partsY="4" />
+        </primitive>
+
+        <primitive id="door">
+            <plane dimX="5" dimY="5" partsX="3" partsY="3" />
+        </primitive>
+
+        <primitive id="tira">
+            <plane dimX="5" dimY="0.1" partsX="3" partsY="1" />
+        </primitive>
+
+        <primitive id="sofa">
+            <sofa />
+        </primitive>
+
+        <primitive id="table">
+            <table />
+        </primitive>
+
+        <primitive id="patch1">
+            <patch orderU="2" orderV="3" partsU="50" partsV="50" >
+                <controlpoint x="-2" y="-2" z="1" />
+                <controlpoint x="-2" y="-1" z="-2" />
+                <controlpoint x="-2" y="1" z="5" />
+                <controlpoint x="-2" y="2" z="-1" />
+
+                <controlpoint x="0" y="-2" z="0" />
+                <controlpoint x="0" y="-1" z="-1" />
+                <controlpoint x="0" y="1" z="1.5" />
+                <controlpoint x="0" y="2" z="0" />
+
+                <controlpoint x="2" y="-2" z="-1" />
+                <controlpoint x="2" y="-1" z="2" />
+                <controlpoint x="2" y="1" z="-5" />
+                <controlpoint x="2" y="2" z="1" />
+            </patch>
+        </primitive>
+
+    </primitives>
+
+    <components>
+
+        <component id="root" >
+
+            <transformation>
+                <translate x="0" y="0" z="0" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+                <componentref id="walls" /> 
+                <componentref id="tableC" /> 
+                <componentref id="sofaWhite" /> 
+                <componentref id="sofaBlack" /> 
+            </children>
+
+        </component>
+
+        <component id="sofaBlack" >
+
+            <transformation>
+                <translate x="0" y="0" z="-3" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+                <primitiveref id="sofa" />
+            </children>
+
+        </component>
+
+        <component id="sofaWhite" >
+
+            <transformation>
+                <translate x="0" y="0" z="3" />
+                <rotate axis="y" angle="180" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+                <primitiveref id="sofa" />
+            </children>
+
+        </component>
+
+        <component id="tableC" >
+
+            <transformation>
+                <scale x="1" y="1" z="1" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="none" />
+
+            <children>
+                <primitiveref id="table" />
+            </children>
+
+        </component>
+
+        <component id="walls" >
+
+            <transformation>
+                <scale x="1" y="1" z="1" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="wall" />
+
+            <children>
+                <componentref id="wallN" />
+                <componentref id="wallS" />
+                <componentref id="wallE" />
+                <componentref id="wallO" />
+                <componentref id="floor" />
+                <componentref id="door" />
+                <componentref id="tiras" /> 
+                <componentref id="pictureBlack" />
+                <componentref id="pictureWhite" />
+                <componentref id="picture_tiras1B" />
+                <componentref id="picture_tiras1W" />
+                <componentref id="picture_tiras2B" />
+                <componentref id="picture_tiras2W" />
+                <componentref id="picture_tiras3B" />
+                <componentref id="picture_tiras3W" />
+                <componentref id="picture_tiras4B" />
+                <componentref id="picture_tiras4W" />
+            </children>
+
+        </component>
+
+
+        <component id="pictureBlack" >
+
+            <transformation>
+                <translate x="0" y="5" z="-4.9" />
+                <rotate axis="z" angle="180" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="mona_lisa" />
+
+            <children>
+                <primitiveref id="mona_lisa" />
+            </children>
+
+        </component>
+
+        <component id="pictureWhite" >
+
+            <transformation>
+                <translate x="0" y="5" z="4.9" />
+                <rotate axis="z" angle="180" />
+                <rotate axis="y" angle="180" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="o_grito" />
+
+            <children>
+                <primitiveref id="mona_lisa" />
+            </children>
+
+        </component>
+
+        <component id="picture_tiras4B" >
+
+            <transformation>
+                <translate x="-1.5" y="5" z="-4.95" />
+                <rotate axis="x" angle="90" />
+                <rotate axis="y" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="tira" />
+
+            <children>
+                <primitiveref id="tira2" />
+            </children>
+
+        </component>
+
+        <component id="picture_tiras4W" >
+
+            <transformation>
+                <translate x="-1.5" y="5" z="4.95" />
+                <rotate axis="x" angle="90" />
+                <rotate axis="y" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="tira" />
+
+            <children>
+                <primitiveref id="tira2" />
+            </children>
+
+        </component>
+
+        <component id="picture_tiras1B" >
+
+            <transformation>
+                <translate x="0" y="6.5" z="-4.95" />
+                <rotate axis="x" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="tira" />
+
+            <children>
+                <primitiveref id="tira2" />
+            </children>
+
+        </component>
+
+
+        <component id="picture_tiras1W" >
+
+            <transformation>
+                <translate x="0" y="6.5" z="4.95" />
+                <rotate axis="x" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="tira" />
+
+            <children>
+                <primitiveref id="tira2" />
+            </children>
+
+        </component>
+
+        <component id="picture_tiras3B" >
+
+            <transformation>
+                <translate x="1.5" y="5" z="-4.95" />
+                <rotate axis="x" angle="90" />
+                <rotate axis="y" angle="90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="tira" />
+
+            <children>
+                <primitiveref id="tira2" />
+            </children>
+
+        </component>
+
+        <component id="picture_tiras3W" >
+
+            <transformation>
+                <translate x="1.5" y="5" z="4.95" />
+                <rotate axis="x" angle="90" />
+                <rotate axis="y" angle="90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="tira" />
+
+            <children>
+                <primitiveref id="tira2" />
+            </children>
+
+        </component>
+
+        <component id="picture_tiras2B" >
+
+            <transformation>
+                <translate x="0" y="3.5" z="-4.95" />
+                <rotate axis="x" angle="90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="tira" />
+
+            <children>
+                <primitiveref id="tira2" />
+            </children>
+
+        </component>
+
+
+        <component id="picture_tiras2W" >
+
+            <transformation>
+                <translate x="0" y="3.5" z="4.95" />
+                <rotate axis="x" angle="90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="tira" />
+
+            <children>
+                <primitiveref id="tira2" />
+            </children>
+
+        </component>
+
+        <component id="tiras" >
+
+            <transformation>
+                <translate x="0" y="0" z="0" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="tira" />
+
+            <children>
+                <componentref id="tiraN" />
+                <componentref id="tiraE" />
+                <componentref id="tiraO" /> 
+            </children>
+
+        </component>
+
+        <component id="tiraN" >
+
+            <transformation>
+                <translate x="-7.45" y="5" z="0" />
+                <rotate axis="y" angle="90" />
+                <rotate axis="x" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+                <primitiveref id="tira" />
+            </children>
+
+        </component>
+
+        <component id="tiraE" >
+
+            <transformation>
+                <translate x="-7.45" y="2.5" z="2.5" />
+                <rotate axis="z" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+                <primitiveref id="tira" />
+            </children>
+
+        </component>
+
+        <component id="tiraO" >
+
+            <transformation>
+                <translate x="-7.45" y="2.5" z="-2.5" />
+                <rotate axis="y" angle="180" />
+                <rotate axis="z" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+                <primitiveref id="tira" />
+            </children>
+
+        </component>
+
+        <component id="door" >
+
+            <transformation>
+                <translate x="-7.4" y="2.5" z="0" />
+                <rotate axis="y" angle="90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="door" />
+
+            <children>
+                <primitiveref id="door" />
+            </children>
+
+        </component>
+
+
+        <component id="floor" >
+
+            <transformation>
+                <rotate axis="x" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="floor" />
+
+            <children>
+                <primitiveref id="floor" />
+            </children>
+
+        </component>
+
+        <component id="wallN" >
+
+            <transformation>
+                <translate x="0" y="5" z="-5" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+                <primitiveref id="wall_big" />
+            </children>
+
+        </component>
+
+        <component id="wallS" >
+
+            <transformation>
+                <translate x="0" y="5" z="5" />
+                <rotate axis="y" angle="180" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+                <primitiveref id="wall_big" />
+            </children>
+
+        </component>
+
+
+        <component id="wallE" >
+
+            <transformation>
+                <translate x="-7.5" y="5" z="0" />
+                <rotate axis="y" angle="90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+                <primitiveref id="wall_small" />
+            </children>
+
+        </component>
+
+
+        <component id="wallO" >
+
+            <transformation>
+                <translate x="7.5" y="5" z="0" />
+                <rotate axis="y" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="default" />
+            </materials>
+
+            <texture id="inherit" />
+
+            <children>
+                <primitiveref id="wall_small" />
+            </children>
+
+        </component>
+
+    </components>
+
+</dsx>

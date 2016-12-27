@@ -43,13 +43,15 @@ main=function()
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml
 	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor)
 
-	var filename=getUrlVars()['file'] || "scene1.dsx";
+    var filename=getUrlVars()['file'] || "scene1.dsx";
+	var filename2=getUrlVars()['file'] || "scene2.dsx";
 	//var filename=getUrlVars()['file'] || "demo.xml";
 
 
 	// create and load graph, and associate it to scene.
 	// Check console for loading errors
-	var myGraph = new MySceneGraph(filename, myScene);
+    var myGraph = new MySceneGraph(filename, myScene, 1);
+	var myGraph2 = new MySceneGraph(filename2, myScene, 2);
 
 	// start
     app.run();
