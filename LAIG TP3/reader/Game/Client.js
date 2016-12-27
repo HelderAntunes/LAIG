@@ -181,6 +181,7 @@ Client.prototype.botRequestUpdate = function() {
             var col = responseInArray[4];
             var tileTo = game.mainBoard.tiles[row][col];
             game.updateAnimator.moveToExecute = new GameMove(null, tileTo, typeOfMove, "bot");
+            game.moves.push(game.updateAnimator.moveToExecute);
             game.stateMachine.setState(states.ANIMATION_UPDATE);
             game.botRequestUpdate = false;
             game.hotspotFrom = null;
@@ -213,7 +214,7 @@ Client.prototype.requestCapture = function() {
     var game = this.game;
     game.captureAnimator.requestSent = true;
 
-    var typeOfMove = (game.stateMachine.turn == states.WHITE) ? "capture_turnWhite":"capture_turnBlack"; 
+    var typeOfMove = (game.stateMachine.turn == turn.WHITE) ? "capture_turnWhite":"capture_turnBlack"; 
     game.captureAnimator.moveToExecute = new GameMove(null, null, typeOfMove, "capture");
     game.moves.push(game.captureAnimator.moveToExecute);
 
@@ -263,6 +264,7 @@ Client.prototype.botRequestMove = function() {
             var tileTo = game.mainBoard.tiles[rowTo][colTo];
             game.moveAnimator.inited = false;
             game.moveAnimator.moveToExecute = new GameMove(tileFrom, tileTo, "move", "bot");
+            game.moves.push(game.moveAnimator.moveToExecute);
             game.stateMachine.setState(states.ANIMATION_MOVE);
             game.botRequestMove = false;
         });

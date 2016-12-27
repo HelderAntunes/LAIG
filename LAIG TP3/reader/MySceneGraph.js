@@ -4,6 +4,7 @@ function MySceneGraph(filename, scene, id) {
 
     // Establish bidirectional references between scene and graph
     this.scene = scene;
+    this.id = id;
     if (id == 1) {
         scene.graph1 = this;
     }
@@ -38,7 +39,8 @@ MySceneGraph.prototype.onXMLReady=function()
     this.materialIndex = 0;
 
     // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
-    this.scene.onGraphLoaded();
+    if (this.id == 1)
+        this.scene.onGraphLoaded();
 };
 
 /*

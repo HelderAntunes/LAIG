@@ -42,7 +42,6 @@ XMLscene.prototype.init = function (application) {
     this.currAmbient = 1;
     this.ambientSentToInterface = false;
 
-    this.graph1Loaded = false;
 };
 
 XMLscene.prototype.logPicking = function ()
@@ -82,10 +81,6 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function ()
 {
-    if (this.graph1Loaded)
-        return;
-    else
-        this.graph1Loaded = true;
     this.axis = new CGFaxis(this, this.graph1.axisLenght);
 
     this.setDefaulCamera();

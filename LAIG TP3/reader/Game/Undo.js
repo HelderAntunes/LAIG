@@ -41,6 +41,16 @@ Undo.prototype.executeUndo = function() {
         this.game.stateMachine.currState = this.previousState;
         this.game.stateMachine.turn = this.previousTurn;
     }
+
+    for (var i = this.game.moves.length-1; i >= 0; i--) {
+        if (this.game.moves[i].userOrBot !== "user") {
+            this.game.moves.pop();
+        }
+        else {
+            break;
+        }
+    }
+    this.game.moves.pop();
     
     this.game.hotspotFrom = null;
     this.game.hotspotTo = null;

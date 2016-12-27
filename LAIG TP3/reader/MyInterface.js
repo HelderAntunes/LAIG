@@ -89,7 +89,7 @@ var setUndo = function(scene) {
     		state !== states.END_GAME &&
     		!(scene.game.type === 'human-computer' && scene.game.stateMachine.turn == turn.BLACK)) {
     		if (scene.game.undo.isPossibleExecuteUndo()) {
-			scene.game.undo.executeUndo();
+				scene.game.undo.executeUndo();
     		}
     	}
 	};
