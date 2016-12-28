@@ -1,6 +1,7 @@
 /**
 * TurnChangeAnimator
 * @constructor
+* Draw the game when the turn change.
 */
 function TurnChangeAnimator(game) {
     this.game = game;
@@ -11,13 +12,17 @@ function TurnChangeAnimator(game) {
 
 TurnChangeAnimator.prototype.constructor = TurnChangeAnimator;
 
-
+/**
+ * Init animator.
+ */
 TurnChangeAnimator.prototype.init = function() {
     this.inited = true;
     this.restartClock();
 };
 
-
+/**
+ * Display the game, and change the position of cameras.
+ */
 TurnChangeAnimator.prototype.display = function() {
 
     if (this.inited == false) {
@@ -54,6 +59,9 @@ TurnChangeAnimator.prototype.display = function() {
 
 };
 
+/**
+ * Restart the clock.
+ */ 
 TurnChangeAnimator.prototype.restartClock = function() {
     this.game.scene.firstTime = null;
     this.game.scene.currTime = 0;

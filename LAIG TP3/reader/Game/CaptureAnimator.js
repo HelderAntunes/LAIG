@@ -1,6 +1,7 @@
 /**
 * CaptureAnimator
 * @constructor
+* Draw the game when his state is 'ANIMATION_CAPTURE' 
 */
 function CaptureAnimator(game) {
 
@@ -35,6 +36,12 @@ function CaptureAnimator(game) {
 
 CaptureAnimator.prototype.constructor = CaptureAnimator;
 
+/**
+ * Init the variables of CaptureAnimator necessary for display.
+ * These variables are information given from server, that must be
+ * saved in internal state of game.
+ * Furthermore, this function prepare the animations required.
+ */
 CaptureAnimator.prototype.init = function() {
     this.setNumPiecesUsedToZero();
     this.getCapturedAndNonCapturedPieces(); 
@@ -50,6 +57,9 @@ CaptureAnimator.prototype.init = function() {
     this.inited = true;
 };
 
+/**
+ * Set the animations of all captured pieces. 
+ */
 CaptureAnimator.prototype.setAnimationsOfCapturedPieces = function() {
 
     this.movingAnimationsOfCapturesPieces = [];
@@ -63,6 +73,11 @@ CaptureAnimator.prototype.setAnimationsOfCapturedPieces = function() {
 
 };
 
+/**
+ * Create an animation for a piece that goes from main board to the auxiliary board.
+ * @param color The color of piece.
+ * @param iniPos Coordinates X and Z of piece. 
+ */
 CaptureAnimator.prototype.createEndAnimationOfSubPiecesOfPiece = function(color, iniPos) {
 
     var animationEndToLegs = new KeyFrameAnimation("animationEndToLegs");
@@ -100,11 +115,18 @@ CaptureAnimator.prototype.createEndAnimationOfSubPiecesOfPiece = function(color,
     return [animationEndToBody, animationEndToLegs, animationEndToPincers];
 };
 
+/**
+ * Restart the clock.
+ */
 CaptureAnimator.prototype.restartClock = function() {
     this.game.scene.firstTime = null;
     this.game.scene.currTime = 0;
 };
 
+/**
+ * Display the boards and current animations.
+ * When the time pass out of limit, change the state of game.
+ */
 CaptureAnimator.prototype.display = function () {
     if (this.inited === false) {
         this.game.drawBoards();
@@ -141,6 +163,9 @@ CaptureAnimator.prototype.display = function () {
     }
 }
 
+/**
+ * Update the internal information of players, with information given from server.
+ */
 CaptureAnimator.prototype.updatePlayers = function() {
     var color = (this.currPlayer[0] === 0) ? "white":"black";
 
@@ -158,6 +183,9 @@ CaptureAnimator.prototype.updatePlayers = function() {
     } 
 }
 
+/**
+ * Update the auxiliary boards.
+ */
 CaptureAnimator.prototype.updateAuxsBoards2 = function() {
     if (this.game.whitePlayer.numBodies > 1 && this.game.auxBoardWhite.bodyTile.isEmpty()) {
         this.game.auxBoardWhite.setBody(this.game.bodies[this.indexBody++], "white");
@@ -184,6 +212,9 @@ CaptureAnimator.prototype.updateAuxsBoards2 = function() {
     }
 }
 
+/**
+ * Draw piece going into the corresponding auxiliary board.
+ */
 CaptureAnimator.prototype.drawPieceGoingOnToAuxBoard = function(piece, animation, time) {
 
     // body
@@ -212,6 +243,9 @@ CaptureAnimator.prototype.drawPieceGoingOnToAuxBoard = function(piece, animation
 
 };
 
+/**
+ * Draw a piece in board.
+ */ 
 CaptureAnimator.prototype.drawPieceInBoard = function(piece, animation, time) {
     this.game.scene.pushMatrix();
     this.game.scene.multMatrix(animation[0].getTransformationMatrix(time));
@@ -219,6 +253,10 @@ CaptureAnimator.prototype.drawPieceInBoard = function(piece, animation, time) {
     this.game.scene.popMatrix();
 };
 
+/**
+ * Determines the captured/untouchable pieces based on internal data 
+ * and the external data given from server.
+ */
 CaptureAnimator.prototype.getCapturedAndNonCapturedPieces = function() {
     this.untouchablePieces = [];
     this.capturedPieces = [];
@@ -234,12 +272,19 @@ CaptureAnimator.prototype.getCapturedAndNonCapturedPieces = function() {
     }
 };
 
+/**
+ * Set the indexes of pieces used.
+ */
 CaptureAnimator.prototype.setNumPiecesUsedToZero = function() {
     this.indexBody = 0;
     this.indexLeg = 0;
     this.indexPincer = 0;
 };
 
+/**
+ * Put the non captured pieces in main board.
+ * The board must be empty when this function is called.
+ */
 CaptureAnimator.prototype.setNonCapturedPiecesInMainBoard = function() {
 
     for (var i = 0; i < this.untouchablePieces.length; i++) {
@@ -266,6 +311,9 @@ CaptureAnimator.prototype.setNonCapturedPiecesInMainBoard = function() {
 
 };
 
+/**
+ * Update the auxiliary boards.
+ */
 CaptureAnimator.prototype.updateAuxsBoards = function() {
     if (this.game.whitePlayer.numBodies > 0)
         this.game.auxBoardWhite.setBody(this.game.bodies[this.indexBody++], "white");
@@ -282,6 +330,9 @@ CaptureAnimator.prototype.updateAuxsBoards = function() {
         this.game.auxBoardBlack.setPincer(this.game.pincers[this.indexPincer++], "black");
 };
 
+/**
+ * Create a piece that was captured
+ */
 CaptureAnimator.prototype.getPieceCaptured = function(r, c) {
     var tile = this.game.mainBoard.tiles[r][c];
     var color = tile.getColorOfHisPiece();
@@ -292,6 +343,9 @@ CaptureAnimator.prototype.getPieceCaptured = function(r, c) {
     return this.createPiece(numLegs, numPincers, color, r, c);
 };
 
+/**
+ * Create a piece.
+ */
 CaptureAnimator.prototype.createPiece = function(numLegs, numPincers, color, r, c) {
 
     var body = this.game.bodies[this.indexBody++];

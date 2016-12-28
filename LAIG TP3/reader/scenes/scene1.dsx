@@ -1,6 +1,6 @@
 <dsx>
 
-    <scene root="root" axis_length="3" />
+    <scene root="root" axis_length="0.1" />
 
     <views default="initView" >
 

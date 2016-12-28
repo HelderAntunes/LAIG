@@ -1,6 +1,7 @@
 /**
 * GameMovie
 * @constructor
+* Draw the movie of game.
 */
 function GameMovie(game) {
 
@@ -14,6 +15,10 @@ function GameMovie(game) {
 
 GameMovie.prototype.constructor = GameMovie;
 
+/**
+ * Prepare the boards, the players and state machine.
+ * This function is called when the user press the button of movie game in interface.
+ */
 GameMovie.prototype.prepareMovie = function() {
 
     this.game.mainBoard.takeAllPieces();
@@ -31,6 +36,9 @@ GameMovie.prototype.prepareMovie = function() {
     this.active = true;
 };
 
+/**
+ * Init main boards and auxiliary boards.
+ */
 GameMovie.prototype.initBoards = function() {
 
     this.game.auxBoardWhite.setBody(this.game.bodies[4], "white");
@@ -45,10 +53,18 @@ GameMovie.prototype.initBoards = function() {
     this.game.mainBoard.setBodyInTile(this.game.bodies[1], 4, 6, "black");
 };
 
+/**
+ * Return true if the movie is active, false otherwise.
+ */
 GameMovie.prototype.isActive = function() {
     return this.active;
 };
 
+/**
+ * Display the movie of game.
+ * When the state of state machine is 'PIECE_SELECTION_FROM' or 'UPDATE_PIECE_FROM',
+ * the function selectPiece is called to inspect the next move previously saved.
+ */
 GameMovie.prototype.display = function() {
  
     if (this.game.scene.pickMode) {
@@ -104,6 +120,11 @@ GameMovie.prototype.display = function() {
     }
 };
 
+/**
+ * Inspect the current move previously saved.
+ * Select the tiles and hotspots corresponding to the current move,
+ * and request data from Client module.
+ */
 GameMovie.prototype.selectPiece = function() {
     var move = this.game.moves[this.indexOfMove++];
 

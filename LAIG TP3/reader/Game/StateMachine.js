@@ -31,6 +31,9 @@ function StateMachine(initialState, initialTurn) {
 
 StateMachine.prototype.constructor = StateMachine;
 
+/**
+ * Set the current state of game.
+ */
 StateMachine.prototype.setState = function(newState) {
     this.currState = newState;
 };

@@ -28,6 +28,7 @@ MyInterface.prototype.init = function(application) {
 	var text = new initInterface(this.scene);
 
 	this.gui.add(text, 'initGame');
+	this.gui.add(text, 'difficulty', ['hard', 'easy']);
 	var gameCtrl = this.gui.add(text, 'modeGame', ['human-human', 'human-computer']);
 
 	var game = this.scene.game;
@@ -48,6 +49,7 @@ var initInterface = function(scene) {
 		scene.game.inited = true;
 	};
 	this.modeGame = "human-human";
+	this.difficulty = "hard";
 };
 
 var sceneOption = function() {
@@ -87,6 +89,7 @@ var setUndo = function(scene) {
     		state !== states.TURN_CHANGE &&
     		state !== states.UNDO &&
     		state !== states.END_GAME &&
+    		!scene.game.movie.isActive() &&
     		!(scene.game.type === 'human-computer' && scene.game.stateMachine.turn == turn.BLACK)) {
     		if (scene.game.undo.isPossibleExecuteUndo()) {
 				scene.game.undo.executeUndo();

@@ -1,6 +1,7 @@
 /**
 * MoveAnimator
 * @constructor
+* Draw the game, when the state of game is ANIMATION_MOVE.
 */
 function MoveAnimator(game) {
     this.game = game;
@@ -52,6 +53,9 @@ function MoveAnimator(game) {
 
 MoveAnimator.prototype.constructor = MoveAnimator;
 
+/**
+ * Init the boards, the players and animations, based on the information given from server.
+ */
 MoveAnimator.prototype.init = function() {
 
     this.setNumPiecesUsedToZero();
@@ -73,6 +77,9 @@ MoveAnimator.prototype.init = function() {
     this.inited = true;
 };
 
+/**
+ * Set the initial animations of pieceFrom and pieceTo.
+ */
 MoveAnimator.prototype.setIniAnimationsOfPiecesFromAndTo = function() {
     this.animationIniFrom.constructSimpleKeyFrameAnimation(this.iniPos_xz[0], this.iniPos_xz[1],
                                                             this.endPos_xz[0], this.endPos_xz[1],
@@ -84,6 +91,9 @@ MoveAnimator.prototype.setIniAnimationsOfPiecesFromAndTo = function() {
                                                                 this.durationOfEachAnimation);
 };
 
+/**
+ * Set the middle animations of pieceFrom and pieceTo.
+ */
 MoveAnimator.prototype.setMidAnimationsOfPiecesFromAndTo = function() {
 
     var pincersFrom = this.pieceFrom.numPincers();
@@ -105,6 +115,9 @@ MoveAnimator.prototype.setMidAnimationsOfPiecesFromAndTo = function() {
     }
 };
 
+/**
+ * Set the final animations of pieceFrom and pieceTo.
+ */
 MoveAnimator.prototype.setEndAnimationsOfPiecesFromAndTo = function() {
     this.animationEndFrom = [];
     this.animationEndTo = [];
@@ -142,6 +155,9 @@ MoveAnimator.prototype.setEndAnimationsOfPiecesFromAndTo = function() {
     }
 };
 
+/**
+ * Create the final animations of sub-pieces of a piece tha was captured.
+ */
 MoveAnimator.prototype.createEndAnimationOfSubPiecesOfPiece = function(color, iniPos) {
 
     var animationEndToLegs = new KeyFrameAnimation("animationEndToLegs");
@@ -179,6 +195,9 @@ MoveAnimator.prototype.createEndAnimationOfSubPiecesOfPiece = function(color, in
     return [animationEndToBody, animationEndToLegs, animationEndToPincers];
 };
 
+/**
+ * Set initial and final positions of move.
+ */
 MoveAnimator.prototype.setIniAndEndPositionsOfMove = function() {
     var tileFrom = this.moveToExecute.tileFrom;
     var tileTo = this.moveToExecute.tileTo;
@@ -186,12 +205,17 @@ MoveAnimator.prototype.setIniAndEndPositionsOfMove = function() {
     this.endPos_xz = this.game.mainBoard.getRealCoords_XZ(tileTo.row, tileTo.collumn);
 };
 
-
+/**
+ * Restart the clock.
+ */
 MoveAnimator.prototype.restartClock = function() {
     this.game.scene.firstTime = null;
     this.game.scene.currTime = 0;
 };
 
+/**
+ * Display the game.
+ */
 MoveAnimator.prototype.display = function () {
     if (this.inited === false) {
         this.game.drawBoards();
@@ -212,6 +236,9 @@ MoveAnimator.prototype.display = function () {
     }
 }
 
+/**
+ * Display initial animations.
+ */
 MoveAnimator.prototype.displayIni = function(time) {
     if (time > this.durationOfEachAnimation) {
         this.state = this.state_mid;
@@ -222,6 +249,9 @@ MoveAnimator.prototype.displayIni = function(time) {
         this.drawPieceInBoard(this.pieceTo, [this.animationIniTo], time);
 };
 
+/**
+ * Display middle animations.
+ */
 MoveAnimator.prototype.displayMid = function(time) {
     if (this.pieceTo === null) {
         this.state = this.state_end;
@@ -236,6 +266,9 @@ MoveAnimator.prototype.displayMid = function(time) {
     }
 };
 
+/**
+ * Display end animations.
+ */
 MoveAnimator.prototype.displayEnd = function(time) {
     if (time > this.durationOfEachAnimation) {
         this.state = this.state_end;
@@ -281,6 +314,9 @@ MoveAnimator.prototype.displayEnd = function(time) {
 
 };
 
+/**
+ * Update the players based on information given from server.
+ */
 MoveAnimator.prototype.updatePlayers = function() {
     var colorFrom = (this.currPlayer[0] === 0) ? "white":"black";
     var colorTo = (this.enemyPlayer[0] === 0) ? "white":"black";
@@ -299,6 +335,9 @@ MoveAnimator.prototype.updatePlayers = function() {
 
 }
 
+/**
+ * Set pieces on the auxiliary board.
+ */
 MoveAnimator.prototype.updateAuxsBoards2 = function() {
     if (this.game.whitePlayer.numBodies > 1 && this.game.auxBoardWhite.bodyTile.isEmpty()) {
         this.game.auxBoardWhite.setBody(this.game.bodies[this.indexBody++], "white");
@@ -326,6 +365,9 @@ MoveAnimator.prototype.updateAuxsBoards2 = function() {
 
 }
 
+/**
+ * Set pieces in the move, if they survive.
+ */
 MoveAnimator.prototype.setPieceFromAndPieceToInBoardIfThetSurvive = function() {
     var pincersFrom = this.pieceFrom.numPincers();
     var pincersTo = -1;
@@ -348,7 +390,9 @@ MoveAnimator.prototype.setPieceFromAndPieceToInBoardIfThetSurvive = function() {
 
 }
 
-
+/**
+ * Draw piece going from main board to an auxiliary board.
+ */
 MoveAnimator.prototype.drawPieceGoingOnToAuxBoard = function(piece, animation, time) {
 
     // body
@@ -377,6 +421,9 @@ MoveAnimator.prototype.drawPieceGoingOnToAuxBoard = function(piece, animation, t
 
 };
 
+/**
+ * Draw a piece in board.
+ */
 MoveAnimator.prototype.drawPieceInBoard = function(piece, animation, time) {
     this.game.scene.pushMatrix();
     this.game.scene.multMatrix(animation[0].getTransformationMatrix(time));
@@ -384,6 +431,9 @@ MoveAnimator.prototype.drawPieceInBoard = function(piece, animation, time) {
     this.game.scene.popMatrix();
 };
 
+/**
+ * Determines the pieces captured and non-captured.
+ */
 MoveAnimator.prototype.getCapturedAndNonCapturedPieces = function() {
     this.nonCapturedPieces = [];
     this.capturedPieces = [];
@@ -401,6 +451,9 @@ MoveAnimator.prototype.getCapturedAndNonCapturedPieces = function() {
     }
 };
 
+/**
+ * Return true if the piece in postion <r,c> participates in move.
+ */
 MoveAnimator.prototype.pieceIsOfMove = function(r, c) {
     var rowFrom = this.moveToExecute.tileFrom.row;
     var colFrom = this.moveToExecute.tileFrom.collumn;
@@ -413,12 +466,18 @@ MoveAnimator.prototype.pieceIsOfMove = function(r, c) {
     return false;
 };
 
+/**
+ * Set num pieces used to zero.
+ */
 MoveAnimator.prototype.setNumPiecesUsedToZero = function() {
     this.indexBody = 0;
     this.indexLeg = 0;
     this.indexPincer = 0;
 };
 
+/**
+ * Set non captured pieces in main board.
+ */
 MoveAnimator.prototype.setNonCapturedPiecesInMainBoard = function() {
 
     for (var i = 0; i < this.nonCapturedPieces.length; i++) {
@@ -445,6 +504,9 @@ MoveAnimator.prototype.setNonCapturedPiecesInMainBoard = function() {
 
 };
 
+/**
+ * Set pieces in auxiliary boards.
+ */
 MoveAnimator.prototype.updateAuxsBoards = function() {
     if (this.game.whitePlayer.numBodies > 0)
         this.game.auxBoardWhite.setBody(this.game.bodies[this.indexBody++], "white");
@@ -461,6 +523,9 @@ MoveAnimator.prototype.updateAuxsBoards = function() {
         this.game.auxBoardBlack.setPincer(this.game.pincers[this.indexPincer++], "black");
 };
 
+/**
+ * Create pieceFrom and pieceTo (pieces in move).
+ */
 MoveAnimator.prototype.setPieceFromAndPieceTo = function() {
 
     var tileFrom = this.moveToExecute.tileFrom;
@@ -482,6 +547,9 @@ MoveAnimator.prototype.setPieceFromAndPieceTo = function() {
     }
 };
 
+/**
+ * Get the piece in position <r,c>
+ */
 MoveAnimator.prototype.getPieceCaptured = function(r, c) {
     var tile = this.game.mainBoard.tiles[r][c];
     var color = tile.getColorOfHisPiece();
@@ -492,6 +560,9 @@ MoveAnimator.prototype.getPieceCaptured = function(r, c) {
     return createPiece(numLegs, numPincers, color, r, c);
 };
 
+/**
+ * Create a piece.
+ */
 MoveAnimator.prototype.createPiece = function(numLegs, numPincers, color, r, c) {
 
     var body = this.game.bodies[this.indexBody++];

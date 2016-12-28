@@ -1,5 +1,6 @@
 /**
 * GameState
+* Save the state of game
 * @constructor
 */
 function GameState(scene) {
@@ -64,6 +65,9 @@ function GameState(scene) {
 
 GameState.prototype.constructor = GameState;
 
+/**
+ * Create all pieces that will be used in entire game.
+ */
 GameState.prototype.createPieces = function() {
     for (var i = 0; i < 24; i++) {
         this.bodies.push(new Body(this.scene, this, null, this.radiusOfTile/4, this.heightOfTile/4));
@@ -72,6 +76,9 @@ GameState.prototype.createPieces = function() {
     }
 };
 
+/**
+ * Init the boards.
+ */
 GameState.prototype.initBoards = function() {
     
    /* this.mainBoard.setBodyInTile(this.bodies[0], 4, 2, "white");
@@ -94,6 +101,11 @@ GameState.prototype.initBoards = function() {
     this.mainBoard.setBodyInTile(this.bodies[1], 4, 6, "black");
 };
 
+/**
+ * Display the current game according the state of game.
+ * If the game is not configured, run the configuration.
+ * If any animation is active, that animation is displayed.
+ */
 GameState.prototype.display = function() {
 
     this.scene.pushMatrix();
@@ -193,6 +205,9 @@ GameState.prototype.display = function() {
 
 };
 
+/**
+ * Draw main board, auxiliary boards and the score.
+ */
 GameState.prototype.drawBoards = function() {
    this.mainBoard.display();
 
@@ -212,6 +227,9 @@ GameState.prototype.drawBoards = function() {
    this.scene.popMatrix();
 };
 
+/**
+ * Set the materials used in all game by tiles and pieces.
+ */
 GameState.prototype.setMaterials = function() {
     this.materialTile = new CGFappearance(this.scene);
     this.materialTile.setDiffuse( 1.0, 1.0, 1.0, 1);
@@ -236,6 +254,9 @@ GameState.prototype.setMaterials = function() {
     this.materialBlack.setShininess(50);
 };
 
+/**
+ * Get the hotspots of tiles of main board and auxiliary boards.
+ */
 GameState.prototype.getHotspots = function() {
     var hotspots = this.mainBoard.getHotspots();
     hotspots = hotspots.concat(this.auxBoardBlack.getHotspots(),
@@ -243,7 +264,36 @@ GameState.prototype.getHotspots = function() {
     return hotspots;
 };
 
+/**
+ * Check if game is ended.
+ */
 GameState.prototype.isEnded = function() {
+
+
+    if (this.whitePlayer.score == 5 && this.blackPlayer.score == 5) {
+        if (this.stateMachine.turn == turn.WHITE)
+            return "white wins";
+        else
+            return "black wins";
+    }
+
+    if (this.mainBoard.numPiecesOfAColorInBoard("white") === 0 && 
+        this.mainBoard.numPiecesOfAColorInBoard("black") === 0) {
+
+        if (this.whitePlayer.score > this.blackPlayer.score) {
+            return "white wins";
+        }
+        else if (this.whitePlayer.score < this.blackPlayer.score) {
+            return "black wins";
+        }
+        else {
+            if (this.stateMachine.turn == turn.WHITE)
+                return "white wins";
+            else
+                return "black wins";
+        }
+    }
+
     if (this.whitePlayer.score == 5) {
         return "white wins";
     }
@@ -262,7 +312,11 @@ GameState.prototype.isEnded = function() {
     return false;
 };
 
-
+/**
+ * Process the user interaction.
+ * Change the state of state machine, the tiles and hotsopts selected,
+ * and request information from Client module.
+ */
 GameState.prototype.updatePieceSelected = function(hotspot) {
 
     if (this.movie.isActive()) {

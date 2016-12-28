@@ -81,7 +81,7 @@ XMLscene.prototype.setDefaultAppearance = function () {
 // As loading is asynchronous, this may be called already after the application has started the run loop
 XMLscene.prototype.onGraphLoaded = function ()
 {
-    this.axis = new CGFaxis(this, this.graph1.axisLenght);
+    this.axis = new CGFaxis(this, 0);
 
     this.setDefaulCamera();
 
@@ -168,7 +168,7 @@ XMLscene.prototype.changeCamera = function() {
         return;
     this.ativeCameraIndex = (this.ativeCameraIndex + 1) % this.graph1.cameras.length;
     this.camera = this.graph1.cameras[this.ativeCameraIndex].camera;
-    if (this.graph1.cameras[this.ativeCameraIndex].id != defaultCam)
+    if (this.graph1.cameras[this.ativeCameraIndex].id != this.graph1.defaultCam)
         this.interface.setActiveCamera(this.camera);
 };
 

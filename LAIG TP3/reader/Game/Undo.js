@@ -1,6 +1,7 @@
 /**
 * Undo
 * @constructor
+* Make the undo.
 */
 function Undo(game) {
     this.game = game;
@@ -18,6 +19,9 @@ function Undo(game) {
 
 Undo.prototype.constructor = Undo;
 
+/**
+ * Execute undo based on the previous board, players, state and turn.
+ */
 Undo.prototype.executeUndo = function() {
     
     this.game.mainBoard.takeAllPieces();
@@ -60,6 +64,9 @@ Undo.prototype.executeUndo = function() {
 
 };
 
+/**
+ * Draw the game on undo. Change the cameras if necessary.
+ */ 
 Undo.prototype.display = function() {
 
     var time = this.game.scene.currTime;
@@ -85,11 +92,17 @@ Undo.prototype.display = function() {
     this.game.drawBoards();
 };
 
+/**
+ * Restart the clock.
+ */
 Undo.prototype.restartClock = function() {
     this.game.scene.firstTime = null;
     this.game.scene.currTime = 0;
 };
 
+/**
+ * Check if it is possible execute undo.
+ */
 Undo.prototype.isPossibleExecuteUndo = function() {
     if (this.previousBoard !== null) {
         return true;
@@ -97,12 +110,18 @@ Undo.prototype.isPossibleExecuteUndo = function() {
     return false;
 };
 
+/**
+ * Set num pieces used to zero.
+ */
 Undo.prototype.setNumPiecesUsedToZero = function() {
     this.indexBody = 0;
     this.indexLeg = 0;
     this.indexPincer = 0;
 };
 
+/**
+ * Set pieces in the auxiliary boards.
+ */
 Undo.prototype.updateAuxsBoards = function() {
     if (this.game.whitePlayer.numBodies > 0)
         this.game.auxBoardWhite.setBody(this.game.bodies[this.indexBody++], "white");
@@ -119,6 +138,9 @@ Undo.prototype.updateAuxsBoards = function() {
         this.game.auxBoardBlack.setPincer(this.game.pincers[this.indexPincer++], "black");
 };
 
+/**
+ * Set pieces in main board based on previous board.
+ */
 Undo.prototype.updateMainBoard = function() {
 
     for (var r = 0; r < this.previousBoard.length; r++) {

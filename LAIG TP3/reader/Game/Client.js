@@ -1,6 +1,6 @@
 /**
 * Client
-*
+* Make requests of game to server.
 */
 function Client(game) {
     this.game = game;
@@ -8,6 +8,9 @@ function Client(game) {
 
 Client.prototype.constructor = Client;
 
+/**
+ * Make a request to prolog server. 
+ */
 Client.prototype.getPrologRequest = function(requestString, onSuccess, onError, port) {
 	var requestPort = port || 8081;
 	var request = new XMLHttpRequest();
@@ -20,6 +23,11 @@ Client.prototype.getPrologRequest = function(requestString, onSuccess, onError, 
 	request.send();
 };
 
+/**
+ * Request a move to server.
+ * When the request is replied with succes, 
+ * the information given is sended to moveAnimator and undo of game.
+ */
 Client.prototype.requestMove = function() {
 	var game = this.game;
 
@@ -58,6 +66,9 @@ Client.prototype.requestMove = function() {
         });
 };
 
+/**
+ * Make the string for move request.
+ */
 Client.prototype.makeRequestString_moveAndCapture = function() {
 
     var tileFrom = this.game.moveAnimator.moveToExecute.tileFrom;
@@ -84,6 +95,11 @@ Client.prototype.makeRequestString_moveAndCapture = function() {
     return request;
 };
 
+/**
+ * Request a update to server.
+ * When the request is replied with succes, 
+ * the information given is sended to updateAnimator and undo of game.
+ */
 Client.prototype.requestUpdate = function() {
 
     this.game.undo.previousBoard = this.game.mainBoard.getBoardInArrayFormat();
@@ -139,6 +155,9 @@ Client.prototype.requestUpdate = function() {
         });
 };
 
+/**
+ * Make the string for update request.
+ */
 Client.prototype.makeRequestString_update = function(predicate) {
 
     var tileTo = this.game.hotspotTo.tile;
@@ -156,6 +175,11 @@ Client.prototype.makeRequestString_update = function(predicate) {
     return request;
 };
 
+/**
+ * Request a bot update to server.
+ * When the request is replied with succes, 
+ * the information given is sended to updateAnimator and undo of game.
+ */
 Client.prototype.botRequestUpdate = function() {
     
     var game = this.game;
@@ -189,6 +213,9 @@ Client.prototype.botRequestUpdate = function() {
         });
 };
 
+/**
+ * Make the string for bot update request.
+ */
 Client.prototype.makeRequestString_botResquestUpdate = function(predicate) {
 
     var request = "botCreateOrUpdate(";
@@ -210,6 +237,11 @@ Client.prototype.makeRequestString_botResquestUpdate = function(predicate) {
 
 };
 
+/**
+ * Request a capture to server.
+ * When the request is replied with succes, 
+ * the information given is sended to captureAnimator of game.
+ */
 Client.prototype.requestCapture = function() {
     var game = this.game;
     game.captureAnimator.requestSent = true;
@@ -231,6 +263,9 @@ Client.prototype.requestCapture = function() {
         });
 };
 
+/**
+ * Make the string for capture request.
+ */
 Client.prototype.makeRequestString_capture = function() {
 
     var request = "captureAdaptoids(";
@@ -248,6 +283,11 @@ Client.prototype.makeRequestString_capture = function() {
     return request;
 };
 
+/**
+ * Request a bot move to server.
+ * When the request is replied with succes, 
+ * the information given is sended to moveAnimator and undo of game.
+ */
 Client.prototype.botRequestMove = function() {
     var game = this.game;
     var request = this.makeRequestString_botResquestMove();
@@ -270,6 +310,9 @@ Client.prototype.botRequestMove = function() {
         });
 };
 
+/**
+ * Make the string for bot move request.
+ */
 Client.prototype.makeRequestString_botResquestMove = function() {
 
     var request = "botMoveAndCapture(";

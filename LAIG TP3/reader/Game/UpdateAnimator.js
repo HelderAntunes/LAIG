@@ -1,6 +1,7 @@
 /**
 * UpdateAnimator
 * @constructor
+* Display the game when a user update a piece.
 */
 function UpdateAnimator(game) {
     this.game = game;
@@ -38,6 +39,9 @@ function UpdateAnimator(game) {
 
 UpdateAnimator.prototype.constructor = UpdateAnimator;
 
+/**
+ * Init the boards, players, clock and animations. 
+ */
 UpdateAnimator.prototype.init = function(board, currPlayer) {
 
     this.setNumPiecesUsedToZero();
@@ -58,6 +62,9 @@ UpdateAnimator.prototype.init = function(board, currPlayer) {
     this.inited = true;
 };
 
+/**
+ * Set the updated piece and the piece to add to the board.
+ */
 UpdateAnimator.prototype.setPiecesUsedInAnimation = function() {
     this.pieceUpdated = null;
     var color = (this.currPlayer[0] === 0) ? "white":"black";
@@ -75,12 +82,18 @@ UpdateAnimator.prototype.setPiecesUsedInAnimation = function() {
     this.pieceToAdd.color = color;
 };
 
+/**
+ * Set the pieces used to zero.
+ */
 UpdateAnimator.prototype.setNumPiecesUsedToZero = function() {
     this.indexBody = 0;
     this.indexLeg = 0;
     this.indexPincer = 0;
 };
 
+/**
+ * Display the game, when the state is ANIMATION_UPDATE.
+ */
 UpdateAnimator.prototype.display = function () {
     if (this.inited === false) {
         this.game.drawBoards();
@@ -124,6 +137,9 @@ UpdateAnimator.prototype.display = function () {
     }
 };
 
+/**
+ * Get the pieces captured and the pieces non captured.
+ */
 UpdateAnimator.prototype.getCapturedAndNonCapturedPieces = function() {
     this.piecesUntouchable = [];
 
@@ -144,6 +160,9 @@ UpdateAnimator.prototype.getCapturedAndNonCapturedPieces = function() {
     }
 };
 
+/**
+ * Return true if the piece present in position <r,c> participate in move.
+ */
 UpdateAnimator.prototype.pieceIsOfMove = function(r, c) {
     var rowTo = this.moveToExecute.tileTo.row;
     var colTo = this.moveToExecute.tileTo.collumn;
@@ -152,6 +171,9 @@ UpdateAnimator.prototype.pieceIsOfMove = function(r, c) {
     return false;
 };
 
+/**
+ * Get the piece updated.
+ */
 UpdateAnimator.prototype.getPieceUpdated = function(r, c) {
     var tile = this.game.mainBoard.tiles[r][c];
     var color = tile.getColorOfHisPiece();
@@ -162,6 +184,9 @@ UpdateAnimator.prototype.getPieceUpdated = function(r, c) {
     return this.createPiece(numLegs, numPincers, color, r, c);
 };
 
+/**
+ * Create a piece.
+ */
 UpdateAnimator.prototype.createPiece = function(numLegs, numPincers, color, r, c) {
 
     var body = this.game.bodies[this.indexBody++];
@@ -180,6 +205,9 @@ UpdateAnimator.prototype.createPiece = function(numLegs, numPincers, color, r, c
     return new Piece(this.game.scene, body, legs, pincers, color, r, c);
 };
 
+/**
+ * Set the non captured pieces in main board.
+ */
 UpdateAnimator.prototype.setNonCapturedPiecesInMainBoard = function() {
 
     for (var i = 0; i < this.piecesUntouchable.length; i++) {
@@ -206,6 +234,9 @@ UpdateAnimator.prototype.setNonCapturedPiecesInMainBoard = function() {
 
 };
 
+/*
+ * Update the current player with the information given from server.
+ */
 UpdateAnimator.prototype.updateCurrentPlayer = function() {
     var color = (this.currPlayer[0] === 0) ? "white":"black";
 
@@ -224,6 +255,9 @@ UpdateAnimator.prototype.updateCurrentPlayer = function() {
     
 }
 
+/**
+ * Set pieces in auxiliary boards.
+ */
 UpdateAnimator.prototype.updateAuxsBoards = function() {
     if (this.game.whitePlayer.numBodies > 0)
         this.game.auxBoardWhite.setBody(this.game.bodies[this.indexBody++], "white");
@@ -240,6 +274,9 @@ UpdateAnimator.prototype.updateAuxsBoards = function() {
         this.game.auxBoardBlack.setPincer(this.game.pincers[this.indexPincer++], "black");
 };
 
+/**
+ * Set the initial and end position of move.
+ */
 UpdateAnimator.prototype.setIniAndEndPositionsOfMove = function() {
     var tileFrom = this.moveToExecute.tileFrom;
     var tileTo = this.moveToExecute.tileTo;
@@ -271,6 +308,10 @@ UpdateAnimator.prototype.setIniAndEndPositionsOfMove = function() {
     this.endPos_xz = this.game.mainBoard.getRealCoords_XZ(tileTo.row, tileTo.collumn);
 };
 
+/**
+ * Set pieces used in animation in main board.
+ * This function is called when the animation stop.
+ */
 UpdateAnimator.prototype.setPiecesUsedInAnimationInMainBoard = function() {
     var color = (this.currPlayer[0] === 0) ? "white":"black";
     var pos = this.moveToExecute.getRowAndCollumOfTileTo();
@@ -293,18 +334,27 @@ UpdateAnimator.prototype.setPiecesUsedInAnimationInMainBoard = function() {
     }
 };
 
+/**
+ * Set the animation of piece that goes from auxiliary board to main board.
+ */
 UpdateAnimator.prototype.setAnimationOfPieceToAdd = function() {
     this.animationOfPieceToAdd.constructSimpleKeyFrameAnimation(
     this.iniPos_xz[0], this.iniPos_xz[1], this.endPos_xz[0], this.endPos_xz[1], 
     this.game.heightOfTile, this.game.heightOfTile * 4, this.durationOfEachAnimation);
 };
 
+/**
+ * Set animation of piece that will be updated.
+ */
 UpdateAnimator.prototype.setAnimationOfPieceUpdated = function() {
     this.animationOfPieceUpdated.constructUpAndDownAnimationWithRotationInY(
     this.endPos_xz[0], this.game.heightOfTile, this.endPos_xz[1], 
     this.game.heightOfTile*2, this. durationOfEachAnimation);
 };
 
+/**
+ * Restart the clock.
+ */
 UpdateAnimator.prototype.restartClock = function() {
     this.game.scene.firstTime = null;
     this.game.scene.currTime = 0;
